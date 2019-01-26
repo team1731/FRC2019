@@ -10,7 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.RobotBase;
 
 
-// THIS IS A TEST OF GITLAB
+// THIS IS A TEST2 OF GITLAB
 
 /**
  * Do NOT add any static variables to this class, or any initialization at all.
