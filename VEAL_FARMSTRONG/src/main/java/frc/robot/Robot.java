@@ -10,45 +10,26 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 /**
- * This is a demo program showing how to use Mecanum control with the RobotDrive
- * class.
+ * This is a demo program showing the use of the RobotDrive class, specifically
+ * it contains the code necessary to operate a robot with tank drive.
  */
 public class Robot extends TimedRobot {
-  private static final int kFrontLeftChannel = 2;
-  private static final int kRearLeftChannel = 3;
-  private static final int kFrontRightChannel = 1;
-  private static final int kRearRightChannel = 0;
-
-  private static final int kJoystickChannel = 0;
-
-  private MecanumDrive m_robotDrive;
-  private Joystick m_stick;
+  private DifferentialDrive m_myRobot;
+  private Joystick m_leftStick;
+  private Joystick m_rightStick;
 
   @Override
   public void robotInit() {
-    PWMVictorSPX frontLeft = new PWMVictorSPX(kFrontLeftChannel);
-    PWMVictorSPX rearLeft = new PWMVictorSPX(kRearLeftChannel);
-    PWMVictorSPX frontRight = new PWMVictorSPX(kFrontRightChannel);
-    PWMVictorSPX rearRight = new PWMVictorSPX(kRearRightChannel);
-
-    // Invert the left side motors.
-    // You may need to change or remove this to match your robot.
-    frontLeft.setInverted(true);
-    rearLeft.setInverted(true);
-
-    m_robotDrive = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
-
-    m_stick = new Joystick(kJoystickChannel);
+    m_myRobot = new DifferentialDrive(new PWMVictorSPX(0), new PWMVictorSPX(1));
+    m_leftStick = new Joystick(0);
+    m_rightStick = new Joystick(1);
   }
 
   @Override
   public void teleopPeriodic() {
-    // Use the joystick X axis for lateral movement, Y axis for forward
-    // movement, and Z axis for rotation.
-    m_robotDrive.driveCartesian(m_stick.getX(), m_stick.getY(),
-        m_stick.getZ(), 0.0);
+    m_myRobot.tankDrive(m_leftStick.getY(), m_rightStick.getY());
   }
 }
