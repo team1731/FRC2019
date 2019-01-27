@@ -182,9 +182,9 @@ public class Constants extends ConstantsBase {
 
     // Drive
     public static final int kLeftDriveMasterId = 3;
-    public static final int kLeftDriveSlaveId = 1;
+    public static final int kLeftDriveSlaveId = 11;
     public static final int kRightDriveMasterId = 4;
-    public static final int kRightDriverSlaveId = 2;
+    public static final int kRightDriverSlaveId = 12;
     
     //Elevator
     public static final int kElevatorTalon = 7;
