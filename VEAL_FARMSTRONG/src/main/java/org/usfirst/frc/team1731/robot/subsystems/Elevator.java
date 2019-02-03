@@ -217,15 +217,16 @@ public class Elevator extends Subsystem {
     private SystemState handleElevatorTracking() {
     		int nextPos; 
     	
-	    	if (mWantedPosition > 0.1) {
+	    	if (mWantedPosition > 0.05) {
                 nextPos = (int)(mWantedPosition); //Constants.kElevatorTopEncoderValue); 
-                System.out.println("Pos:" + nextPos);
-	    	} else if (mWantedPosition < -0.1)  {
+	    	} else if (mWantedPosition < -0.05)  {
 	    		//int curPos = mTalon.getSelectedSensorPosition(0);
 	    		nextPos = (int)(mWantedPosition); //Constants.kElevatorBottomEncoderValue);	    		
 	    	} else {
                 nextPos = 0;
+                mWantedPosition = 0;
             }
+            System.out.println("Pos:" + mWantedPosition);
 
     		//if (checkRevSwitch()) {
             //    if (nextPos < -1 * (int)Constants.kElevatorBottomEncoderValue) {

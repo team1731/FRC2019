@@ -134,7 +134,7 @@ public class Superstructure extends Subsystem {
                 mWantedState = WantedState.IDLE;
                 mCurrentStateStartTime = timestamp;
                 mWantStateChangeStartTime = timestamp;
-                mSystemState = SystemState.ELEVATOR_TRACKING; //SystemState.IDLE;
+                mSystemState = SystemState.IDLE;
                 mStateChanged = true;
             }
         }
@@ -188,15 +188,15 @@ public class Superstructure extends Subsystem {
                     newState = SystemState.IDLE;
                 }
 
-                //if (newState != mSystemState) {
-                //    System.out.println("Superstructure state " + mSystemState + " to " + newState + " Timestamp: "
-                //            + Timer.getFPGATimestamp());
-                //    mSystemState = newState;
-                //    mCurrentStateStartTime = timestamp;
-                //    mStateChanged = true;
-                //} else {
-                //    mStateChanged = false;
-                //}
+                if (newState != mSystemState) {
+                    System.out.println("Superstructure state " + mSystemState + " to " + newState + " Timestamp: "
+                            + Timer.getFPGATimestamp());
+                    mSystemState = newState;
+                    mCurrentStateStartTime = timestamp;
+                    mStateChanged = true;
+                } else {
+                    mStateChanged = false;
+                }
             }
         }
 
