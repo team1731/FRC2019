@@ -96,6 +96,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 
 /**
  * The main robot class, which instantiates all robot parts and helper classes and initializes all loops. Some classes
@@ -112,7 +113,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
  * this project, you must also update the manifest file in the resource directory.
  */
 public class Robot extends IterativeRobot {
-	
+    private DigitalOutput leftRightCameraControl;
+    
 	public static enum AutoScheme { 
 		OLD_SCHEME, // Haymarket, Alexandria
 		NEW_SCHEME  // Maryland, Detroit
@@ -208,6 +210,8 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
         try {
             CrashTracker.logRobotInit();
+
+            leftRightCameraControl = new DigitalOutput(5);
 
             tapeSensor = new DigitalInput(0);
             SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
@@ -583,6 +587,9 @@ public class Robot extends IterativeRobot {
             SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
             
             double timestamp = Timer.getFPGATimestamp();
+
+            // TODO FIXME RDB - for testing purposes only
+            leftRightCameraControl.set(mControlBoard.getInvertDrive());
                 
             boolean climbUp = mControlBoard.getClimbUp();
             boolean climbDown = mControlBoard.getClimbDown();
