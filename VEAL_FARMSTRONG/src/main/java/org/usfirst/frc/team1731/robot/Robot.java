@@ -95,6 +95,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 
 /**
  * The main robot class, which instantiates all robot parts and helper classes and initializes all loops. Some classes
@@ -111,7 +113,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * this project, you must also update the manifest file in the resource directory.
  */
 public class Robot extends IterativeRobot {
-	
+    private DigitalOutput leftRightCameraControl;
+    
 	public static enum AutoScheme { 
 		OLD_SCHEME, // Haymarket, Alexandria
 		NEW_SCHEME  // Maryland, Detroit
@@ -186,7 +189,9 @@ public class Robot extends IterativeRobot {
 
     private InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> mTuningFlywheelMap = new InterpolatingTreeMap<>();
 
-	private static Solenoid _24vSolenoid = Constants.makeSolenoidForId(11, 2);
+    private static Solenoid _24vSolenoid = Constants.makeSolenoidForId(11, 2);
+    
+    private DigitalInput tapeSensor;
 
     public Robot() {
         CrashTracker.logRobotConstruction();
@@ -205,7 +210,12 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
         try {
             CrashTracker.logRobotInit();
-            
+
+            leftRightCameraControl = new DigitalOutput(5);
+
+            tapeSensor = new DigitalInput(0);
+            SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
+
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
           //  mEnabledLooper.register(VisionProcessor.getInstance());
             mEnabledLooper.register(RobotStateEstimator.getInstance());
@@ -573,7 +583,13 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         try {
+            
+            SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
+            
             double timestamp = Timer.getFPGATimestamp();
+
+            // TODO FIXME RDB - for testing purposes only
+            leftRightCameraControl.set(mControlBoard.getInvertDrive());
                 
             boolean climbUp = mControlBoard.getClimbUp();
             boolean climbDown = mControlBoard.getClimbDown();

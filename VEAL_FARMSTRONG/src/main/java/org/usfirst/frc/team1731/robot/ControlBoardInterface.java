@@ -46,4 +46,24 @@ public interface ControlBoardInterface {
 		boolean getFishingPoleExtend();
 		boolean getFishingPoleRetract();
 
+
+		//DRIVER
+		boolean getWideCamera();
+		boolean getNormalCamera();
+		boolean getFrontCamera();
+		boolean getBackCamera();
+		boolean getLegoLift();
+		boolean getActivateAuto();
+		boolean getDeactivateAuto();
+		boolean getInvertDrive();
+
+		//OPERATOR
+		boolean getFloorLevel();
+		boolean getSecondLevel();
+		boolean getThirdLevel();
+		boolean getPickupPanel();
+		boolean getShootPanel();
+		boolean getPickupBall();
+		boolean getShootBall();
+		boolean getCargoShipBall();
 }
