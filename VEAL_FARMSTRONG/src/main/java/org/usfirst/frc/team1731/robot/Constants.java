@@ -156,8 +156,8 @@ public class Constants extends ConstantsBase {
 //    public static int kElevatorFlipUp = 2;
 //    public static int kElevatorFlipNone = 1;
 //    public static int kElevatorFlipDown = 0;
-    public static double kElevatorTalonKP = .1;
-    public static double kElevatorTalonKI = 1.0;
+    public static double kElevatorTalonKP = 2.0;
+    public static double kElevatorTalonKI = 0.0;
     public static double kElevatorTalonKD = 0.0;
     public static double kElevatorTalonKF = 0.0;
     //public static double kElevatorMaxEncoder = 12000;
@@ -226,6 +226,7 @@ public class Constants extends ConstantsBase {
 //    public static final int kIntakeSlaveId = 10;
 	public static final int kIntakeVictor1 = 8;
 	public static final int kIntakeVictor2 = 9;
+	public static final int kIntakeTalon = 1;
 
     // Hopper / Floor
 //    public static final int kHopperMasterId = 6;

@@ -170,8 +170,8 @@ public class FishingPole extends Subsystem {
 
     @Override
     public void outputToSmartDashboard() {
-        SmartDashboard.putBoolean("DigitalInput1", mDigitalSensorDown.get());
-        SmartDashboard.putBoolean("DigitalInput2", mDigitalSensorUp.get());
+    //    SmartDashboard.putBoolean("DigitalInput1", mDigitalSensorDown.get());
+    //    SmartDashboard.putBoolean("DigitalInput2", mDigitalSensorUp.get());
    //     SmartDashboard.putNumber("Fishingpole mWantedState", mWantedState);
     }
 

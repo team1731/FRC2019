@@ -120,6 +120,7 @@ public class Superstructure extends Subsystem {
     private double mCurrentStateStartTime;
     private boolean mStateChanged;
     private double mElevatorJoystickPosition = 0;
+    private double mIntakeOutput = 0;
     //private boolean mIsOverTheTop = false;
     private GRABBER_POSITION mIsOverTheTop = GRABBER_POSITION.FLIP_UN_INIT; // Set to unknown to force it to be set
     private Loop mLoop = new Loop() {
@@ -184,7 +185,6 @@ public class Superstructure extends Subsystem {
                     newState = handleReturningHome();
                     break;
                 default:
-                	
                     newState = SystemState.IDLE;
                 }
 
@@ -609,7 +609,9 @@ public class Superstructure extends Subsystem {
 
     @Override
     public void outputToSmartDashboard() {
-        SmartDashboard.putNumber("Air Pressure psi", mAirPressureSensor.getAirPressurePsi());
+        //SmartDashboard.putNumber("Air Pressure psi", mAirPressureSensor.getAirPressurePsi());
+        SmartDashboard.putString("Sys State", mSystemState.name());
+        SmartDashboard.putNumber("IntakeOutput", mIntakeOutput);
     }
 
     @Override
@@ -629,6 +631,11 @@ public class Superstructure extends Subsystem {
 
     public void setWantedElevatorPosition(double position) {
         mElevatorJoystickPosition = position;
+    }
+
+    public void setWantedIntakeOutput(double output) {
+        mIntakeOutput = output;
+        mIntake.setWantedPosition(output);
     }
 
     public void setOverrideCompressor(boolean force_off) {

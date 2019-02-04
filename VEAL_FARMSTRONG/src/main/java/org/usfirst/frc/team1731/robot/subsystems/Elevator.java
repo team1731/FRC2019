@@ -69,9 +69,9 @@ public class Elevator extends Subsystem {
         mTalon.config_kD(Constants.SlotIdx, Constants.kElevatorTalonKD, Constants.kTimeoutMs);
         mTalon.config_kF(Constants.SlotIdx, Constants.kElevatorTalonKF, Constants.kTimeoutMs );
         mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
-        //mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
-        //mTalon.configClosedloopRamp(0, Constants.kTimeoutMs);
-        //mTalon.setSelectedSensorPosition(-1793, 0, 10);
+        mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
+        mTalon.configClosedloopRamp(0, Constants.kTimeoutMs);
+        mTalon.setSelectedSensorPosition(0, 0, 10); //-1793, 0, 10);
         mTalon.overrideLimitSwitchesEnable(false);
         
         /* choose to ensure sensor is positive when output is positive */
@@ -82,10 +82,10 @@ public class Elevator extends Subsystem {
         mTalon.setInverted(true); //Constants.kMotorInvert);
 
         /* set the peak and nominal outputs, 12V means full */
-        mTalon.configNominalOutputForward(.1, Constants.kTimeoutMs);
-        mTalon.configNominalOutputReverse(.1, Constants.kTimeoutMs);
-        mTalon.configPeakOutputForward(0.8, Constants.kTimeoutMs);
-        mTalon.configPeakOutputReverse(-0.8, Constants.kTimeoutMs);
+        mTalon.configNominalOutputForward(.5, Constants.kTimeoutMs);
+        mTalon.configNominalOutputReverse(.9, Constants.kTimeoutMs);
+        mTalon.configPeakOutputForward(1.0, Constants.kTimeoutMs);
+        mTalon.configPeakOutputReverse(-1.0, Constants.kTimeoutMs);
         /*
          * set the allowable closed-loop error, Closed-Loop output will be
          * neutral within this range. See Table in Section 17.2.1 for native
@@ -128,11 +128,11 @@ public class Elevator extends Subsystem {
         public void onStart(double timestamp) {
             stop();
             synchronized (Elevator.this) {
-                mSystemState = SystemState.ELEVATORTRACKING;
+                mSystemState = SystemState.IDLE;
                 mStateChanged = true;
                 mWantedPosition = 0;
                 mCurrentStateStartTime = timestamp;
-               // mTalon.setSelectedSensorPosition(0, 0, 10);                
+                mTalon.setSelectedSensorPosition(0, 0, 10);                
               //  DriverStation.reportError("Elevator SystemState: " + mSystemState, false);
             }
         }
@@ -173,7 +173,7 @@ public class Elevator extends Subsystem {
         
         private SystemState handleCalibratingDown() {
             if (mStateChanged) {
-                mTalon.set(ControlMode.PercentOutput, -0.3);
+                mTalon.set(ControlMode.PercentOutput, -0.4);
             }
     		mTalon.setSelectedSensorPosition(0, 0, 0);
     		return defaultStateTransfer();
@@ -181,7 +181,7 @@ public class Elevator extends Subsystem {
 
 		private SystemState handleCalibratingUp() {
             if (mStateChanged) {
-                mTalon.set(ControlMode.PercentOutput, 0.5);
+                mTalon.set(ControlMode.PercentOutput, 0.8);
             }
     		mTalon.setSelectedSensorPosition(0, 0, 0);
     		return defaultStateTransfer();
@@ -217,16 +217,17 @@ public class Elevator extends Subsystem {
     private SystemState handleElevatorTracking() {
     		int nextPos; 
     	
-	    	if (mWantedPosition > 0.05) {
+	    	if (mWantedPosition > 50) {
                 nextPos = (int)(mWantedPosition); //Constants.kElevatorTopEncoderValue); 
-	    	} else if (mWantedPosition < -0.05)  {
+	    	} else if (mWantedPosition < 50)  {
 	    		//int curPos = mTalon.getSelectedSensorPosition(0);
 	    		nextPos = (int)(mWantedPosition); //Constants.kElevatorBottomEncoderValue);	    		
 	    	} else {
                 nextPos = 0;
                 mWantedPosition = 0;
             }
-            System.out.println("Pos:" + mWantedPosition);
+            int curPos = mTalon.getSelectedSensorPosition(0);
+            System.out.println("Pos:" + mWantedPosition + ", EncVal: " + curPos);
 
     		//if (checkRevSwitch()) {
             //    if (nextPos < -1 * (int)Constants.kElevatorBottomEncoderValue) {
@@ -234,19 +235,21 @@ public class Elevator extends Subsystem {
             //    }
     		//}
             mNextEncPos = mWantedPosition;
-            //mTalon.set(ControlMode.Position, nextPos);
-            mTalon.set(ControlMode.PercentOutput, mWantedPosition);
+            mTalon.set(ControlMode.Position, nextPos);
+            //mTalon.set(ControlMode.PercentOutput, mWantedPosition);
 
-	    	return SystemState.ELEVATORTRACKING; //defaultStateTransfer();
+	    	return defaultStateTransfer();
     }
 
     public synchronized void setWantedPosition(double position) {
-    	if (mWantedPosition > 0) {
+        /*
+        if (mWantedPosition > 0) {
     		mNextEncPos = (int)(position*Constants.kElevatorTopEncoderValue); 
     	} else {
     		//int curPos = mTalon.getSelectedSensorPosition(0);
     		mNextEncPos = (int)(position*Constants.kElevatorBottomEncoderValue);	    		
-    	} 
+        }
+        */ 
         mWantedPosition = position;
     }
 
@@ -279,13 +282,14 @@ public class Elevator extends Subsystem {
     */
     @Override
     public void outputToSmartDashboard() {
-        SmartDashboard.putNumber("ElevSysState", (double)mSystemState.ordinal());
-        SmartDashboard.putNumber("ElevWantState", (double)mWantedState.ordinal());
+        SmartDashboard.putString("ElevSysState", mSystemState.name()); // .ordinal());
+        SmartDashboard.putString("ElevWantState", mWantedState.name());
+        //SmartDashboard.putNumber("ElevWantState", (double)mWantedState.ordinal());
         SmartDashboard.putNumber("ElevWantPos", mWantedPosition);
-        SmartDashboard.putNumber("ElevCurPos", mNextEncPos); //mTalon.getSelectedSensorPosition(0));
+        SmartDashboard.putNumber("ElevCurPos", mTalon.getSelectedSensorPosition(0));
         SmartDashboard.putNumber("ElevQuadPos", mTalon.getSensorCollection().getQuadraturePosition());
-        SmartDashboard.putBoolean("ElevRevSw", mTalon.getSensorCollection().isRevLimitSwitchClosed());
-        SmartDashboard.putBoolean("ElevLastRevSw", mRevSwitchSet);
+        //SmartDashboard.putBoolean("ElevRevSw", mTalon.getSensorCollection().isRevLimitSwitchClosed());
+        //SmartDashboard.putBoolean("ElevLastRevSw", mRevSwitchSet);
     }
 
     @Override

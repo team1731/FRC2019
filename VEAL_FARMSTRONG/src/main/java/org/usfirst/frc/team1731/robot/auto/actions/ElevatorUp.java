@@ -34,7 +34,7 @@ public class ElevatorUp implements Action {
 
     @Override
     public void start() {
-    	mSuperstructure.setWantedElevatorPosition(DESIRED_POSITION);
+    	mSuperstructure.setWantedElevatorPosition(0); //DESIRED_POSITION);
     	//mElevator.setWantedPosition(DESIRED_POSITION);
     }
 }

@@ -606,17 +606,17 @@ public class Robot extends IterativeRobot {
             boolean fishingPoleExtend = mControlBoard.getFishingPoleExtend();
             boolean fishingPoleRetract =mControlBoard.getFishingPoleRetract();
             
-            //if (mControlBoard.getElevatorButton()) {  Lydia doesn't want to hold the button
+            if (mControlBoard.getElevatorButton()) {
 //                if (overTheTop) {
 //                    mSuperstructure.setOverTheTop(true);
 //                }
 //                else {
 //                    mSuperstructure.setOverTheTop(false);
 //                }
-                mSuperstructure.setWantedElevatorPosition(-1 * mControlBoard.getElevatorControl());
-            //} else {
-            //    mSuperstructure.setWantedElevatorPosition(0);
-            //}
+                mSuperstructure.setWantedElevatorPosition(500);
+            } else {
+                mSuperstructure.setWantedElevatorPosition(0);
+            }
 
             if (climbUp) {
             	mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
@@ -638,12 +638,15 @@ public class Robot extends IterativeRobot {
             	
             if (flipUp) {
             	//_24vSolenoid.set(true);
-                mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_UP);
+                //mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_UP);
+                mSuperstructure.setWantedIntakeOutput(1.0);
             } else if (flipDown) {
-                mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_DOWN);
+                //mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_DOWN);
+                mSuperstructure.setWantedIntakeOutput(-1.0);
             } else {
             	//_24vSolenoid.set(false);
-                mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_NONE);
+                //mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_NONE);
+                mSuperstructure.setWantedIntakeOutput(0);
             }
             
             if (fishingPoleUp) {
@@ -756,6 +759,8 @@ public class Robot extends IterativeRobot {
         //SmartDashboard.putBoolean("camera_connected", mVisionServer.isConnected());
         String autoCodes = SmartDashboard.getString("AutoCodes", "3 7 2 15");
         SmartDashboard.putString("AutoCodesReceived", autoCodes);
+        SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
+        SmartDashboard.putBoolean("Cal Up", mControlBoard.getCalibrateUp());
         ConnectionMonitor.getInstance().setLastPacketTime(Timer.getFPGATimestamp());
     }
 }
