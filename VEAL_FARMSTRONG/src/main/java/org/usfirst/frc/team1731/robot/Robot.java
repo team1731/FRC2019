@@ -605,6 +605,9 @@ public class Robot extends IterativeRobot {
             boolean fishingPoleDown = mControlBoard.getFishingPoleDown();
             boolean fishingPoleExtend = mControlBoard.getFishingPoleExtend();
             boolean fishingPoleRetract =mControlBoard.getFishingPoleRetract();
+
+            boolean pickupHatch =mControlBoard.getPickupPanel();
+            boolean eject =mControlBoard.getShootPanel();
             
             if (mControlBoard.getElevatorButton()) {
 //                if (overTheTop) {
@@ -631,21 +634,25 @@ public class Robot extends IterativeRobot {
             } else if (calibrateUp) {
             	mSuperstructure.setWantedState(Superstructure.WantedState.CALIBRATINGUP);
             } else if (pickUp) {
-            	mSuperstructure.setWantedState(Superstructure.WantedState.AUTOINTAKING);
+                mSuperstructure.setWantedState(Superstructure.WantedState.AUTOINTAKING);
+            } else if (eject) {
+                mSuperstructure.setWantedState(Superstructure.WantedState.EJECTING);
+            } else if (pickupHatch) {
+                mSuperstructure.setWantedState(Superstructure.WantedState.HATCH_CAPTURED);          
             } else {
             	mSuperstructure.setWantedState(Superstructure.WantedState.ELEVATOR_TRACKING);
             }
             	
             if (flipUp) {
             	//_24vSolenoid.set(true);
-                //mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_UP);
-                mSuperstructure.setWantedIntakeOutput(1.0);
+                mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_UP);
+                //mSuperstructure.setWantedIntakeOutput(1.0);
             } else if (flipDown) {
-                //mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_DOWN);
-                mSuperstructure.setWantedIntakeOutput(-1.0);
+                mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_DOWN);
+                //mSuperstructure.setWantedIntakeOutput(-1.0);
             } else {
             	//_24vSolenoid.set(false);
-                //mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_NONE);
+                mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_NONE);
                 mSuperstructure.setWantedIntakeOutput(0);
             }
             

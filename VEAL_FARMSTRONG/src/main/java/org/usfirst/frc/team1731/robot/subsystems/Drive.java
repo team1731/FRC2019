@@ -93,8 +93,8 @@ public class Drive extends Subsystem {
 
     // Hardware
     private final TalonSRX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
-    private final Solenoid mShifter1;
-    private final Solenoid mShifter2;
+   // private final Solenoid mShifter1;
+   // private final Solenoid mShifter2;
     private final NavX mNavXBoard;
 
     // Controllers
@@ -228,8 +228,8 @@ public class Drive extends Subsystem {
        // mRightMaster.SetVelocityMeasurementWindow(32);
         mRightMaster.configVelocityMeasurementWindow(32, Constants.kTimeoutMs);  // cheesygutys had 32
 
-        mShifter1 = Constants.makeSolenoidForId(Constants.kShifterSolenoidId1);
-        mShifter2 = Constants.makeSolenoidForId(Constants.kShifterSolenoidId2);
+     //   mShifter1 = Constants.makeSolenoidForId(Constants.kShifterSolenoidId1);
+      //  mShifter2 = Constants.makeSolenoidForId(Constants.kShifterSolenoidId2);
 
         reloadGains();
 
@@ -288,8 +288,8 @@ public class Drive extends Subsystem {
     public synchronized void setHighGear(boolean wantsHighGear) {
         if (wantsHighGear != mIsHighGear) {
             mIsHighGear = wantsHighGear;
-            mShifter1.set(wantsHighGear);
-            mShifter2.set(!wantsHighGear);
+          //  mShifter1.set(wantsHighGear);
+          //  mShifter2.set(!wantsHighGear);
         }
     }
 
