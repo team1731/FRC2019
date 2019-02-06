@@ -2,52 +2,38 @@ package org.usfirst.frc.team1731.robot.subsystems;
 
 import java.util.Arrays;
 
+import org.usfirst.frc.team1731.lib.util.MovingAverage;
 import org.usfirst.frc.team1731.lib.util.Util;
 import org.usfirst.frc.team1731.lib.util.drivers.TalonSRXFactory;
 import org.usfirst.frc.team1731.robot.Constants;
 import org.usfirst.frc.team1731.robot.loops.Loop;
 import org.usfirst.frc.team1731.robot.loops.Looper;
-
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-
-//import com.ctre.PigeonImu.StatusFrameRate;
-
-// com.ctre.PigeonImu.StatusFrameRate;
+import org.usfirst.frc.team1731.robot.subsystems.Elevator.SystemState;
+import org.usfirst.frc.team1731.robot.subsystems.Elevator.WantedState;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
-import com.ctre.phoenix.ParamEnum;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Talon;
 
+//import com.ctre.CANTalon;
 
-//import com.ctre.phoenix.motorcontrol.StatusFrameRate;
-//import com.ctre.phoenix.motorcontrol.VelocityMeasWindow;
-
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 /**
- * 
- * 1731 this system controls the elevator
+ * 1731 the intake picks up cubes and ejects them
  * 
  * @see Subsystem.java
  */
-
-//stemrobotics.cs.pdx.edu/sites/default/files/WPILib_programming.pdf
-
 @SuppressWarnings("unused")
 public class Intake extends Subsystem {
-
     private static Intake sInstance = null;
-    
+
     public static Intake getInstance() {
         if (sInstance == null) {
             sInstance = new Intake();
@@ -56,87 +42,54 @@ public class Intake extends Subsystem {
     }
 
     private final TalonSRX mTalon;
-    //private final Solenoid mOverTop1;
-    //private final Solenoid mOverTop2;
-    
-    public Intake() {
+    //private AnalogInput mIRSensor1;
+    //private AnalogInput mIRSensor2;
+
+    private Intake() {
         mTalon = new TalonSRX(Constants.kIntakeTalon);
-        //mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-        mTalon.set(ControlMode.PercentOutput, 0); //Position, 0);
-        mTalon.configVelocityMeasurementWindow(10, 0);
-        mTalon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
-        mTalon.selectProfileSlot(0, 0);
-        mTalon.config_kP(Constants.SlotIdx, Constants.kElevatorTalonKP, Constants.kTimeoutMs );
-        mTalon.config_kI(Constants.SlotIdx, Constants.kElevatorTalonKI, Constants.kTimeoutMs );
-        mTalon.config_kD(Constants.SlotIdx, Constants.kElevatorTalonKD, Constants.kTimeoutMs);
-        mTalon.config_kF(Constants.SlotIdx, Constants.kElevatorTalonKF, Constants.kTimeoutMs );
-        mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
-        mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
-        mTalon.configClosedloopRamp(0, Constants.kTimeoutMs);
-        mTalon.setSelectedSensorPosition(0, 0, 10); //-1793, 0, 10);
-        mTalon.overrideLimitSwitchesEnable(true);
-        
-        /* choose to ensure sensor is positive when output is positive */
-        mTalon.setSensorPhase(Constants.kSensorPhase);
-
-        /* choose based on what direction you want forward/positive to be.
-         * This does not affect sensor phase. */ 
         mTalon.setInverted(true); //Constants.kMotorInvert);
-
-        /* set the peak and nominal outputs, 12V means full */
-        mTalon.configNominalOutputForward(.5, Constants.kTimeoutMs);
-        mTalon.configNominalOutputReverse(.9, Constants.kTimeoutMs);
-        mTalon.configPeakOutputForward(1.0, Constants.kTimeoutMs);
-        mTalon.configPeakOutputReverse(-1.0, Constants.kTimeoutMs);
-        /*
-         * set the allowable closed-loop error, Closed-Loop output will be
-         * neutral within this range. See Table in Section 17.2.1 for native
-         * units per rotation.
-         */
-        mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 50, Constants.kTimeoutMs);
-        mTalon.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, Constants.kTimeoutMs);
-
-        //mOverTop1 = Constants.makeSolenoidForId(Constants.kOverTheTopSolenoid1);
-        //mOverTop2 = Constants.makeSolenoidForId(Constants.kOverTheTopSolenoid2);
+    	//mIRSensor1 = new AnalogInput(1);
+    	//mIRSensor2 = new AnalogInput(4);
     }
-    	
+
+    public boolean checkSystem() {
+
+    	return true;
+    }
+
+	public void setIdle() {
+		// TODO Auto-generated method stub
+	}
+  	
     public enum SystemState {	
         IDLE,   // stop all motors
-        INTAKETRACKING, // moving
-        INTAKING,
         SPITTING,
+        INTAKING,
     }
 
     public enum WantedState {
     	IDLE,   
-        INTAKETRACKING, // moving
+        SPITTING, // moving
         INTAKING,
-        SPITTING,
     }
 
     private SystemState mSystemState = SystemState.IDLE;
     private WantedState mWantedState = WantedState.IDLE;
-
-    private double mCurrentStateStartTime;
-    private double mWantedPosition = 0;
-    private double mNextEncPos = 0;
+    
+    //private double mCurrentStateStartTime;
+  //  private double mWantedPosition = 0;
     private boolean mStateChanged = false;
-    private boolean mRevSwitchSet = false;
-    //private boolean mIsOverTop = false;
-
-
 
     private Loop mLoop = new Loop() {
         @Override
         public void onStart(double timestamp) {
             stop();
             synchronized (Intake.this) {
-                mSystemState = SystemState.INTAKETRACKING;
+                mSystemState = SystemState.IDLE;
                 mStateChanged = true;
-                mWantedPosition = 0;
-                mCurrentStateStartTime = timestamp;
-                mTalon.setSelectedSensorPosition(0, 0, 10);                
-              //  DriverStation.reportError("Intake SystemState: " + mSystemState, false);
+              //  mWantedPosition = 0;
+               // mCurrentStateStartTime = timestamp;               
+              //  DriverStation.reportError("Elevator SystemState: " + mSystemState, false);
             }
         }
 
@@ -149,23 +102,20 @@ public class Intake extends Subsystem {
                     case IDLE:
                         newState = handleIdle();
                         break;
-                    case INTAKETRACKING:
-                        newState = handleIntakeTracking();
+                    case SPITTING:
+                        newState = handleSpitting();
                         break;
                     case INTAKING:
-                        newState = handleCalibratingUp();
-                        break;
-                    case SPITTING:
-                        newState = handleCalibratingDown();
+                        newState = handleIntaking();
                         break;
                     default:
                         newState = SystemState.IDLE;                    
                 }
 
                 if (newState != mSystemState) {
-                    System.out.println("Intake state " + mSystemState + " to " + newState);
+                    //System.out.println("Elevator state " + mSystemState + " to " + newState);
                     mSystemState = newState;
-                    mCurrentStateStartTime = timestamp;
+                    //mCurrentStateStartTime = timestamp;
                     //DriverStation.reportWarning("Intake SystemState: " + mSystemState, false);
                     mStateChanged = true;
                 } else {
@@ -174,19 +124,17 @@ public class Intake extends Subsystem {
             }
         }
         
-        private SystemState handleCalibratingDown() {
+        private SystemState handleSpitting() {
             if (mStateChanged) {
-                mTalon.set(ControlMode.PercentOutput, -0.4);
+                mTalon.set(ControlMode.PercentOutput, 1);
             }
-    		mTalon.setSelectedSensorPosition(0, 0, 0);
     		return defaultStateTransfer();
 		}
 
-		private SystemState handleCalibratingUp() {
+		private SystemState handleIntaking() {
             if (mStateChanged) {
-                mTalon.set(ControlMode.PercentOutput, 0.8);
+                mTalon.set(ControlMode.PercentOutput, -1);
             }
-    		mTalon.setSelectedSensorPosition(0, 0, 0);
     		return defaultStateTransfer();
 		}
 
@@ -198,115 +146,53 @@ public class Intake extends Subsystem {
 
     private SystemState defaultStateTransfer() {
         switch (mWantedState) {
-            case INTAKETRACKING:
-                return SystemState.INTAKETRACKING;
-            case INTAKING:
+        	case SPITTING:
+        		return SystemState.SPITTING;       
+        	case INTAKING:
                 return SystemState.INTAKING;
-            case SPITTING:
-                return SystemState.SPITTING;
 
+ 
             default:
                 return SystemState.IDLE;
         }
     }
     
     private SystemState handleIdle() {
+        //setOpenLoop(0.0f);
+        //if motor is not off, turn motor off
         if (mStateChanged) {
             mTalon.set(ControlMode.PercentOutput, 0);
         }
-        return defaultStateTransfer();
+		return defaultStateTransfer();
     }
 
-    private SystemState handleIntakeTracking() {
-    		int nextPos; 
-    	
-	    	if (mWantedPosition > .05) {
-                nextPos = (int)(mWantedPosition); //Constants.kIntakeTopEncoderValue); 
-	    	} else if (mWantedPosition < -.05)  {
-	    		//int curPos = mTalon.getSelectedSensorPosition(0);
-	    		nextPos = (int)(mWantedPosition); //Constants.kIntakeBottomEncoderValue);	    		
-	    	} else {
-                nextPos = 0;
-                mWantedPosition = 0;
-            }
-            int curPos = mTalon.getSelectedSensorPosition(0);
-            System.out.println("Pos:" + mWantedPosition + ", EncVal: " + curPos);
 
-            mNextEncPos = mWantedPosition;
-            //mTalon.set(ControlMode.Position, nextPos);
-            mTalon.set(ControlMode.PercentOutput, mWantedPosition);
 
-            mWantedState = WantedState.INTAKETRACKING;
-	    	return defaultStateTransfer();
-    }
 
-    public synchronized void setWantedPosition(double position) {
-        /*
-        if (mWantedPosition > 0) {
-    		mNextEncPos = (int)(position*Constants.kIntakeTopEncoderValue); 
-    	} else {
-    		//int curPos = mTalon.getSelectedSensorPosition(0);
-    		mNextEncPos = (int)(position*Constants.kIntakeBottomEncoderValue);	    		
-        }
-        */ 
-        mWantedPosition = position;
-    }
-
-    public synchronized double getCurrentPosition(boolean up) {
-    	if (up) {
-    		return mTalon.getSelectedSensorPosition(0);
-    	} else {
-    		return mTalon.getSelectedSensorPosition(0);
-    	}
-    }
-    
     public synchronized void setWantedState(WantedState state) {
         if (state != mWantedState) {
             mWantedState = state;
             //DriverStation.reportError("Intake WantedState: " + mWantedState, false);
         }
     }
-
+    
     @Override
     public void outputToSmartDashboard() {
-        SmartDashboard.putString("IntakeSysState", mSystemState.name()); // .ordinal());
-        SmartDashboard.putString("IntakeWantState", mWantedState.name());
-        //SmartDashboard.putNumber("ElevWantState", (double)mWantedState.ordinal());
-        SmartDashboard.putNumber("IntakeWantPos", mWantedPosition);
-        SmartDashboard.putNumber("IntakeCurPos", mTalon.getSelectedSensorPosition(0));
-        SmartDashboard.putNumber("IntakeQuadPos", mTalon.getSensorCollection().getQuadraturePosition());
-        //SmartDashboard.putBoolean("ElevRevSw", mTalon.getSensorCollection().isRevLimitSwitchClosed());
-        //SmartDashboard.putBoolean("ElevLastRevSw", mRevSwitchSet);
+    	//SmartDashboard.putNumber("IRSensor1", mIRSensor1.getAverageValue());
+    	//SmartDashboard.putNumber("IRSensor2", mIRSensor2.getAverageValue());
+     /*   SmartDashboard.putNumber("ElevWantPos", mWantedState);
+        SmartDashboard.putNumber("ElevCurPos", mTalon.getSelectedSensorPosition(0));
+        SmartDashboard.putNumber("ElevQuadPos", mTalon.getSensorCollection().getQuadraturePosition());
+        SmartDashboard.putBoolean("ElevRevSw", mTalon.getSensorCollection().isRevLimitSwitchClosed());
+        */
     }
-
+    
     @Override
     public void stop() {
         // mVictor.set(0);
         setWantedState(WantedState.IDLE);
     }
 
-    private boolean checkRevSwitch() {
-        boolean revSwitch = mTalon.getSensorCollection().isRevLimitSwitchClosed();
-        if (revSwitch) {
-            if (!mRevSwitchSet) {
-                mTalon.setSelectedSensorPosition(-1 * (int)Constants.kElevatorBottomEncoderValue, 0, 10);
-                mRevSwitchSet = true;
-            }
-        } else {
-            mRevSwitchSet = false;
-        }
-        
-        return revSwitch;
-    }
-    
-    public boolean atBottom() {
-    	return Math.abs(mTalon.getSelectedSensorPosition(0)+Constants.kElevatorBottomEncoderValue)<100;
-    }
-
-    public boolean atDesired() {
-    	return Math.abs(mTalon.getSelectedSensorPosition(0) - mNextEncPos)<100;
-    }
-    
     @Override
     public void zeroSensors() {
     }
@@ -315,22 +201,10 @@ public class Intake extends Subsystem {
     public void registerEnabledLoops(Looper in) {
         in.register(mLoop);
     }
-
-    public boolean checkSystem() {
-        System.out.println("Testing Intake.-----------------------------------");
-        return false;
-    }
-
-	public boolean atTop() {
-		return Math.abs(mTalon.getSelectedSensorPosition(0)-Constants.kElevatorTopEncoderValue)<100;
-    }
     
-    public boolean gotCube() {
-        return false; 
-   }
-
-   public void setIdle() {
-    // TODO Auto-generated method stub
-   }
+    //public boolean gotCube() {
+    //	 return true; //((mIRSensor1.getAverageValue() > 300) && (mIRSensor2.getAverageValue() > 300)); 
+    //}
 
 }
+    

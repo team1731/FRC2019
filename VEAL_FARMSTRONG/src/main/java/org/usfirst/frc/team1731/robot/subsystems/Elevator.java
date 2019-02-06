@@ -227,7 +227,7 @@ public class Elevator extends Subsystem {
                 mWantedPosition = 0;
             }
             int curPos = mTalon.getSelectedSensorPosition(0);
-            System.out.println("Pos:" + mWantedPosition + ", EncVal: " + curPos);
+     //       System.out.println("Pos:" + mWantedPosition + ", EncVal: " + curPos);
 
     		//if (checkRevSwitch()) {
             //    if (nextPos < -1 * (int)Constants.kElevatorBottomEncoderValue) {

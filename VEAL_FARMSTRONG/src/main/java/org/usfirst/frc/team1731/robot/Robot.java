@@ -607,7 +607,9 @@ public class Robot extends IterativeRobot {
             boolean fishingPoleRetract =mControlBoard.getFishingPoleRetract();
 
             boolean pickupHatch =mControlBoard.getPickupPanel();
-            boolean eject =mControlBoard.getShootPanel();
+            boolean ejectHatch =mControlBoard.getShootPanel();
+            boolean pickupCargo =mControlBoard.getPickupBall();
+            boolean ejectCargo =mControlBoard.getShootBall();
             
             if (mControlBoard.getElevatorButton()) {
 //                if (overTheTop) {
@@ -635,10 +637,14 @@ public class Robot extends IterativeRobot {
             	mSuperstructure.setWantedState(Superstructure.WantedState.CALIBRATINGUP);
             } else if (pickUp) {
                 mSuperstructure.setWantedState(Superstructure.WantedState.AUTOINTAKING);
-            } else if (eject) {
-                mSuperstructure.setWantedState(Superstructure.WantedState.EJECTING);
+            } else if (ejectHatch) {
+                mSuperstructure.setWantedState(Superstructure.WantedState.EJECTING_HATCH);
             } else if (pickupHatch) {
-                mSuperstructure.setWantedState(Superstructure.WantedState.HATCH_CAPTURED);          
+                mSuperstructure.setWantedState(Superstructure.WantedState.HATCH_CAPTURED); 
+            } else if (ejectCargo) {
+                mSuperstructure.setWantedState(Superstructure.WantedState.EJECTING_CARGO);
+            } else if (pickupCargo) {
+                mSuperstructure.setWantedState(Superstructure.WantedState.CARGO_CAPTURED);
             } else {
             	mSuperstructure.setWantedState(Superstructure.WantedState.ELEVATOR_TRACKING);
             }
@@ -653,7 +659,7 @@ public class Robot extends IterativeRobot {
             } else {
             	//_24vSolenoid.set(false);
                 mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_NONE);
-                mSuperstructure.setWantedIntakeOutput(0);
+                //mSuperstructure.setWantedIntakeOutput(0);
             }
             
             if (fishingPoleUp) {

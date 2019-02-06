@@ -100,9 +100,10 @@ public class Superstructure extends Subsystem {
         RETURNINGFROMINTAKE,
         RETURNING_HOME,
         ELEVATOR_TRACKING,
-   //     CARGO_CAPTURED,
-   //     CAPTURING_CARGO,
-        EJECTING,
+        CARGO_CAPTURED,
+        CAPTURING_CARGO,
+        EJECTING_HATCH,
+        EJECTING_CARGO,
         CAPTURING_HATCH,
         HATCH_CAPTURED
     };
@@ -121,7 +122,9 @@ public class Superstructure extends Subsystem {
         ELEVATOR_TRACKING,
  //       CARGO_CAPTURED,
         HATCH_CAPTURED,
-        EJECTING
+        EJECTING_CARGO,
+        EJECTING_HATCH,
+        CARGO_CAPTURED
     }
 
     private SystemState mSystemState = SystemState.IDLE;
@@ -196,9 +199,9 @@ public class Superstructure extends Subsystem {
                 case RETURNING_HOME:
                     newState = handleReturningHome();
                     break;
-      //          case CARGO_CAPTURED:
-      //              newState = handleCargoCaptured();
-      //              break;
+                case CARGO_CAPTURED:
+                    newState = handleCargoCapture();
+                    break;
       //          case CAPTURING_CARGO:
       //              newState = handleCapturingCargo();
       //              break;
@@ -208,8 +211,11 @@ public class Superstructure extends Subsystem {
        //         case CAPTURING_HATCH:
        //             newState = handleCapturingHatch();
        //             break;
-                case EJECTING:
-                    newState = handleEjecting();
+                case EJECTING_HATCH:
+                    newState = handleEjectingHatch();
+                    break;
+                case EJECTING_CARGO:
+                    newState = handleEjectingCargo();
                     break;
                 default:
                     newState = SystemState.IDLE;
@@ -227,11 +233,12 @@ public class Superstructure extends Subsystem {
             }
         }
 
-        private SystemState handleEjecting() {
-            mBeakSwinger.set(DoubleSolenoid.Value.kForward);
+        private SystemState handleEjectingCargo() {
+            mBeakSwinger.set(DoubleSolenoid.Value.kReverse);
             mBeakLips.set(DoubleSolenoid.Value.kReverse);
             mTopRoller.set(DoubleSolenoid.Value.kReverse);
-            mMustache.set(DoubleSolenoid.Value.kForward);
+            mMustache.set(DoubleSolenoid.Value.kReverse);
+            mIntake.setWantedState(Intake.WantedState.SPITTING);
         	
             switch (mWantedState) {
             case CLIMBINGUP:
@@ -254,8 +261,91 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;
+            default:
+                return SystemState.IDLE;
+            }
+        }
+
+        private SystemState handleCargoCapture() {
+            mBeakSwinger.set(DoubleSolenoid.Value.kReverse);
+            mBeakLips.set(DoubleSolenoid.Value.kReverse);
+            mTopRoller.set(DoubleSolenoid.Value.kForward);
+            mMustache.set(DoubleSolenoid.Value.kReverse);
+            mIntake.setWantedState(Intake.WantedState.INTAKING);
+        	
+            switch (mWantedState) {
+            case CLIMBINGUP:
+                return SystemState.CLIMBINGUP;
+            case CLIMBINGDOWN:
+                return SystemState.CLIMBINGDOWN;
+            case AUTOINTAKING:
+                return SystemState.WAITING_FOR_LOW_POSITION;
+            case INTAKING:
+                return SystemState.WAITING_FOR_POWERCUBE_INTAKE;
+            case SPITTING:
+                return SystemState.SPITTING;
+            case CALIBRATINGDOWN:
+                return SystemState.CALIBRATINGDOWN;
+            case CALIBRATINGUP:
+                return SystemState.CALIBRATINGUP;
+            case OVERTHETOP:
+                return SystemState.WAITING_FOR_HIGH_POSITION;
+            case ELEVATOR_TRACKING:
+                 mTopRoller.set(DoubleSolenoid.Value.kReverse);
+                return SystemState.ELEVATOR_TRACKING;
+            case HATCH_CAPTURED:
+                return SystemState.HATCH_CAPTURED;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;
+            default:
+                return SystemState.IDLE;
+            }
+        }
+
+        private SystemState handleEjectingHatch() {
+            mBeakSwinger.set(DoubleSolenoid.Value.kForward);
+            mBeakLips.set(DoubleSolenoid.Value.kReverse);
+            mTopRoller.set(DoubleSolenoid.Value.kReverse);
+            mMustache.set(DoubleSolenoid.Value.kForward);
+
+        	
+            switch (mWantedState) {
+            case CLIMBINGUP:
+                return SystemState.CLIMBINGUP;
+            case CLIMBINGDOWN:
+                return SystemState.CLIMBINGDOWN;
+            case AUTOINTAKING:
+                return SystemState.WAITING_FOR_LOW_POSITION;
+            case INTAKING:
+                return SystemState.WAITING_FOR_POWERCUBE_INTAKE;
+            case SPITTING:
+                return SystemState.SPITTING;
+            case CALIBRATINGDOWN:
+                return SystemState.CALIBRATINGDOWN;
+            case CALIBRATINGUP:
+                return SystemState.CALIBRATINGUP;
+            case OVERTHETOP:
+                return SystemState.WAITING_FOR_HIGH_POSITION;
+            case ELEVATOR_TRACKING:
+                return SystemState.ELEVATOR_TRACKING;
+            case HATCH_CAPTURED:
+                return SystemState.HATCH_CAPTURED;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;
             default:
                 return SystemState.IDLE;
             }
@@ -287,10 +377,15 @@ public class Superstructure extends Subsystem {
                 return SystemState.WAITING_FOR_HIGH_POSITION;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
             case ELEVATOR_TRACKING:
+                mBeakLips.set(DoubleSolenoid.Value.kForward);
                 return SystemState.ELEVATOR_TRACKING;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;
             default:
                 return SystemState.IDLE;
             }
@@ -301,8 +396,8 @@ public class Superstructure extends Subsystem {
         	mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
             mIntake.setWantedState(Intake.WantedState.IDLE);
             mClimber.setWantedState(Climber.WantedState.IDLE);
-            mBeakLips.set(DoubleSolenoid.Value.kForward);
             mMustache.set(DoubleSolenoid.Value.kReverse);
+            //mIntake.setWantedState(Intake.WantedState.IDLE);
         	
             switch (mWantedState) {
             case CLIMBINGUP:
@@ -325,8 +420,12 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
              case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;
             default:
                 return SystemState.IDLE;
             }
@@ -359,8 +458,12 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;    
             default:
                 return SystemState.IDLE;
             }
@@ -392,8 +495,12 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;
             default:
                 return SystemState.IDLE;
             }
@@ -430,8 +537,12 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;
             default:
                 return SystemState.IDLE;
             }
@@ -463,8 +574,12 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+             case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;    
             default:
                 return SystemState.IDLE;
             }
@@ -494,8 +609,12 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;
             default:
                 return SystemState.IDLE;
             }
@@ -525,8 +644,12 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;    
             default:
                 return SystemState.IDLE;
             }
@@ -555,8 +678,12 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;
             default:
                 return SystemState.IDLE;
             }
@@ -586,8 +713,12 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;    
             default:
                 return SystemState.IDLE;
             }
@@ -603,9 +734,9 @@ public class Superstructure extends Subsystem {
             case CLIMBINGDOWN:
                 return SystemState.CLIMBINGDOWN;
             case AUTOINTAKING:
-            	if (mIntake.gotCube()) {
-            		return SystemState.RETURNING_HOME;
-            	}
+            	//if (mIntake.gotCube()) {
+            	//	return SystemState.RETURNING_HOME;
+            	//}
                 return SystemState.WAITING_FOR_POWERCUBE_INTAKE;
             case INTAKING:
                 return SystemState.WAITING_FOR_POWERCUBE_INTAKE;
@@ -621,8 +752,12 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;    
             default:
                 return SystemState.IDLE;
             }
@@ -664,8 +799,12 @@ public class Superstructure extends Subsystem {
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
-            case EJECTING:
-                return SystemState.EJECTING;   
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;      
             default:
                 return SystemState.IDLE;
             }
@@ -681,7 +820,6 @@ public class Superstructure extends Subsystem {
     private SystemState handleIdle(boolean stateChanged) {
         if (stateChanged) {
             stop();
-            mBeakLips.set(DoubleSolenoid.Value.kReverse);
             mMustache.set(DoubleSolenoid.Value.kReverse);
             mLED.setWantedState(LED.WantedState.OFF);
             mElevator.setWantedState(Elevator.WantedState.IDLE);
@@ -711,8 +849,12 @@ public class Superstructure extends Subsystem {
             return SystemState.ELEVATOR_TRACKING;
         case HATCH_CAPTURED:
             return SystemState.HATCH_CAPTURED;
-        case EJECTING:
-            return SystemState.EJECTING;   
+        case EJECTING_HATCH:
+            return SystemState.EJECTING_HATCH; 
+        case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+        case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;     
         default:
             return SystemState.IDLE;
         }
@@ -776,11 +918,6 @@ public class Superstructure extends Subsystem {
 
     public void setWantedElevatorPosition(double position) {
         mElevatorJoystickPosition = position;
-    }
-
-    public void setWantedIntakeOutput(double output) {
-        mIntakeOutput = output;
-        mIntake.setWantedPosition(output);
     }
 
     public void setOverrideCompressor(boolean force_off) {
