@@ -392,7 +392,7 @@ public class Superstructure extends Subsystem {
         }
 
         private SystemState handleElevatorTracking() {
-        	mElevator.setWantedPosition(mElevatorJoystickPosition);
+        	mElevator.setWantedPosition(Constants.kElevatorHomeEncoderValue);
         	mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
             mIntake.setWantedState(Intake.WantedState.IDLE);
             mClimber.setWantedState(Climber.WantedState.IDLE);
@@ -549,7 +549,7 @@ public class Superstructure extends Subsystem {
         }
 
 		private SystemState handleSpitting() {
-        	mElevator.setWantedPosition(mElevatorJoystickPosition);
+        	mElevator.setWantedPosition(Constants.kElevatorHomeEncoderValue);
         	mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
         	mIntake.setWantedState(Intake.WantedState.SPITTING);
         	

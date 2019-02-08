@@ -215,50 +215,33 @@ public class Elevator extends Subsystem {
     }
 
     private SystemState handleElevatorTracking() {
-    		int nextPos; 
+        if (mStateChanged) {
+            mTalon.set(ControlMode.Position, mWantedPosition);
+        }
     	
-	    	if (mWantedPosition > 50) {
-                nextPos = (int)(mWantedPosition); //Constants.kElevatorTopEncoderValue); 
-	    	} else if (mWantedPosition < 50)  {
-	    		//int curPos = mTalon.getSelectedSensorPosition(0);
-	    		nextPos = (int)(mWantedPosition); //Constants.kElevatorBottomEncoderValue);	    		
-	    	} else {
-                nextPos = 0;
-                mWantedPosition = 0;
-            }
-            int curPos = mTalon.getSelectedSensorPosition(0);
-     //       System.out.println("Pos:" + mWantedPosition + ", EncVal: " + curPos);
+        // int curPos = mTalon.getSelectedSensorPosition(0);
+        // System.out.println("Pos:" + mWantedPosition + ", EncVal: " + curPos);
 
     		//if (checkRevSwitch()) {
             //    if (nextPos < -1 * (int)Constants.kElevatorBottomEncoderValue) {
     		//        nextPos = -1 * (int)Constants.kElevatorBottomEncoderValue;
             //    }
     		//}
-            mNextEncPos = mWantedPosition;
-            mTalon.set(ControlMode.Position, nextPos);
-            //mTalon.set(ControlMode.PercentOutput, mWantedPosition);
 
-	    	return defaultStateTransfer();
+	    return defaultStateTransfer();
     }
 
-    public synchronized void setWantedPosition(double position) {
-        /*
-        if (mWantedPosition > 0) {
-    		mNextEncPos = (int)(position*Constants.kElevatorTopEncoderValue); 
-    	} else {
-    		//int curPos = mTalon.getSelectedSensorPosition(0);
-    		mNextEncPos = (int)(position*Constants.kElevatorBottomEncoderValue);	    		
+    public synchronized void setWantedPosition(int position) {
+        
+        if ((mWantedPosition > Constants.kElevatorBottomEncoderValue) && 
+                (mWantedPosition < Constants.kElevatorTopEncoderValue)) {
+            mNextEncPos = position;
+            mStateChanged = true;
         }
-        */ 
-        mWantedPosition = position;
     }
 
-    public synchronized double getCurrentPosition(boolean up) {
-    	if (up) {
-    		return mTalon.getSelectedSensorPosition(0) / Constants.kElevatorTopEncoderValue;
-    	} else {
-    		return mTalon.getSelectedSensorPosition(0) / Constants.kElevatorBottomEncoderValue;
-    	}
+    public synchronized int getCurrentPosition() {
+    	return mTalon.getSelectedSensorPosition(0);
     }
     
     public synchronized void setWantedState(WantedState state) {
@@ -267,19 +250,7 @@ public class Elevator extends Subsystem {
             //DriverStation.reportError("Elevator WantedState: " + mWantedState, false);
         }
     }
-    /*
-    public boolean isOverTop() {
-        return mIsOverTop;
-    }
 
-    public synchronized void setOverTop(boolean wantsOverTop) {
-        if (wantsOverTop != mIsOverTop) {
-            mIsOverTop = wantsOverTop;
-            mOverTop1.set(wantsOverTop);
-            mOverTop2.set(!wantsOverTop);
-        }
-    }
-    */
     @Override
     public void outputToSmartDashboard() {
         SmartDashboard.putString("ElevSysState", mSystemState.name()); // .ordinal());

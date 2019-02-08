@@ -20,7 +20,7 @@ public class ElevatorDown implements Action {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(mElevator.getCurrentPosition(true) - DESIRED_POSITION) < 0.05;
+        return Math.abs(mElevator.getCurrentPosition() - DESIRED_POSITION) < 0.05;
     }
 
     @Override
