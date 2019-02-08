@@ -147,13 +147,13 @@ public class Wrist extends Subsystem {
         @Override
         public void onLoop(double timestamp) {
    	
-        	synchronized (Elevator.this) {
+        	synchronized (Wrist.this) {
                 SystemState newState;
                 switch (mSystemState) {
                     case IDLE:
                         newState = handleIdle();
                         break;
-                    case ELEVATORTRACKING:
+                    case WRISTTRACKING:
                         newState = handleElevatorTracking();
                         break;
                     case CALIBRATINGUP:
@@ -202,8 +202,8 @@ public class Wrist extends Subsystem {
 
     private SystemState defaultStateTransfer() {
         switch (mWantedState) {
-            case ELEVATORTRACKING:
-                return SystemState.ELEVATORTRACKING;
+            case WRISTTRACKING:
+                return SystemState.WRISTTRACKING;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case CALIBRATINGDOWN:

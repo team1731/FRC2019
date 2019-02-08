@@ -27,6 +27,14 @@ public class Constants extends ConstantsBase {
     public static double kBoilerTargetTopHeight = 88.0;
     public static double kBoilerRadius = 7.5;
 
+    // Wrist parameters
+    public static int kWristTalon = 12;
+    public static int kWristKI = 12;
+    public static int kWristKD = 12;
+    public static int kWristTalonKF = 12;
+    public static int kWristTalonKP = 12;
+
+    
     // Shooter tuning parameters
     public static boolean kIsShooterTuning = false;
     public static double kShooterTuningRpmFloor = 2900;
