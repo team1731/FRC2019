@@ -235,7 +235,7 @@ public class Constants extends ConstantsBase {
 	public static final int kHopperVictor = 3;
 	
 	//Climber
-	public static int kClimberMasterId = 6;
+	public static int kClimberMasterId = 12;
 	public static int kClimberSlaveId = 16;
 	public static int kClimberContinuousCurrentLimitAmps = 30;
 	public static int kClimberPeakCurrentDurationMs = 200; //Ms

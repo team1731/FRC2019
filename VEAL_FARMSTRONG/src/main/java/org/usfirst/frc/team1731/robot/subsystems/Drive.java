@@ -192,7 +192,11 @@ public class Drive extends Subsystem {
         mLeftSlave.setInverted(false);
         //mLeftMaster.setStatusFrameRateMs(StatusFrameRate.Feedback, 5);
         mLeftMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
-        mLeftMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs); 
+        mLeftMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
+        mLeftSlave.set(ControlMode.Follower,Constants.kLeftDriveMasterId);
+
+ 
+ 
         mRightMaster = TalonSRXFactory.createDefaultTalon(Constants.kRightDriveMasterId);
 
        // mRightMaster.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
@@ -218,6 +222,7 @@ public class Drive extends Subsystem {
         //mRightMaster.setStatusFrameRateMs(StatusFrameRate.Feedback, 5);
         mRightMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
         mRightMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
+        mRightSlave.set(ControlMode.Follower,Constants.kRightDriveMasterId);
 
        // mLeftMaster.SetVelocityMeasurementPeriod(VelocityMeasurementPeriod.Period_10Ms);
         mLeftMaster.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, Constants.kTimeoutMs);

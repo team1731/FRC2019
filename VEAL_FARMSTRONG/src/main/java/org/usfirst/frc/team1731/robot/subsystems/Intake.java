@@ -126,14 +126,14 @@ public class Intake extends Subsystem {
         
         private SystemState handleSpitting() {
             if (mStateChanged) {
-                mTalon.set(ControlMode.PercentOutput, 1);
+                mTalon.set(ControlMode.PercentOutput, -1);
             }
     		return defaultStateTransfer();
 		}
 
 		private SystemState handleIntaking() {
             if (mStateChanged) {
-                mTalon.set(ControlMode.PercentOutput, -1);
+                mTalon.set(ControlMode.PercentOutput, 1);
             }
     		return defaultStateTransfer();
 		}
