@@ -122,13 +122,17 @@ public class Wrist extends Subsystem {
         private WristPositions(int pos){
             this.pos = pos;
         }
+
+        private int getPos(){
+            return pos;
+        }
     }
 
     private SystemState mSystemState = SystemState.IDLE;
     private WantedState mWantedState = WantedState.IDLE;
 
     private double mCurrentStateStartTime;
-    private WristPositions mWantedPosition = 0;
+    private WristPositions mWantedPosition = WristPositions.STARTINGPOSITION;
     private double mNextEncPos = 0;
     private boolean mStateChanged = false;
     private boolean mRevSwitchSet = false;
@@ -143,7 +147,7 @@ public class Wrist extends Subsystem {
             synchronized (Wrist.this) {
                 mSystemState = SystemState.IDLE;
                 mStateChanged = true;
-                mWantedPosition = 0;
+                mWantedPosition = WristPositions.STARTINGPOSITION;
                 mCurrentStateStartTime = timestamp;
                 mTalon.setSelectedSensorPosition(0, 0, 10);                
               //  DriverStation.reportError("Wrist SystemState: " + mSystemState, false);
@@ -230,14 +234,14 @@ public class Wrist extends Subsystem {
     private SystemState handleWristTracking() {
     		int nextPos; 
     	
-	    	if (mWantedPosition > 50) {
-                nextPos = (int)(mWantedPosition); //Constants.kWristTopEncoderValue); 
-	    	} else if (mWantedPosition < 50)  {
+	    	if (mWantedPosition.getPos() > 50) {
+                nextPos = mWantedPosition.getPos(); //Constants.kWristTopEncoderValue); 
+	    	} else if (mWantedPosition.getPos() < 50)  {
 	    		//int curPos = mTalon.getSelectedSensorPosition(0);
-	    		nextPos = (int)(mWantedPosition); //Constants.kWristBottomEncoderValue);	    		
+	    		nextPos = mWantedPosition.getPos(); //Constants.kWristBottomEncoderValue);	    		
 	    	} else {
                 nextPos = 0;
-                mWantedPosition = 0;
+                mWantedPosition = WristPositions.STARTINGPOSITION;
             }
             int curPos = mTalon.getSelectedSensorPosition(0);
      //       System.out.println("Pos:" + mWantedPosition + ", EncVal: " + curPos);
@@ -247,7 +251,7 @@ public class Wrist extends Subsystem {
     		//        nextPos = -1 * (int)Constants.kWristBottomEncoderValue;
             //    }
     		//}
-            mNextEncPos = mWantedPosition;
+            mNextEncPos = mWantedPosition.getPos();
             mTalon.set(ControlMode.Position, nextPos);
             //mTalon.set(ControlMode.PercentOutput, mWantedPosition);
 
@@ -299,7 +303,7 @@ public class Wrist extends Subsystem {
         SmartDashboard.putString("WristSysState", mSystemState.name()); // .ordinal());
         SmartDashboard.putString("WristWantState", mWantedState.name());
         //SmartDashboard.putNumber("WristWantState", (double)mWantedState.ordinal());
-        SmartDashboard.putNumber("WristWantPos", mWantedPosition);
+        SmartDashboard.putString("WristWantPos", mWantedPosition.toString());
         SmartDashboard.putNumber("WristCurPos", mTalon.getSelectedSensorPosition(0));
         SmartDashboard.putNumber("WristQuadPos", mTalon.getSensorCollection().getQuadraturePosition());
         //SmartDashboard.putBoolean("WristRevSw", mTalon.getSensorCollection().isRevLimitSwitchClosed());
