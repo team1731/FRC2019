@@ -61,44 +61,78 @@ public class Elevator extends Subsystem {
     
     public Elevator() {
         mTalon = new TalonSRX(Constants.kElevatorTalon);
-        //mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-        mTalon.set(ControlMode.Position, 0);
+		/* Factory default hardware to prevent unexpected behavior */
+		mTalon.configFactoryDefault();
+
+		/* Configure Sensor Source for Pirmary PID */
+		mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+
+		/**
+		 * Configure Talon SRX Output and Sesnor direction accordingly
+		 * Invert Motor to have green LEDs when driving Talon Forward / Requesting Postiive Output
+		 * Phase sensor to have positive increment when driving Talon Forward (Green LED)
+		 */
+		mTalon.setSensorPhase(Constants.kSensorPhase);
+		mTalon.setInverted(false);  //old was true
+
+		/* Set relevant frame periods to be at least as fast as periodic rate */
+		mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
+		mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
+
+		/* Set the peak and nominal outputs */
+		mTalon.configNominalOutputForward(0, Constants.kTimeoutMs);
+		mTalon.configNominalOutputReverse(0, Constants.kTimeoutMs);
+		mTalon.configPeakOutputForward(1, Constants.kTimeoutMs);
+		mTalon.configPeakOutputReverse(-1, Constants.kTimeoutMs);
+
+		/* Set Motion Magic gains in slot0 - see documentation */
+		mTalon.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+		mTalon.config_kF(Constants.kSlotIdx, Constants.kElevatorTalonKF, Constants.kTimeoutMs);
+		mTalon.config_kP(Constants.kSlotIdx, Constants.kElevatorTalonKP, Constants.kTimeoutMs);
+		mTalon.config_kI(Constants.kSlotIdx, Constants.kElevatorTalonKI, Constants.kTimeoutMs);
+		mTalon.config_kD(Constants.kSlotIdx, Constants.kElevatorTalonKD, Constants.kTimeoutMs);
+
+		/* Set acceleration and vcruise velocity - see documentation */
+		mTalon.configMotionCruiseVelocity(15000, Constants.kTimeoutMs);
+		mTalon.configMotionAcceleration(6000, Constants.kTimeoutMs);
+
+		/* Zero the sensor */
+        mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+        mTalon.set(ControlMode.PercentOutput, 0);
+    }
+    /*
+    public xElevator() {
+        ///mTalon = new TalonSRX(Constants.kElevatorTalon);
+        ///mTalon.set(ControlMode.Position, 0);
         mTalon.configVelocityMeasurementWindow(10, 0);
         mTalon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
-        mTalon.selectProfileSlot(0, 0);
-        mTalon.config_kP(Constants.SlotIdx, Constants.kElevatorTalonKP, Constants.kTimeoutMs );
-        mTalon.config_kI(Constants.SlotIdx, Constants.kElevatorTalonKI, Constants.kTimeoutMs );
-        mTalon.config_kD(Constants.SlotIdx, Constants.kElevatorTalonKD, Constants.kTimeoutMs);
-        mTalon.config_kF(Constants.SlotIdx, Constants.kElevatorTalonKF, Constants.kTimeoutMs );
-        mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
-        mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
+        ///mTalon.selectProfileSlot(0, 0);
+        ///mTalon.config_kP(Constants.SlotIdx, Constants.kElevatorTalonKP, Constants.kTimeoutMs );
+        ///mTalon.config_kI(Constants.SlotIdx, Constants.kElevatorTalonKI, Constants.kTimeoutMs );
+        ///mTalon.config_kD(Constants.SlotIdx, Constants.kElevatorTalonKD, Constants.kTimeoutMs);
+        ///mTalon.config_kF(Constants.SlotIdx, Constants.kElevatorTalonKF, Constants.kTimeoutMs );
+        ///mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
+        ///mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
         mTalon.configClosedloopRamp(0, Constants.kTimeoutMs);
-        mTalon.setSelectedSensorPosition(0, 0, 10); //-1793, 0, 10);
+        ///mTalon.setSelectedSensorPosition(0, 0, 10); //-1793, 0, 10);
         mTalon.overrideLimitSwitchesEnable(false);
         
-        /* choose to ensure sensor is positive when output is positive */
-        mTalon.setSensorPhase(Constants.kSensorPhase);
+        / * choose to ensure sensor is positive when output is positive * /
+        ///mTalon.setSensorPhase(Constants.kSensorPhase);
 
         /* choose based on what direction you want forward/positive to be.
-         * This does not affect sensor phase. */ 
-        mTalon.setInverted(true); //Constants.kMotorInvert);
+         * This does not affect sensor phase. * / 
+        ////mTalon.setInverted(true); //Constants.kMotorInvert);
 
-        /* set the peak and nominal outputs, 12V means full */
-        mTalon.configNominalOutputForward(.5, Constants.kTimeoutMs);
-        mTalon.configNominalOutputReverse(.9, Constants.kTimeoutMs);
-        mTalon.configPeakOutputForward(1.0, Constants.kTimeoutMs);
-        mTalon.configPeakOutputReverse(-1.0, Constants.kTimeoutMs);
-        /*
-         * set the allowable closed-loop error, Closed-Loop output will be
-         * neutral within this range. See Table in Section 17.2.1 for native
-         * units per rotation.
-         */
+        / * set the peak and nominal outputs, 12V means full * /
+        ///mTalon.configNominalOutputForward(.5, Constants.kTimeoutMs);
+        ///mTalon.configNominalOutputReverse(.9, Constants.kTimeoutMs);
+        ///mTalon.configPeakOutputForward(1.0, Constants.kTimeoutMs);
+        ///mTalon.configPeakOutputReverse(-1.0, Constants.kTimeoutMs);
+        
         mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 50, Constants.kTimeoutMs);
-
-        //mOverTop1 = Constants.makeSolenoidForId(Constants.kOverTheTopSolenoid1);
-        //mOverTop2 = Constants.makeSolenoidForId(Constants.kOverTheTopSolenoid2);
     }
-    	
+    */
     public enum SystemState {	
         IDLE,   // stop all motors
         ELEVATORTRACKING, // moving
@@ -173,26 +207,6 @@ public class Elevator extends Subsystem {
             }
         }
         
-        private SystemState handleCalibratingDown() {
-            if (mStateChanged) {
-                mTalon.set(ControlMode.PercentOutput, Constants.kElevatorCalibrateDown);
-            }
-    		mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
-            mWantedPosition = Constants.kElevatorHomeEncoderValue;
-            mPositionChanged = true;
-    		return defaultStateTransfer();
-		}
-
-		private SystemState handleCalibratingUp() {
-            if (mStateChanged) {
-                mTalon.set(ControlMode.PercentOutput, Constants.kElevatorCalibrateUp);
-            }
-            mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
-            mWantedPosition = Constants.kElevatorHomeEncoderValue;
-            mPositionChanged = true;
-    		return defaultStateTransfer();
-		}
-
 		@Override
         public void onStop(double timestamp) {
             stop();
@@ -222,7 +236,7 @@ public class Elevator extends Subsystem {
 
     private SystemState handleElevatorTracking() {
         if (mPositionChanged) {
-            mTalon.set(ControlMode.Position, mWantedPosition);
+            mTalon.set(ControlMode.MotionMagic, mWantedPosition);
             mPositionChanged = false;
         }
     	
@@ -236,6 +250,26 @@ public class Elevator extends Subsystem {
     		//}
 
 	    return defaultStateTransfer();
+    }
+
+    private SystemState handleCalibratingDown() {
+        if (mStateChanged) {
+            mTalon.set(ControlMode.PercentOutput, Constants.kElevatorCalibrateDown);
+        }
+        mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
+        mWantedPosition = Constants.kElevatorHomeEncoderValue;
+        mPositionChanged = true;
+        return defaultStateTransfer();
+    }
+
+    private SystemState handleCalibratingUp() {
+        if (mStateChanged) {
+            mTalon.set(ControlMode.PercentOutput, Constants.kElevatorCalibrateUp);
+        }
+        mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
+        mWantedPosition = Constants.kElevatorHomeEncoderValue;
+        mPositionChanged = true;
+        return defaultStateTransfer();
     }
 
     public synchronized void setWantedPosition(double position) {

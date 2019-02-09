@@ -182,13 +182,15 @@ public class GamepadControlBoard implements ControlBoardInterface {
         double angle = mOperator.getPOV(0); // getPOV
         double result = -1;
         if (angle != -1) {
-            if ((angle > 355) || (angle < 5)) {
+            if ((angle > 340) || (angle < 20)) {
                 result = 2;
-            } else if ((angle > 265) && (angle < 275)) {
+            } else if ((angle > 250) && (angle < 290)) {
                 result = 1;
-            } else if ((angle > 175) && (angle < 185)) {
+            } else if ((angle > 160) && (angle < 200)) {
                 result = 0;
             }
+            //} else if ((angle > 70) && (angle < 110)) {
+            //    result = 3;
         }
         return result;
 	}
@@ -364,7 +366,7 @@ public class GamepadControlBoard implements ControlBoardInterface {
 
 	@Override
     public boolean getCargoShipBall(){
-        // ball sensor combined with level button (floor, 2nd level, 34d level) will determine actual elevator position
+        // ball sensor combined with level button (floor, 2nd level, 3d level) will determine actual elevator position
         return mOperator.getRawButton(3);
     }
 }
