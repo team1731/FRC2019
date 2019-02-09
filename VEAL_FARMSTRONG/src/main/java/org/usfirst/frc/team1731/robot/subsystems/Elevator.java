@@ -152,11 +152,9 @@ public class Elevator extends Subsystem {
 
     private double mCurrentStateStartTime;
     private double mWantedPosition = 0;
-    //private double mNextEncPos = 0;
     private boolean mStateChanged = false;
     private boolean mPositionChanged = false;
-    private boolean mRevSwitchSet = false;
-    //private boolean mIsOverTop = false;
+    //private boolean mRevSwitchSet = false;
 
     private Loop mLoop = new Loop() {
         @Override
@@ -298,7 +296,7 @@ public class Elevator extends Subsystem {
         SmartDashboard.putNumber("ElevWantPos", mWantedPosition);
         SmartDashboard.putNumber("ElevCurPos", mTalon.getSelectedSensorPosition(0));
         SmartDashboard.putNumber("ElevQuadPos", mTalon.getSensorCollection().getQuadraturePosition());
-        //SmartDashboard.putBoolean("ElevRevSw", mTalon.getSensorCollection().isRevLimitSwitchClosed());
+        SmartDashboard.putBoolean("ElevPosChange", mPositionChanged);
         //SmartDashboard.putBoolean("ElevLastRevSw", mRevSwitchSet);
     }
 

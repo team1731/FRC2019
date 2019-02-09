@@ -165,7 +165,7 @@ public class Constants extends ConstantsBase {
 //    public static int kElevatorFlipUp = 2;
 //    public static int kElevatorFlipNone = 1;
 //    public static int kElevatorFlipDown = 0;
-    public static double kElevatorTalonKP = 0.5; //2.0;
+    public static double kElevatorTalonKP = 0.3; //2.0;
     public static double kElevatorTalonKI = 0.0;
     public static double kElevatorTalonKD = 0.0;
     public static double kElevatorTalonKF = 0.2; //0.0;
@@ -318,9 +318,6 @@ public class Constants extends ConstantsBase {
 	public static final int SlotIdx = 0;
 
 	public static  double kRotateTime = 500;
-
-
-
 
 
     // Analog Inputs
