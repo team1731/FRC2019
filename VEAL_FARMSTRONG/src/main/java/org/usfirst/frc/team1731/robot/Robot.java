@@ -172,6 +172,8 @@ public class Robot extends IterativeRobot {
     	RIGHT
     };
 
+    private boolean joystickAxesAreReversed;
+
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
                                     Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(), FishingPole.getInstance(),
@@ -589,7 +591,7 @@ public class Robot extends IterativeRobot {
             double timestamp = Timer.getFPGATimestamp();
 
             // TODO FIXME RDB - for testing purposes only
-            leftRightCameraControl.set(mControlBoard.getInvertDrive());
+            leftRightCameraControl.set(mControlBoard.getToggleCamera());
                 
             boolean climbUp = mControlBoard.getClimbUp();
             boolean climbDown = mControlBoard.getClimbDown();
@@ -681,6 +683,16 @@ public class Robot extends IterativeRobot {
             double throttle = mControlBoard.getThrottle();
             double turn = mControlBoard.getTurn();
             
+            if(mControlBoard.getInvertDrive()){
+                joystickAxesAreReversed = !joystickAxesAreReversed; 
+            }
+
+            if(joystickAxesAreReversed){
+                throttle=-throttle;
+                turn=-turn;
+             }
+
+
             mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
                     !mControlBoard.getLowGear()));
             boolean wantLowGear = mControlBoard.getLowGear();

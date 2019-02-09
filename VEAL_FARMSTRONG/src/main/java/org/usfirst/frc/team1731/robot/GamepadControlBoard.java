@@ -14,6 +14,8 @@ public class GamepadControlBoard implements ControlBoardInterface {
 
     private final Joystick mDriver;
     private final Joystick mOperator;
+
+    private Boolean invertDrivePrevious = Boolean.FALSE;
     
     private static ControlBoardInterface mInstance = null;
     
@@ -211,37 +213,37 @@ public class GamepadControlBoard implements ControlBoardInterface {
 		return false; // mOperator.getRawButton(10);
     }
     
-    //DRIVER
-	@Override
-    public boolean getWideCamera(){
-    //
-    //    	Get the angle in degrees of a POV on the HID. 
-    //
-    //    	The POV angles start at 0 in the up direction, and increase clockwise
-    //		(eg right is 90, upper-left is 315).
-    //    	Parameters:pov The index of the POV to read (starting at 0)
-    //		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
-    //  
-        int pov = mDriver.getPOV(0);
-        return ((pov !=1) && (pov > 225) && (pov < 315));
-    }
+    // //DRIVER
+	// @Override
+    // public boolean getWideCamera(){
+    // //
+    // //    	Get the angle in degrees of a POV on the HID. 
+    // //
+    // //    	The POV angles start at 0 in the up direction, and increase clockwise
+    // //		(eg right is 90, upper-left is 315).
+    // //    	Parameters:pov The index of the POV to read (starting at 0)
+    // //		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
+    // //  
+    //     int pov = mDriver.getPOV(0);
+    //     return ((pov !=1) && (pov > 225) && (pov < 315));
+    // }
+
+	// @Override
+    // public boolean getNormalCamera(){
+    // //
+    // //    	Get the angle in degrees of a POV on the HID. 
+    // //
+    // //    	The POV angles start at 0 in the up direction, and increase clockwise
+    // //		(eg right is 90, upper-left is 315).
+    // //    	Parameters:pov The index of the POV to read (starting at 0)
+    // //		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
+    // //  
+    //     int pov = mDriver.getPOV(0);
+    //     return ((pov !=1) && (pov > 45) && (pov < 135));
+    // }
 
 	@Override
-    public boolean getNormalCamera(){
-    //
-    //    	Get the angle in degrees of a POV on the HID. 
-    //
-    //    	The POV angles start at 0 in the up direction, and increase clockwise
-    //		(eg right is 90, upper-left is 315).
-    //    	Parameters:pov The index of the POV to read (starting at 0)
-    //		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
-    //  
-        int pov = mDriver.getPOV(0);
-        return ((pov !=1) && (pov > 45) && (pov < 135));
-    }
-
-	@Override
-    public boolean getFrontCamera(){
+    public boolean getToggleCamera(){
     //
     //    	Get the angle in degrees of a POV on the HID. 
     //
@@ -254,19 +256,19 @@ public class GamepadControlBoard implements ControlBoardInterface {
         return ((pov !=1) && (pov > 315 || pov < 45));
     }
 
-	@Override
-    public boolean getBackCamera(){
-    //
-    //    	Get the angle in degrees of a POV on the HID. 
-    //
-    //    	The POV angles start at 0 in the up direction, and increase clockwise
-    //		(eg right is 90, upper-left is 315).
-    //    	Parameters:pov The index of the POV to read (starting at 0)
-    //		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
-    //  
-        int pov = mDriver.getPOV(0);
-        return ((pov !=1) && (pov > 135) && (pov < 225));
-    }
+	// @Override
+    // public boolean getBackCamera(){
+    // //
+    // //    	Get the angle in degrees of a POV on the HID. 
+    // //
+    // //    	The POV angles start at 0 in the up direction, and increase clockwise
+    // //		(eg right is 90, upper-left is 315).
+    // //    	Parameters:pov The index of the POV to read (starting at 0)
+    // //		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
+    // //  
+    //     int pov = mDriver.getPOV(0);
+    //     return ((pov !=1) && (pov > 135) && (pov < 225));
+    // }
 
 	@Override
     public boolean getLegoLift(){
@@ -285,7 +287,15 @@ public class GamepadControlBoard implements ControlBoardInterface {
 
 	@Override
     public boolean getInvertDrive(){
-        return mDriver.getRawButton(10);
+        boolean invertDrive=false;
+        synchronized(invertDrivePrevious){
+            boolean invertDriveCurrent= mDriver.getRawButton(10);
+            if(invertDriveCurrent && !invertDrivePrevious){
+                invertDrive=true;
+            }
+             invertDrivePrevious = invertDriveCurrent;
+        }
+        return invertDrive;
     }
 
     //OPERATOR
