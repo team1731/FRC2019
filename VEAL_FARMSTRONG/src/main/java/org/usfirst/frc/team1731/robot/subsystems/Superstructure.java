@@ -918,18 +918,18 @@ public class Superstructure extends Subsystem {
     }
 
     public void setWantedElevatorPosition(ELEVATOR_POV_POSITION position) {
-        boolean mode = true; // cargo or hatch check when known
-        double encoderValue = 0;
-        if (mode) {
+        boolean cargo = false; // cargo or hatch check when known
+        double encoderValue = Constants.kElevatorHomeEncoderValue;
+        if (cargo) {
             switch (position) {
                 case ELEVATOR_FLOOR:
                     encoderValue = (double) Constants.kElevatorCargoFloor_EncoderValue;
                     break;
                 case ELEVATOR_2ND:
-                    encoderValue = (double) Constants.kElevatorCargoFloor_EncoderValue;
+                    encoderValue = (double) Constants.kElevatorCargo2nd_EncoderValue;
                     break;
                 case ELEVATOR_3RD:
-                    encoderValue = (double) Constants.kElevatorCargoFloor_EncoderValue;
+                    encoderValue = (double) Constants.kElevatorCargo3rd_EncoderValue;
                     break;
             }
         } else {

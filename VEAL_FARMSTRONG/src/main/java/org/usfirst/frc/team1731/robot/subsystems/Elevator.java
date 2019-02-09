@@ -175,7 +175,9 @@ public class Elevator extends Subsystem {
             if (mStateChanged) {
                 mTalon.set(ControlMode.PercentOutput, -0.4);
             }
-    		mTalon.setSelectedSensorPosition(0, 0, 0);
+    		mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
+            mWantedPosition = Constants.kElevatorHomeEncoderValue;
+            mPositionChanged = true;
     		return defaultStateTransfer();
 		}
 
@@ -183,7 +185,9 @@ public class Elevator extends Subsystem {
             if (mStateChanged) {
                 mTalon.set(ControlMode.PercentOutput, 0.8);
             }
-    		mTalon.setSelectedSensorPosition(0, 0, 0);
+            mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
+            mWantedPosition = Constants.kElevatorHomeEncoderValue;
+            mPositionChanged = true;
     		return defaultStateTransfer();
 		}
 

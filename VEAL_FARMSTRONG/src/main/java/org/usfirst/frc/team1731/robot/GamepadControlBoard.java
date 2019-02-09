@@ -179,12 +179,14 @@ public class GamepadControlBoard implements ControlBoardInterface {
 	public double getElevatorControl() {
         double angle = mOperator.getPOV(0); // getPOV
         double result = -1;
-        if ((angle > 355) || (angle < 5)) {
-            result = 2;
-        } else if ((angle > 265) && (angle < 275)) {
-            result = 1;
-        } else if ((angle > 175) && (angle < 185)) {
-            result = 0;
+        if (angle != -1) {
+            if ((angle > 355) || (angle < 5)) {
+                result = 2;
+            } else if ((angle > 265) && (angle < 275)) {
+                result = 1;
+            } else if ((angle > 175) && (angle < 185)) {
+                result = 0;
+            }
         }
         return result;
 	}
