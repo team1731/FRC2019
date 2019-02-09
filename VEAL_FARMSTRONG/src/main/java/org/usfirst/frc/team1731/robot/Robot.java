@@ -612,16 +612,15 @@ public class Robot extends IterativeRobot {
             boolean pickupCargo =mControlBoard.getPickupBall();
             boolean ejectCargo =mControlBoard.getShootBall();
             
-            if (mControlBoard.getElevatorButton()) {
-//                if (overTheTop) {
-//                    mSuperstructure.setOverTheTop(true);
-//                }
-//                else {
-//                    mSuperstructure.setOverTheTop(false);
-//                }
-                mSuperstructure.setWantedElevatorPosition(500);
-            } else {
-                mSuperstructure.setWantedElevatorPosition(0);
+            double elevatorPOV = mControlBoard.getElevatorControl();
+            if (elevatorPOV != -1) {
+                if (elevatorPOV == 0) {
+                    mSuperstructure.setWantedElevatorPosition(500);
+                } else if (elevatorPOV == 1) {
+                    mSuperstructure.setWantedElevatorPosition(500);
+                } else if (elevatorPOV == 2) {
+                    mSuperstructure.setWantedElevatorPosition(500);
+                }
             }
 
             if (climbUp) {

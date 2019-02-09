@@ -264,7 +264,7 @@ public class Wrist extends Subsystem {
     	if (up) {
     		return mTalon.getSelectedSensorPosition(0) / Constants.kElevatorTopEncoderValue;
     	} else {
-    		return mTalon.getSelectedSensorPosition(0) / Constants.kElevatorBottomEncoderValue;
+    		return mTalon.getSelectedSensorPosition(0) / Constants.kElevatorHomeEncoderValue;
     	}
     }
     
@@ -309,7 +309,7 @@ public class Wrist extends Subsystem {
         boolean revSwitch = mTalon.getSensorCollection().isRevLimitSwitchClosed();
         if (revSwitch) {
             if (!mRevSwitchSet) {
-                mTalon.setSelectedSensorPosition(-1 * (int)Constants.kElevatorBottomEncoderValue, 0, 10);
+                mTalon.setSelectedSensorPosition(-1 * (int)Constants.kElevatorHomeEncoderValue, 0, 10);
                 mRevSwitchSet = true;
             }
         } else {
@@ -320,7 +320,7 @@ public class Wrist extends Subsystem {
     }
     
     public boolean atBottom() {
-    	return Math.abs(mTalon.getSelectedSensorPosition(0)+Constants.kElevatorBottomEncoderValue)<100;
+    	return Math.abs(mTalon.getSelectedSensorPosition(0)+Constants.kElevatorHomeEncoderValue)<100;
     }
 
     public boolean atDesired() {

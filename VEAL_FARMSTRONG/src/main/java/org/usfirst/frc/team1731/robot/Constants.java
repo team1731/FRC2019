@@ -172,8 +172,13 @@ public class Constants extends ConstantsBase {
     //public static double kElevatorMaxEncoder = 12000;
     //public static double kElevatorEncoderError = 100;
     //public static double kElevatorSafePos = 6000;
-    public static int kElevatorTopEncoderValue = 1000;
-    public static int kElevatorBottomEncoderValue= 0; // really it -5300, but joystick value negates it
+    public static int kElevatorTopEncoderValue = 2000;
+    public static int kElevatorHatch2_EncoderValue= 1200;
+    public static int kElevatorHatch1_EncoderValue= 700;
+    public static int kElevatorHatch0_EncoderValue= 200; 
+    public static int kElevatorCargo2_EncoderValue = 1500;
+    public static int kElevatorCargo1_EncoderValue = 1000;
+    public static int kElevatorCargo0_EncoderValue = 500;
     public static int kElevatorHomeEncoderValue = 0;
     
 

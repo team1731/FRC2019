@@ -176,8 +176,17 @@ public class GamepadControlBoard implements ControlBoardInterface {
     }
 
     @Override
-	public boolean getElevatorButton() {
-		return mOperator.getRawButton(2); // getButtonB
+	public double getElevatorControl() {
+        double angle = mOperator.getPOV(0); // getPOV
+        double result = -1;
+        if ((angle > 355) || (angle < 5)) {
+            result = 2;
+        } else if ((angle > 265) && (angle < 275)) {
+            result = 1;
+        } else if ((angle > 175) && (angle < 185)) {
+            result = 0;
+        }
+        return result;
 	}
 
     @Override
@@ -190,12 +199,6 @@ public class GamepadControlBoard implements ControlBoardInterface {
         return mOperator.getRawButton(4); // getButtonY
     }
 
-	@Override
-	public double getElevatorControl() {
-		return mOperator.getRawAxis(1);
-		//return 0.3;
-	}
-	
 	@Override
     public boolean getAutoPickUp() {
         // R1
