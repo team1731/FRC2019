@@ -234,9 +234,11 @@ public class Elevator extends Subsystem {
 
     public synchronized void setWantedPosition(int position) {
         
-        if ((mWantedPosition >= Constants.kElevatorHomeEncoderValue) && 
-                (mWantedPosition < Constants.kElevatorTopEncoderValue)) {
-            mWantedPosition = position;
+        if (mPositionChanged) {
+            if ((mWantedPosition >= Constants.kElevatorHomeEncoderValue) && 
+                    (mWantedPosition < Constants.kElevatorTopEncoderValue)) {
+                mWantedPosition = position;
+            }
             mPositionChanged = true;
         }
     }
