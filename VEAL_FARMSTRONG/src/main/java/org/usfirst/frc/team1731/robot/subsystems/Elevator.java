@@ -115,7 +115,7 @@ public class Elevator extends Subsystem {
     private WantedState mWantedState = WantedState.IDLE;
 
     private double mCurrentStateStartTime;
-    private int mWantedPosition = 0;
+    private double mWantedPosition = 0;
     //private double mNextEncPos = 0;
     private boolean mStateChanged = false;
     private boolean mPositionChanged = false;
@@ -232,21 +232,17 @@ public class Elevator extends Subsystem {
 	    return defaultStateTransfer();
     }
 
-    public synchronized void setWantedPosition(int position) {
+    public synchronized void setWantedPosition(double position) {
         
-        if (mPositionChanged) {
+        if (position != mWantedPosition) {
             if ((mWantedPosition >= Constants.kElevatorHomeEncoderValue) && 
                     (mWantedPosition < Constants.kElevatorTopEncoderValue)) {
                 mWantedPosition = position;
+                mPositionChanged = true;
             }
-            mPositionChanged = true;
         }
     }
 
-    public synchronized int getCurrentPosition() {
-    	return mTalon.getSelectedSensorPosition(0);
-    }
-    
     public synchronized void setWantedState(WantedState state) {
         if (state != mWantedState) {
             mWantedState = state;
@@ -272,26 +268,29 @@ public class Elevator extends Subsystem {
         setWantedState(WantedState.IDLE);
     }
 
-    private boolean checkRevSwitch() {
-        boolean revSwitch = mTalon.getSensorCollection().isRevLimitSwitchClosed();
-        if (revSwitch) {
-            if (!mRevSwitchSet) {
-                mTalon.setSelectedSensorPosition(-1 * (int)Constants.kElevatorHomeEncoderValue, 0, 10);
-                mRevSwitchSet = true;
-            }
-        } else {
-            mRevSwitchSet = false;
-        }
-        
-        return revSwitch;
+    public synchronized int getCurrentPosition() {
+    	return mTalon.getSelectedSensorPosition(0);
     }
     
+	public boolean atTop() {
+		int position = mTalon.getSelectedSensorPosition(0); 
+    	return (position >= (Constants.kElevatorTopEncoderValue - Constants.kElevatorEncoderRange));
+    }
+        
     public boolean atBottom() {
-    	return Math.abs(mTalon.getSelectedSensorPosition(0)+Constants.kElevatorHomeEncoderValue)<100;
+        int position = mTalon.getSelectedSensorPosition(0); 
+    	return (position <= (Constants.kElevatorHomeEncoderValue + Constants.kElevatorEncoderRange));
     }
 
     public boolean atDesired() {
-    	return false; // Math.abs(mTalon.getSelectedSensorPosition(0) - mNextEncPos)<100;
+        int position = mTalon.getSelectedSensorPosition(0);
+        int hi = (int) mWantedPosition + Constants.kElevatorEncoderRange;
+        int lo = (int) mWantedPosition - Constants.kElevatorEncoderRange;
+        boolean result = false;
+        if ((position >= lo) && (position <= hi)) {
+            result = true;
+        }
+    	return result;
     }
     
     @Override
@@ -308,7 +307,18 @@ public class Elevator extends Subsystem {
         return false;
     }
 
-	public boolean atTop() {
-		return Math.abs(mTalon.getSelectedSensorPosition(0)-Constants.kElevatorTopEncoderValue)<100;
-	}
+    //private boolean checkRevSwitch() {
+    //    boolean revSwitch = mTalon.getSensorCollection().isRevLimitSwitchClosed();
+    //    if (revSwitch) {
+    //        if (!mRevSwitchSet) {
+    //            mTalon.setSelectedSensorPosition(-1 * (int)Constants.kElevatorHomeEncoderValue, 0, 10);
+    //            mRevSwitchSet = true;
+    //        }
+    //    } else {
+    //        mRevSwitchSet = false;
+    //    }
+    //    
+    //    return revSwitch;
+    //}
+    
 }

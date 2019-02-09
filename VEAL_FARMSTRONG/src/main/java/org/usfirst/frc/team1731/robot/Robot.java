@@ -12,6 +12,7 @@ import org.usfirst.frc.team1731.lib.util.InterpolatingDouble;
 import org.usfirst.frc.team1731.lib.util.InterpolatingTreeMap;
 import org.usfirst.frc.team1731.lib.util.LatchedBoolean;
 import org.usfirst.frc.team1731.lib.util.math.RigidTransform2d;
+import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POV_POSITION;
 import org.usfirst.frc.team1731.robot.Constants.GRABBER_POSITION;
 import org.usfirst.frc.team1731.robot.auto.AutoModeBase;
 import org.usfirst.frc.team1731.robot.auto.AutoModeExecuter;
@@ -615,11 +616,11 @@ public class Robot extends IterativeRobot {
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
                 if (elevatorPOV == 0) {
-                    mSuperstructure.setWantedElevatorPosition(Constants.kElevatorCargo3rd_EncoderValue);
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_FLOOR);
                 } else if (elevatorPOV == 1) {
-                    mSuperstructure.setWantedElevatorPosition(Constants.kElevatorCargo2nd_EncoderValue);
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_2ND);
                 } else if (elevatorPOV == 2) {
-                    mSuperstructure.setWantedElevatorPosition(Constants.kElevatorCargoFloor_EncoderValue);
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_3RD);
                 }
             }
 
