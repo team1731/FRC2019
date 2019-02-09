@@ -685,8 +685,19 @@ public class Robot extends IterativeRobot {
             mDrive.setHighGear(!wantLowGear);
             
             
+             // Handle ball pickup and shooting
+             if(mControlBoard.getPickupBall() && !mControlBoard.getShootBall()){
 
-            allPeriodic();
+            }
+            else if(mControlBoard.getShootBall() && !mControlBoard.getPickupBall()){
+                if(Elevator.getInstance().atDesired()){
+                    
+                }
+             }
+
+
+
+             allPeriodic();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
