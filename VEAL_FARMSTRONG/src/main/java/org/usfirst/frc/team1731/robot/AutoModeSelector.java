@@ -48,8 +48,8 @@ public class AutoModeSelector {
         for (AutoModeCreator mode : mAllModes) {
             modesArray.add(mode.mDashboardName);
         }
-        SmartDashboard.putString(AUTO_OPTIONS_DASHBOARD_KEY, modesArray.toString());
-        SmartDashboard.putString(SELECTED_AUTO_MODE_DASHBOARD_KEY, mDefaultMode.mDashboardName);
+        //SmartDashboard.putString(AUTO_OPTIONS_DASHBOARD_KEY, modesArray.toString());
+        //SmartDashboard.putString(SELECTED_AUTO_MODE_DASHBOARD_KEY, mDefaultMode.mDashboardName);
     }
 
     public static AutoModeBase getSelectedAutoMode() {

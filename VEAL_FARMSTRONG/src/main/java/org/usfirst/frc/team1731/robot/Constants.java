@@ -10,6 +10,7 @@ import org.usfirst.frc.team1731.lib.util.InterpolatingTreeMap;
 import org.usfirst.frc.team1731.lib.util.math.PolynomialRegression;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 /**
  * A list of constants used by the rest of the robot code. This include physics constants as well as constants
@@ -26,6 +27,14 @@ public class Constants extends ConstantsBase {
     public static double kBoilerTargetTopHeight = 88.0;
     public static double kBoilerRadius = 7.5;
 
+    // Wrist parameters
+    public static int kWristTalon = 12;
+    public static int kWristKI = 12;
+    public static int kWristKD = 12;
+    public static int kWristTalonKF = 12;
+    public static int kWristTalonKP = 12;
+
+    
     // Shooter tuning parameters
     public static boolean kIsShooterTuning = false;
     public static double kShooterTuningRpmFloor = 2900;
@@ -156,16 +165,33 @@ public class Constants extends ConstantsBase {
 //    public static int kElevatorFlipUp = 2;
 //    public static int kElevatorFlipNone = 1;
 //    public static int kElevatorFlipDown = 0;
-    public static double kElevatorTalonKP = 2;
+    public static double kElevatorTalonKP = 2.0;
     public static double kElevatorTalonKI = 0.0;
     public static double kElevatorTalonKD = 0.0;
     public static double kElevatorTalonKF = 0.0;
     //public static double kElevatorMaxEncoder = 12000;
     //public static double kElevatorEncoderError = 100;
     //public static double kElevatorSafePos = 6000;
-    public static double kElevatorTopEncoderValue = 8000;
-    public static double kElevatorBottomEncoderValue= 4870; // really it -5300, but joystick value negates it
-    public static double kElevatorHomeEncoderValue = 0;
+    public static enum ELEVATOR_POV_POSITION {
+    	ELEVATOR_FLOOR,
+    	ELEVATOR_2ND,
+    	ELEVATOR_3RD
+    }
+    public static int kElevatorLevel_Floor = 0;
+    public static int kElevatorLevel_2nd = 1;
+    public static int kElevatorLevel_3rd = 2;
+    public static int kElevatorTopEncoderValue = 2000;
+    public static int kElevatorHatch3rd_EncoderValue= 1200;
+    public static int kElevatorHatch2nd_EncoderValue= 700;
+    public static int kElevatorHatchFloor_EncoderValue= 200; 
+    public static int kElevatorCargo3rd_EncoderValue = 1500;
+    public static int kElevatorCargo2nd_EncoderValue = 1000;
+    public static int kElevatorCargoFloor_EncoderValue = 500;
+    public static int kElevatorHomeEncoderValue = 0;
+    public static int kElevatorEncoderRange = 20;
+
+    public static double kElevatorCalibrateUp = 0.4;
+    public static double kElevatorCalibrateDown = -0.4;
     
 
     // Hopper gains
@@ -226,6 +252,7 @@ public class Constants extends ConstantsBase {
 //    public static final int kIntakeSlaveId = 10;
 	public static final int kIntakeVictor1 = 8;
 	public static final int kIntakeVictor2 = 9;
+	public static final int kIntakeTalon = 1;
 
     // Hopper / Floor
 //    public static final int kHopperMasterId = 6;
@@ -233,7 +260,7 @@ public class Constants extends ConstantsBase {
 	public static final int kHopperVictor = 3;
 	
 	//Climber
-	public static int kClimberMasterId = 6;
+	public static int kClimberMasterId = 12;
 	public static int kClimberSlaveId = 16;
 	public static int kClimberContinuousCurrentLimitAmps = 30;
 	public static int kClimberPeakCurrentDurationMs = 200; //Ms
@@ -257,17 +284,26 @@ public class Constants extends ConstantsBase {
 //    public static final int kGearGrabberId = 15;
 
     // Solenoids
-    public static final int kShifterSolenoidId1 = 1; //was 0 // PCM 0, Solenoid 0
-    public static final int kShifterSolenoidId2 = 6;
+  //  public static final int kShifterSolenoidId1 = 1; //was 0 // PCM 0, Solenoid 0
+ //   public static final int kShifterSolenoidId2 = 6;
     
-    public static final int kOverTheTopSolenoid1 = 3; // was 3; // now PCM 1, solenoid 3
-    public static final int kOverTheTopSolenoid2 = 4; // was 4; // now PCM 1, solenoid 4
+    public static final int kTopRoller1 = 0; // now PCM 1, solenoid 0
+    public static final int kTopRoller2 = 5; // now PCM 1, solenoid 5
     
-    public static final int kPincherSolenoid1 = 2; 
-    public static final int kPincherSolenoid2 = 5;
+    public static final int kBeakSwinger1 = 4; // now PCM 1, solenoid 0
+    public static final int kBeakSwinger2 = 2; // now PCM 1, solenoid 5
     
-    public static final int kFishingPoleSolenoid1 = 3; 
-    public static final int kFishingPoleSolenoid2 = 7;  
+    public static final int kBeakOpener1 = 1; // now PCM 1, solenoid 0
+    public static final int kBeakOpener2 = 3; // now PCM 1, solenoid 5
+    
+    public static final int kMustache1 = 7; // now PCM 1, solenoid 0
+    public static final int kMustache2 = 6; // now PCM 1, solenoid 5
+
+   // public static final int kPincherSolenoid1 = 2; 
+   // public static final int kPincherSolenoid2 = 5;
+    
+  //  public static final int kFishingPoleSolenoid1 = 3; 
+  //  public static final int kFishingPoleSolenoid2 = 7;  
     
     
 //    public static final int kIntakeDeploySolenoidId = 1; // PCM 0, Solenoid 1
@@ -400,6 +436,11 @@ public class Constants extends ConstantsBase {
     public static Solenoid makeSolenoidForId(int pcmChannel, int solenoidId) {
     	System.out.println("creating solenoid id " + solenoidId + " PCM " + pcmChannel + " CHAN " + solenoidId);
         return new Solenoid(pcmChannel, solenoidId);
+    }
+
+    public static DoubleSolenoid makeDoubleSolenoidForIds(int pcmChannel, int forward_solenoidId, int reverse_solenoidId) {
+    	System.out.println("creating solenoid ids " + forward_solenoidId + "-" + reverse_solenoidId + " PCM " + pcmChannel + " CHAN ");
+        return new DoubleSolenoid(pcmChannel, forward_solenoidId, reverse_solenoidId);
     }
 
     @Override

@@ -7,7 +7,7 @@ public interface ControlBoardInterface {
 
 		// DRIVER CONTROLS
 
-		boolean getElevatorButton();
+		//boolean getElevatorButton();
 
 		boolean getFlipUpButton();
 
