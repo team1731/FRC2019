@@ -93,8 +93,8 @@ public class Drive extends Subsystem {
 
     // Hardware
     private final TalonSRX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
-    private final Solenoid mShifter1;
-    private final Solenoid mShifter2;
+   // private final Solenoid mShifter1;
+   // private final Solenoid mShifter2;
     private final NavX mNavXBoard;
 
     // Controllers
@@ -192,7 +192,11 @@ public class Drive extends Subsystem {
         mLeftSlave.setInverted(false);
         //mLeftMaster.setStatusFrameRateMs(StatusFrameRate.Feedback, 5);
         mLeftMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
-        mLeftMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs); 
+        mLeftMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
+        mLeftSlave.set(ControlMode.Follower,Constants.kLeftDriveMasterId);
+
+ 
+ 
         mRightMaster = TalonSRXFactory.createDefaultTalon(Constants.kRightDriveMasterId);
 
        // mRightMaster.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
@@ -218,6 +222,7 @@ public class Drive extends Subsystem {
         //mRightMaster.setStatusFrameRateMs(StatusFrameRate.Feedback, 5);
         mRightMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
         mRightMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
+        mRightSlave.set(ControlMode.Follower,Constants.kRightDriveMasterId);
 
        // mLeftMaster.SetVelocityMeasurementPeriod(VelocityMeasurementPeriod.Period_10Ms);
         mLeftMaster.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, Constants.kTimeoutMs);
@@ -228,8 +233,8 @@ public class Drive extends Subsystem {
        // mRightMaster.SetVelocityMeasurementWindow(32);
         mRightMaster.configVelocityMeasurementWindow(32, Constants.kTimeoutMs);  // cheesygutys had 32
 
-        mShifter1 = Constants.makeSolenoidForId(Constants.kShifterSolenoidId1);
-        mShifter2 = Constants.makeSolenoidForId(Constants.kShifterSolenoidId2);
+     //   mShifter1 = Constants.makeSolenoidForId(Constants.kShifterSolenoidId1);
+      //  mShifter2 = Constants.makeSolenoidForId(Constants.kShifterSolenoidId2);
 
         reloadGains();
 
@@ -288,8 +293,8 @@ public class Drive extends Subsystem {
     public synchronized void setHighGear(boolean wantsHighGear) {
         if (wantsHighGear != mIsHighGear) {
             mIsHighGear = wantsHighGear;
-            mShifter1.set(wantsHighGear);
-            mShifter2.set(!wantsHighGear);
+          //  mShifter1.set(wantsHighGear);
+          //  mShifter2.set(!wantsHighGear);
         }
     }
 

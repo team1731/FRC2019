@@ -48,12 +48,12 @@ public class GamepadControlBoard implements ControlBoardInterface {
     
     @Override
     public boolean getCalibrateDown() {
-        return false; //mOperator.getRawButton(7);
+        return mOperator.getRawButton(7);
     }
     
     @Override
     public boolean getCalibrateUp() {
-        return false; //mOperator.getRawButton(8);
+        return mOperator.getRawButton(8);
     }
 
 
@@ -184,12 +184,12 @@ public class GamepadControlBoard implements ControlBoardInterface {
 
     @Override
     public boolean getFlipDownButton() {
-        return false; // mOperator.getRawButton(3); // getButtonX
+        return mOperator.getRawButton(3); // getButtonX
     }
 
     @Override
     public boolean getFlipUpButton() {
-        return false; // mOperator.getRawButton(4); // getButtonY
+        return mOperator.getRawButton(4); // getButtonY
     }
 
 	@Override

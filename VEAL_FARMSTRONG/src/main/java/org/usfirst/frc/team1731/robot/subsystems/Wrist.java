@@ -34,7 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * 
- * 1731 this system controls the elevator
+ * 1731 this system controls the wrist
  * 
  * @see Subsystem.java
  */
@@ -42,13 +42,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //stemrobotics.cs.pdx.edu/sites/default/files/WPILib_programming.pdf
 
 @SuppressWarnings("unused")
-public class Elevator extends Subsystem {
+public class Wrist extends Subsystem {
 
-    private static Elevator sInstance = null;
+    private static Wrist sInstance = null;
     
-    public static Elevator getInstance() {
+    public static Wrist getInstance() {
         if (sInstance == null) {
-            sInstance = new Elevator();
+            sInstance = new Wrist();
         }
         return sInstance;
     }
@@ -57,17 +57,17 @@ public class Elevator extends Subsystem {
     //private final Solenoid mOverTop1;
     //private final Solenoid mOverTop2;
     
-    public Elevator() {
-        mTalon = new TalonSRX(Constants.kElevatorTalon);
-        //mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+    public Wrist() {
+        mTalon = new TalonSRX(Constants.kWristTalon);
+        mTalon.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
         mTalon.set(ControlMode.Position, 0);
         mTalon.configVelocityMeasurementWindow(10, 0);
         mTalon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
         mTalon.selectProfileSlot(0, 0);
-        mTalon.config_kP(Constants.SlotIdx, Constants.kElevatorTalonKP, Constants.kTimeoutMs );
-        mTalon.config_kI(Constants.SlotIdx, Constants.kElevatorTalonKI, Constants.kTimeoutMs );
-        mTalon.config_kD(Constants.SlotIdx, Constants.kElevatorTalonKD, Constants.kTimeoutMs);
-        mTalon.config_kF(Constants.SlotIdx, Constants.kElevatorTalonKF, Constants.kTimeoutMs );
+        mTalon.config_kP(Constants.SlotIdx, Constants.kWristTalonKP, Constants.kTimeoutMs );
+        mTalon.config_kI(Constants.SlotIdx, Constants.kWristKI, Constants.kTimeoutMs );
+        mTalon.config_kD(Constants.SlotIdx, Constants.kWristKD, Constants.kTimeoutMs);
+        mTalon.config_kF(Constants.SlotIdx, Constants.kWristTalonKF, Constants.kTimeoutMs );
         mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
         mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
         mTalon.configClosedloopRamp(0, Constants.kTimeoutMs);
@@ -99,16 +99,23 @@ public class Elevator extends Subsystem {
     	
     public enum SystemState {	
         IDLE,   // stop all motors
-        ELEVATORTRACKING, // moving
+        WRISTTRACKING, // moving
         CALIBRATINGUP,
         CALIBRATINGDOWN,
     }
 
     public enum WantedState {
     	IDLE,   
-        ELEVATORTRACKING, // moving
+        WRISTTRACKING, // moving
         CALIBRATINGUP,
         CALIBRATINGDOWN,
+    }
+
+    public enum WristPositions {
+    	CARGOPICKUP,   
+        STRAIGHTAHEAD, // moving
+        SHOOTHIGH,
+        STARTINGPOSITION,
     }
 
     private SystemState mSystemState = SystemState.IDLE;
@@ -127,7 +134,7 @@ public class Elevator extends Subsystem {
         @Override
         public void onStart(double timestamp) {
             stop();
-            synchronized (Elevator.this) {
+            synchronized (Wrist.this) {
                 mSystemState = SystemState.IDLE;
                 mStateChanged = true;
                 mWantedPosition = 0;
@@ -140,13 +147,13 @@ public class Elevator extends Subsystem {
         @Override
         public void onLoop(double timestamp) {
    	
-        	synchronized (Elevator.this) {
+        	synchronized (Wrist.this) {
                 SystemState newState;
                 switch (mSystemState) {
                     case IDLE:
                         newState = handleIdle();
                         break;
-                    case ELEVATORTRACKING:
+                    case WRISTTRACKING:
                         newState = handleElevatorTracking();
                         break;
                     case CALIBRATINGUP:
@@ -195,8 +202,8 @@ public class Elevator extends Subsystem {
 
     private SystemState defaultStateTransfer() {
         switch (mWantedState) {
-            case ELEVATORTRACKING:
-                return SystemState.ELEVATORTRACKING;
+            case WRISTTRACKING:
+                return SystemState.WRISTTRACKING;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case CALIBRATINGDOWN:

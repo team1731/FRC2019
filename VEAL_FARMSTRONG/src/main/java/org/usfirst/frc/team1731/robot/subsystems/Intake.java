@@ -12,7 +12,7 @@ import org.usfirst.frc.team1731.robot.subsystems.Elevator.SystemState;
 import org.usfirst.frc.team1731.robot.subsystems.Elevator.WantedState;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -41,32 +41,24 @@ public class Intake extends Subsystem {
         return sInstance;
     }
 
-
-    private VictorSPX mVictor1;
-    private VictorSPX mVictor2;
-    private AnalogInput mIRSensor1;
-    private AnalogInput mIRSensor2;
-
-
+    private final TalonSRX mTalon;
+    //private AnalogInput mIRSensor1;
+    //private AnalogInput mIRSensor2;
 
     private Intake() {
-    	mVictor1 = new VictorSPX(Constants.kIntakeVictor1);
-    	mVictor2 = new VictorSPX(Constants.kIntakeVictor2);
-    	mIRSensor1 = new AnalogInput(1);
-    	mIRSensor2 = new AnalogInput(4);
+        mTalon = new TalonSRX(Constants.kIntakeTalon);
+        mTalon.setInverted(true); //Constants.kMotorInvert);
+    	//mIRSensor1 = new AnalogInput(1);
+    	//mIRSensor2 = new AnalogInput(4);
     }
-
 
     public boolean checkSystem() {
 
     	return true;
     }
 
-
-
 	public void setIdle() {
 		// TODO Auto-generated method stub
-		
 	}
   	
     public enum SystemState {	
@@ -84,9 +76,7 @@ public class Intake extends Subsystem {
     private SystemState mSystemState = SystemState.IDLE;
     private WantedState mWantedState = WantedState.IDLE;
     
-    DoubleSolenoid Pinchers = new DoubleSolenoid (Constants.kPincherSolenoid1, Constants.kPincherSolenoid2);
-
-    private double mCurrentStateStartTime;
+    //private double mCurrentStateStartTime;
   //  private double mWantedPosition = 0;
     private boolean mStateChanged = false;
 
@@ -98,7 +88,7 @@ public class Intake extends Subsystem {
                 mSystemState = SystemState.IDLE;
                 mStateChanged = true;
               //  mWantedPosition = 0;
-                mCurrentStateStartTime = timestamp;               
+               // mCurrentStateStartTime = timestamp;               
               //  DriverStation.reportError("Elevator SystemState: " + mSystemState, false);
             }
         }
@@ -125,7 +115,7 @@ public class Intake extends Subsystem {
                 if (newState != mSystemState) {
                     //System.out.println("Elevator state " + mSystemState + " to " + newState);
                     mSystemState = newState;
-                    mCurrentStateStartTime = timestamp;
+                    //mCurrentStateStartTime = timestamp;
                     //DriverStation.reportWarning("Intake SystemState: " + mSystemState, false);
                     mStateChanged = true;
                 } else {
@@ -136,22 +126,14 @@ public class Intake extends Subsystem {
         
         private SystemState handleSpitting() {
             if (mStateChanged) {
-                mVictor1.set(ControlMode.PercentOutput, 1);
-                mVictor2.set(ControlMode.PercentOutput, 1);
+                mTalon.set(ControlMode.PercentOutput, -1);
             }
     		return defaultStateTransfer();
 		}
 
 		private SystemState handleIntaking() {
-            if (gotCube()) {
-            	Pinchers.set(DoubleSolenoid.Value.kForward);
-                mVictor1.set(ControlMode.PercentOutput, 0);
-                mVictor2.set(ControlMode.PercentOutput, 0);
-            }else {
-                mVictor1.set(ControlMode.PercentOutput, -1);
-                mVictor2.set(ControlMode.PercentOutput, -1);
-            	Pinchers.set(DoubleSolenoid.Value.kReverse); 
-//                mHaveCube = true;
+            if (mStateChanged) {
+                mTalon.set(ControlMode.PercentOutput, 1);
             }
     		return defaultStateTransfer();
 		}
@@ -179,9 +161,7 @@ public class Intake extends Subsystem {
         //setOpenLoop(0.0f);
         //if motor is not off, turn motor off
         if (mStateChanged) {
-            mVictor1.set(ControlMode.PercentOutput, 0);
-            mVictor2.set(ControlMode.PercentOutput, 0);
-        	Pinchers.set(DoubleSolenoid.Value.kForward);
+            mTalon.set(ControlMode.PercentOutput, 0);
         }
 		return defaultStateTransfer();
     }
@@ -195,18 +175,18 @@ public class Intake extends Subsystem {
             //DriverStation.reportError("Intake WantedState: " + mWantedState, false);
         }
     }
-
+    
     @Override
     public void outputToSmartDashboard() {
-    	SmartDashboard.putNumber("IRSensor1", mIRSensor1.getAverageValue());
-    	SmartDashboard.putNumber("IRSensor2", mIRSensor2.getAverageValue());
+    	//SmartDashboard.putNumber("IRSensor1", mIRSensor1.getAverageValue());
+    	//SmartDashboard.putNumber("IRSensor2", mIRSensor2.getAverageValue());
      /*   SmartDashboard.putNumber("ElevWantPos", mWantedState);
         SmartDashboard.putNumber("ElevCurPos", mTalon.getSelectedSensorPosition(0));
         SmartDashboard.putNumber("ElevQuadPos", mTalon.getSensorCollection().getQuadraturePosition());
         SmartDashboard.putBoolean("ElevRevSw", mTalon.getSensorCollection().isRevLimitSwitchClosed());
         */
     }
-
+    
     @Override
     public void stop() {
         // mVictor.set(0);
@@ -222,9 +202,9 @@ public class Intake extends Subsystem {
         in.register(mLoop);
     }
     
-    public boolean gotCube() {
-    	 return ((mIRSensor1.getAverageValue() > 300) && (mIRSensor2.getAverageValue() > 300)); 
-    }
+    //public boolean gotCube() {
+    //	 return true; //((mIRSensor1.getAverageValue() > 300) && (mIRSensor2.getAverageValue() > 300)); 
+    //}
 
 }
     

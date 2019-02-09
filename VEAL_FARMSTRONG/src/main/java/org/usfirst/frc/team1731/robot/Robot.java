@@ -608,18 +608,23 @@ public class Robot extends IterativeRobot {
             boolean fishingPoleDown = mControlBoard.getFishingPoleDown();
             boolean fishingPoleExtend = mControlBoard.getFishingPoleExtend();
             boolean fishingPoleRetract =mControlBoard.getFishingPoleRetract();
+
+            boolean pickupHatch =mControlBoard.getPickupPanel();
+            boolean ejectHatch =mControlBoard.getShootPanel();
+            boolean pickupCargo =mControlBoard.getPickupBall();
+            boolean ejectCargo =mControlBoard.getShootBall();
             
-            //if (mControlBoard.getElevatorButton()) {  Lydia doesn't want to hold the button
+            if (mControlBoard.getElevatorButton()) {
 //                if (overTheTop) {
 //                    mSuperstructure.setOverTheTop(true);
 //                }
 //                else {
 //                    mSuperstructure.setOverTheTop(false);
 //                }
-                mSuperstructure.setWantedElevatorPosition(-1 * mControlBoard.getElevatorControl());
-            //} else {
-            //    mSuperstructure.setWantedElevatorPosition(0);
-            //}
+                mSuperstructure.setWantedElevatorPosition(500);
+            } else {
+                mSuperstructure.setWantedElevatorPosition(0);
+            }
 
             if (climbUp) {
             	mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
@@ -634,7 +639,15 @@ public class Robot extends IterativeRobot {
             } else if (calibrateUp) {
             	mSuperstructure.setWantedState(Superstructure.WantedState.CALIBRATINGUP);
             } else if (pickUp) {
-            	mSuperstructure.setWantedState(Superstructure.WantedState.AUTOINTAKING);
+                mSuperstructure.setWantedState(Superstructure.WantedState.AUTOINTAKING);
+            } else if (ejectHatch) {
+                mSuperstructure.setWantedState(Superstructure.WantedState.EJECTING_HATCH);
+            } else if (pickupHatch) {
+                mSuperstructure.setWantedState(Superstructure.WantedState.HATCH_CAPTURED); 
+            } else if (ejectCargo) {
+                mSuperstructure.setWantedState(Superstructure.WantedState.EJECTING_CARGO);
+            } else if (pickupCargo) {
+                mSuperstructure.setWantedState(Superstructure.WantedState.CARGO_CAPTURED);
             } else {
             	mSuperstructure.setWantedState(Superstructure.WantedState.ELEVATOR_TRACKING);
             }
@@ -642,11 +655,14 @@ public class Robot extends IterativeRobot {
             if (flipUp) {
             	//_24vSolenoid.set(true);
                 mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_UP);
+                //mSuperstructure.setWantedIntakeOutput(1.0);
             } else if (flipDown) {
                 mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_DOWN);
+                //mSuperstructure.setWantedIntakeOutput(-1.0);
             } else {
             	//_24vSolenoid.set(false);
                 mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_NONE);
+                //mSuperstructure.setWantedIntakeOutput(0);
             }
             
             if (fishingPoleUp) {
@@ -769,6 +785,8 @@ public class Robot extends IterativeRobot {
         //SmartDashboard.putBoolean("camera_connected", mVisionServer.isConnected());
         String autoCodes = SmartDashboard.getString("AutoCodes", "3 7 2 15");
         SmartDashboard.putString("AutoCodesReceived", autoCodes);
+        SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
+        SmartDashboard.putBoolean("Cal Up", mControlBoard.getCalibrateUp());
         ConnectionMonitor.getInstance().setLastPacketTime(Timer.getFPGATimestamp());
     }
 }
