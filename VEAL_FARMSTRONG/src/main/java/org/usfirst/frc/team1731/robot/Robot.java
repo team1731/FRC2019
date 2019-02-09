@@ -12,6 +12,7 @@ import org.usfirst.frc.team1731.lib.util.InterpolatingDouble;
 import org.usfirst.frc.team1731.lib.util.InterpolatingTreeMap;
 import org.usfirst.frc.team1731.lib.util.LatchedBoolean;
 import org.usfirst.frc.team1731.lib.util.math.RigidTransform2d;
+import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POV_POSITION;
 import org.usfirst.frc.team1731.robot.Constants.GRABBER_POSITION;
 import org.usfirst.frc.team1731.robot.auto.AutoModeBase;
 import org.usfirst.frc.team1731.robot.auto.AutoModeExecuter;
@@ -171,6 +172,8 @@ public class Robot extends IterativeRobot {
     	MIDDLERIGHT,
     	RIGHT
     };
+
+    private boolean joystickAxesAreReversed;
 
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
@@ -586,12 +589,10 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         try {
             
-            SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
-            
             double timestamp = Timer.getFPGATimestamp();
 
             // TODO FIXME RDB - for testing purposes only
-            leftRightCameraControl.set(mControlBoard.getInvertDrive());
+            leftRightCameraControl.set(mControlBoard.getToggleCamera());
                 
             boolean climbUp = mControlBoard.getClimbUp();
             boolean climbDown = mControlBoard.getClimbDown();
@@ -613,16 +614,15 @@ public class Robot extends IterativeRobot {
             boolean pickupCargo =mControlBoard.getPickupBall();
             boolean ejectCargo =mControlBoard.getShootBall();
             
-            if (mControlBoard.getElevatorButton()) {
-//                if (overTheTop) {
-//                    mSuperstructure.setOverTheTop(true);
-//                }
-//                else {
-//                    mSuperstructure.setOverTheTop(false);
-//                }
-                mSuperstructure.setWantedElevatorPosition(500);
-            } else {
-                mSuperstructure.setWantedElevatorPosition(0);
+            double elevatorPOV = mControlBoard.getElevatorControl();
+            if (elevatorPOV != -1) {
+                if (elevatorPOV == 0) {
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_FLOOR);
+                } else if (elevatorPOV == 1) {
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_2ND);
+                } else if (elevatorPOV == 2) {
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_3RD);
+                }
             }
 
             if (climbUp) {
@@ -684,6 +684,16 @@ public class Robot extends IterativeRobot {
             double throttle = mControlBoard.getThrottle();
             double turn = mControlBoard.getTurn();
             
+            if(mControlBoard.getInvertDrive()){
+                joystickAxesAreReversed = !joystickAxesAreReversed; 
+            }
+
+            if(joystickAxesAreReversed){
+                throttle=-throttle;
+                turn=-turn;
+             }
+
+
             mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
                     !mControlBoard.getLowGear()));
             boolean wantLowGear = mControlBoard.getLowGear();
@@ -776,6 +786,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putString("AutoCodesReceived", autoCodes);
         SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
         SmartDashboard.putBoolean("Cal Up", mControlBoard.getCalibrateUp());
+        SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
         ConnectionMonitor.getInstance().setLastPacketTime(Timer.getFPGATimestamp());
     }
 }

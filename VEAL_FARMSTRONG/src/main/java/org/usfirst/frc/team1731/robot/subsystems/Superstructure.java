@@ -7,6 +7,7 @@ import org.usfirst.frc.team1731.lib.util.InterpolatingDouble;
 import org.usfirst.frc.team1731.lib.util.drivers.RevRoboticsAirPressureSensor;
 import org.usfirst.frc.team1731.robot.Constants;
 import org.usfirst.frc.team1731.robot.Constants.GRABBER_POSITION;
+import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POV_POSITION;
 import org.usfirst.frc.team1731.robot.Robot;
 import org.usfirst.frc.team1731.robot.RobotState;
 import org.usfirst.frc.team1731.robot.ShooterAimingParameters;
@@ -135,7 +136,7 @@ public class Superstructure extends Subsystem {
     private boolean mCompressorOverride = false;
     private double mCurrentStateStartTime;
     private boolean mStateChanged;
-    private double mElevatorJoystickPosition = 0;
+    private double mWantedElevatorPosition = Constants.kElevatorHomeEncoderValue;
     private double mIntakeOutput = 0;
     //private boolean mIsOverTheTop = false;
     private GRABBER_POSITION mIsOverTheTop = GRABBER_POSITION.FLIP_UN_INIT; // Set to unknown to force it to be set
@@ -393,7 +394,7 @@ public class Superstructure extends Subsystem {
         }
 
         private SystemState handleElevatorTracking() {
-        	mElevator.setWantedPosition(mElevatorJoystickPosition);
+        	mElevator.setWantedPosition(mWantedElevatorPosition);
         	mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
             mIntake.setWantedState(Intake.WantedState.IDLE);
             mClimber.setWantedState(Climber.WantedState.IDLE);
@@ -433,7 +434,7 @@ public class Superstructure extends Subsystem {
         }
         
         private SystemState handleReturningHome() {
-        	mElevator.setWantedPosition(0);
+        	//mElevator.setWantedPosition(0);
         	mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
             mIntake.setWantedState(Intake.WantedState.IDLE);
            // mClimber.setWantedState(Climber.WantedState.IDLE);
@@ -471,7 +472,7 @@ public class Superstructure extends Subsystem {
         }
 
 		private SystemState handleSpittingOutTop() {
-        	mElevator.setWantedPosition(1);
+        	//mElevator.setWantedPosition(1);
         	mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
         	mIntake.setWantedState(Intake.WantedState.SPITTING);
         	
@@ -508,7 +509,7 @@ public class Superstructure extends Subsystem {
         }
 
 		private SystemState handleWaitingForRotate(double timestamp) {
-        	mElevator.setWantedPosition(1);
+        	//mElevator.setWantedPosition(1);
         	mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
         	mIntake.setIdle();
         	setOverTheTop(GRABBER_POSITION.FLIP_UP);
@@ -550,7 +551,7 @@ public class Superstructure extends Subsystem {
         }
 
 		private SystemState handleSpitting() {
-        	mElevator.setWantedPosition(mElevatorJoystickPosition);
+        	//mElevator.setWantedPosition(Constants.kElevatorHomeEncoderValue);
         	mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
         	mIntake.setWantedState(Intake.WantedState.SPITTING);
         	
@@ -587,7 +588,8 @@ public class Superstructure extends Subsystem {
         }
 
 		private SystemState handleCalibrationDown() {
-        	mElevator.setWantedState(Elevator.WantedState.CALIBRATINGDOWN);
+            mElevator.setWantedState(Elevator.WantedState.CALIBRATINGDOWN);
+            mWantedElevatorPosition = Constants.kElevatorHomeEncoderValue;
         	
             switch (mWantedState) {
             case CLIMBINGUP:
@@ -622,7 +624,8 @@ public class Superstructure extends Subsystem {
         }
 
 		private SystemState handleCalibrationUp() {
-        	mElevator.setWantedState(Elevator.WantedState.CALIBRATINGUP);
+            mElevator.setWantedState(Elevator.WantedState.CALIBRATINGUP);
+            mWantedElevatorPosition = Constants.kElevatorHomeEncoderValue;
         	
             switch (mWantedState) {
             case CLIMBINGUP:
@@ -770,7 +773,7 @@ public class Superstructure extends Subsystem {
 		}
 
 		private SystemState handleWaitingForLowPosition() {
-        	mElevator.setWantedPosition(-1);
+        	//mElevator.setWantedPosition(-1);
         	mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
         	mIntake.setWantedState(Intake.WantedState.INTAKING);
         	
@@ -917,8 +920,35 @@ public class Superstructure extends Subsystem {
         enabledLooper.register(mLoop);
     }
 
-    public void setWantedElevatorPosition(double position) {
-        mElevatorJoystickPosition = position;
+    public void setWantedElevatorPosition(ELEVATOR_POV_POSITION position) {
+        boolean cargo = false; // cargo or hatch check when known
+        double encoderValue = Constants.kElevatorHomeEncoderValue;
+        if (cargo) {
+            switch (position) {
+                case ELEVATOR_FLOOR:
+                    encoderValue = (double) Constants.kElevatorCargoFloor_EncoderValue;
+                    break;
+                case ELEVATOR_2ND:
+                    encoderValue = (double) Constants.kElevatorCargo2nd_EncoderValue;
+                    break;
+                case ELEVATOR_3RD:
+                    encoderValue = (double) Constants.kElevatorCargo3rd_EncoderValue;
+                    break;
+            }
+        } else {
+            switch (position) {
+                case ELEVATOR_FLOOR:
+                    encoderValue = (double) Constants.kElevatorHatchFloor_EncoderValue;
+                    break;
+                case ELEVATOR_2ND:
+                    encoderValue = (double) Constants.kElevatorHatch2nd_EncoderValue;
+                    break;
+                case ELEVATOR_3RD:
+                    encoderValue = (double) Constants.kElevatorHatch3rd_EncoderValue;
+                    break;
+            }
+        }
+        mWantedElevatorPosition = encoderValue;
     }
 
     public void setOverrideCompressor(boolean force_off) {

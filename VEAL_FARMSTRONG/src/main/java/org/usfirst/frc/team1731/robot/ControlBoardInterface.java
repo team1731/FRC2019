@@ -7,7 +7,7 @@ public interface ControlBoardInterface {
 
 		// DRIVER CONTROLS
 
-		boolean getElevatorButton();
+		//boolean getElevatorButton();
 
 		boolean getFlipUpButton();
 
@@ -48,10 +48,7 @@ public interface ControlBoardInterface {
 
 
 		//DRIVER
-		boolean getWideCamera();
-		boolean getNormalCamera();
-		boolean getFrontCamera();
-		boolean getBackCamera();
+		boolean getToggleCamera();
 		boolean getLegoLift();
 		boolean getActivateAuto();
 		boolean getDeactivateAuto();

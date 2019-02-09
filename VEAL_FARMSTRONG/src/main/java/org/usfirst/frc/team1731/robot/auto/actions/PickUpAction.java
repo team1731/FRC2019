@@ -28,7 +28,7 @@ public class PickUpAction implements Action {
     @Override
     public boolean isFinished() {
     //	System.out.println("in isFinished:" + mIntake.gotCube() + ", " + mElevator.getCurrentPosition(true));
-        return (Math.abs(mElevator.getCurrentPosition(true))  < 0.1);
+        return (Math.abs(mElevator.getCurrentPosition())  < 0.1);
 
     }
 

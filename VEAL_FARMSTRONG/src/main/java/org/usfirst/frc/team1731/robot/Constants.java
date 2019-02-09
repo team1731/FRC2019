@@ -172,9 +172,26 @@ public class Constants extends ConstantsBase {
     //public static double kElevatorMaxEncoder = 12000;
     //public static double kElevatorEncoderError = 100;
     //public static double kElevatorSafePos = 6000;
-    public static double kElevatorTopEncoderValue = 8000;
-    public static double kElevatorBottomEncoderValue= 4870; // really it -5300, but joystick value negates it
-    public static double kElevatorHomeEncoderValue = 0;
+    public static enum ELEVATOR_POV_POSITION {
+    	ELEVATOR_FLOOR,
+    	ELEVATOR_2ND,
+    	ELEVATOR_3RD
+    }
+    public static int kElevatorLevel_Floor = 0;
+    public static int kElevatorLevel_2nd = 1;
+    public static int kElevatorLevel_3rd = 2;
+    public static int kElevatorTopEncoderValue = 2000;
+    public static int kElevatorHatch3rd_EncoderValue= 1200;
+    public static int kElevatorHatch2nd_EncoderValue= 700;
+    public static int kElevatorHatchFloor_EncoderValue= 200; 
+    public static int kElevatorCargo3rd_EncoderValue = 1500;
+    public static int kElevatorCargo2nd_EncoderValue = 1000;
+    public static int kElevatorCargoFloor_EncoderValue = 500;
+    public static int kElevatorHomeEncoderValue = 0;
+    public static int kElevatorEncoderRange = 20;
+
+    public static double kElevatorCalibrateUp = 0.4;
+    public static double kElevatorCalibrateDown = -0.4;
     
 
     // Hopper gains

@@ -3,6 +3,7 @@ package org.usfirst.frc.team1731.robot.auto.actions;
 import org.usfirst.frc.team1731.robot.subsystems.Elevator;
 import org.usfirst.frc.team1731.robot.subsystems.Intake.WantedState;
 import org.usfirst.frc.team1731.robot.subsystems.Superstructure;
+import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POV_POSITION;
 
 import edu.wpi.first.wpilibj.Timer;
 
@@ -20,7 +21,7 @@ public class ElevatorUp implements Action {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(mElevator.getCurrentPosition(true) - DESIRED_POSITION) < 0.05;
+        return Math.abs(mElevator.getCurrentPosition() - DESIRED_POSITION) < 0.05;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class ElevatorUp implements Action {
 
     @Override
     public void start() {
-    	mSuperstructure.setWantedElevatorPosition(0); //DESIRED_POSITION);
+    	mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_FLOOR); //DESIRED_POSITION);
     	//mElevator.setWantedPosition(DESIRED_POSITION);
     }
 }

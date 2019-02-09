@@ -316,26 +316,26 @@ public class Wrist extends Subsystem {
         setWantedState(WantedState.IDLE);
     }
 
-    // private boolean checkRevSwitch() {
-    //     boolean revSwitch = mTalon.getSensorCollection().isRevLimitSwitchClosed();
-    //     if (revSwitch) {
-    //         if (!mRevSwitchSet) {
-    //             mTalon.setSelectedSensorPosition(-1 * (int)Constants.kWristBottomEncoderValue, 0, 10);
-    //             mRevSwitchSet = true;
-    //         }
-    //     } else {
-    //         mRevSwitchSet = false;
-    //     }
+    private boolean checkRevSwitch() {
+        boolean revSwitch = mTalon.getSensorCollection().isRevLimitSwitchClosed();
+        if (revSwitch) {
+            if (!mRevSwitchSet) {
+                mTalon.setSelectedSensorPosition(-1 * (int)Constants.kElevatorHomeEncoderValue, 0, 10);
+                mRevSwitchSet = true;
+            }
+        } else {
+            mRevSwitchSet = false;
+        }
         
-    //     return revSwitch;
-    // }
+        return revSwitch;
+    }
     
     public boolean atBottom() {
-    	return false; //Math.abs(mTalon.getSelectedSensorPosition(0)+Constants.kWristBottomEncoderValue)<100;
+    	return false; //Math.abs(mTalon.getSelectedSensorPosition(0)+Constants.kElevatorHomeEncoderValue)<100;
     }
 
     public boolean atDesired() {
-    	return Math.abs(mTalon.getSelectedSensorPosition(0) - mNextEncPos)<100;
+    	return false; //Math.abs(mTalon.getSelectedSensorPosition(0) - mNextEncPos)<100;
     }
     
     @Override
