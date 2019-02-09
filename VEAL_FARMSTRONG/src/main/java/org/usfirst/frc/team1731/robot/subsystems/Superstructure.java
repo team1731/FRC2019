@@ -63,6 +63,7 @@ public class Superstructure extends Subsystem {
     }
 
     private final Elevator mElevator = Elevator.getInstance();
+    private final Wrist mWrist = Wrist.getInstance();
     private final Climber mClimber = Climber.getInstance();
     private final FishingPole mFishingPole = FishingPole.getInstance();
     private final Intake mIntake = Intake.getInstance();

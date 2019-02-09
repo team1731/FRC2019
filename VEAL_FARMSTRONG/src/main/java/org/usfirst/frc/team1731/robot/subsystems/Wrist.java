@@ -69,7 +69,7 @@ public class Wrist extends Subsystem {
         mTalon.config_kD(Constants.SlotIdx, Constants.kWristKD, Constants.kTimeoutMs);
         mTalon.config_kF(Constants.SlotIdx, Constants.kWristTalonKF, Constants.kTimeoutMs );
         mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
-        mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
+        //mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
         mTalon.configClosedloopRamp(0, Constants.kTimeoutMs);
         mTalon.setSelectedSensorPosition(0, 0, 10); //-1793, 0, 10);
         mTalon.overrideLimitSwitchesEnable(false);
@@ -112,17 +112,23 @@ public class Wrist extends Subsystem {
     }
 
     public enum WristPositions {
-    	CARGOPICKUP,   
-        STRAIGHTAHEAD, // moving
-        SHOOTHIGH,
-        STARTINGPOSITION,
+    	CARGOPICKUP(0),   
+        STRAIGHTAHEAD(50), // moving
+        SHOOTHIGH(100),
+        STARTINGPOSITION(150);
+
+        private final int pos;
+
+        private WristPositions(int pos){
+            this.pos = pos;
+        }
     }
 
     private SystemState mSystemState = SystemState.IDLE;
     private WantedState mWantedState = WantedState.IDLE;
 
     private double mCurrentStateStartTime;
-    private double mWantedPosition = 0;
+    private WristPositions mWantedPosition = 0;
     private double mNextEncPos = 0;
     private boolean mStateChanged = false;
     private boolean mRevSwitchSet = false;
@@ -140,7 +146,7 @@ public class Wrist extends Subsystem {
                 mWantedPosition = 0;
                 mCurrentStateStartTime = timestamp;
                 mTalon.setSelectedSensorPosition(0, 0, 10);                
-              //  DriverStation.reportError("Elevator SystemState: " + mSystemState, false);
+              //  DriverStation.reportError("Wrist SystemState: " + mSystemState, false);
             }
         }
 
@@ -154,7 +160,7 @@ public class Wrist extends Subsystem {
                         newState = handleIdle();
                         break;
                     case WRISTTRACKING:
-                        newState = handleElevatorTracking();
+                        newState = handleWristTracking();
                         break;
                     case CALIBRATINGUP:
                         newState = handleCalibratingUp();
@@ -167,10 +173,10 @@ public class Wrist extends Subsystem {
                 }
 
                 if (newState != mSystemState) {
-                    System.out.println("Elevator state " + mSystemState + " to " + newState);
+                    System.out.println("Wrist state " + mSystemState + " to " + newState);
                     mSystemState = newState;
                     mCurrentStateStartTime = timestamp;
-                    //DriverStation.reportWarning("Elevator SystemState: " + mSystemState, false);
+                    //DriverStation.reportWarning("Wrist SystemState: " + mSystemState, false);
                     mStateChanged = true;
                 } else {
                     mStateChanged = false;
@@ -221,14 +227,14 @@ public class Wrist extends Subsystem {
         return defaultStateTransfer();
     }
 
-    private SystemState handleElevatorTracking() {
+    private SystemState handleWristTracking() {
     		int nextPos; 
     	
 	    	if (mWantedPosition > 50) {
-                nextPos = (int)(mWantedPosition); //Constants.kElevatorTopEncoderValue); 
+                nextPos = (int)(mWantedPosition); //Constants.kWristTopEncoderValue); 
 	    	} else if (mWantedPosition < 50)  {
 	    		//int curPos = mTalon.getSelectedSensorPosition(0);
-	    		nextPos = (int)(mWantedPosition); //Constants.kElevatorBottomEncoderValue);	    		
+	    		nextPos = (int)(mWantedPosition); //Constants.kWristBottomEncoderValue);	    		
 	    	} else {
                 nextPos = 0;
                 mWantedPosition = 0;
@@ -237,8 +243,8 @@ public class Wrist extends Subsystem {
      //       System.out.println("Pos:" + mWantedPosition + ", EncVal: " + curPos);
 
     		//if (checkRevSwitch()) {
-            //    if (nextPos < -1 * (int)Constants.kElevatorBottomEncoderValue) {
-    		//        nextPos = -1 * (int)Constants.kElevatorBottomEncoderValue;
+            //    if (nextPos < -1 * (int)Constants.kWristBottomEncoderValue) {
+    		//        nextPos = -1 * (int)Constants.kWristBottomEncoderValue;
             //    }
     		//}
             mNextEncPos = mWantedPosition;
@@ -248,30 +254,31 @@ public class Wrist extends Subsystem {
 	    	return defaultStateTransfer();
     }
 
-    public synchronized void setWantedPosition(double position) {
+    public synchronized void setWantedPosition(WristPositions position) {
         /*
         if (mWantedPosition > 0) {
-    		mNextEncPos = (int)(position*Constants.kElevatorTopEncoderValue); 
+    		mNextEncPos = (int)(position*Constants.kWristTopEncoderValue); 
     	} else {
     		//int curPos = mTalon.getSelectedSensorPosition(0);
-    		mNextEncPos = (int)(position*Constants.kElevatorBottomEncoderValue);	    		
+    		mNextEncPos = (int)(position*Constants.kWristBottomEncoderValue);	    		
         }
         */ 
         mWantedPosition = position;
     }
 
     public synchronized double getCurrentPosition(boolean up) {
-    	if (up) {
-    		return mTalon.getSelectedSensorPosition(0) / Constants.kElevatorTopEncoderValue;
-    	} else {
-    		return mTalon.getSelectedSensorPosition(0) / Constants.kElevatorBottomEncoderValue;
-    	}
+    	// if (up) {
+    	// 	return mTalon.getSelectedSensorPosition(0) / Constants.kWristTopEncoderValue;
+    	// } else {
+    	// 	return mTalon.getSelectedSensorPosition(0) / Constants.kWristBottomEncoderValue;
+        // }
+        return 0;
     }
     
     public synchronized void setWantedState(WantedState state) {
         if (state != mWantedState) {
             mWantedState = state;
-            //DriverStation.reportError("Elevator WantedState: " + mWantedState, false);
+            //DriverStation.reportError("Wrist WantedState: " + mWantedState, false);
         }
     }
     /*
@@ -289,14 +296,14 @@ public class Wrist extends Subsystem {
     */
     @Override
     public void outputToSmartDashboard() {
-        SmartDashboard.putString("ElevSysState", mSystemState.name()); // .ordinal());
-        SmartDashboard.putString("ElevWantState", mWantedState.name());
-        //SmartDashboard.putNumber("ElevWantState", (double)mWantedState.ordinal());
-        SmartDashboard.putNumber("ElevWantPos", mWantedPosition);
-        SmartDashboard.putNumber("ElevCurPos", mTalon.getSelectedSensorPosition(0));
-        SmartDashboard.putNumber("ElevQuadPos", mTalon.getSensorCollection().getQuadraturePosition());
-        //SmartDashboard.putBoolean("ElevRevSw", mTalon.getSensorCollection().isRevLimitSwitchClosed());
-        //SmartDashboard.putBoolean("ElevLastRevSw", mRevSwitchSet);
+        SmartDashboard.putString("WristSysState", mSystemState.name()); // .ordinal());
+        SmartDashboard.putString("WristWantState", mWantedState.name());
+        //SmartDashboard.putNumber("WristWantState", (double)mWantedState.ordinal());
+        SmartDashboard.putNumber("WristWantPos", mWantedPosition);
+        SmartDashboard.putNumber("WristCurPos", mTalon.getSelectedSensorPosition(0));
+        SmartDashboard.putNumber("WristQuadPos", mTalon.getSensorCollection().getQuadraturePosition());
+        //SmartDashboard.putBoolean("WristRevSw", mTalon.getSensorCollection().isRevLimitSwitchClosed());
+        //SmartDashboard.putBoolean("WristLastRevSw", mRevSwitchSet);
     }
 
     @Override
@@ -305,22 +312,22 @@ public class Wrist extends Subsystem {
         setWantedState(WantedState.IDLE);
     }
 
-    private boolean checkRevSwitch() {
-        boolean revSwitch = mTalon.getSensorCollection().isRevLimitSwitchClosed();
-        if (revSwitch) {
-            if (!mRevSwitchSet) {
-                mTalon.setSelectedSensorPosition(-1 * (int)Constants.kElevatorBottomEncoderValue, 0, 10);
-                mRevSwitchSet = true;
-            }
-        } else {
-            mRevSwitchSet = false;
-        }
+    // private boolean checkRevSwitch() {
+    //     boolean revSwitch = mTalon.getSensorCollection().isRevLimitSwitchClosed();
+    //     if (revSwitch) {
+    //         if (!mRevSwitchSet) {
+    //             mTalon.setSelectedSensorPosition(-1 * (int)Constants.kWristBottomEncoderValue, 0, 10);
+    //             mRevSwitchSet = true;
+    //         }
+    //     } else {
+    //         mRevSwitchSet = false;
+    //     }
         
-        return revSwitch;
-    }
+    //     return revSwitch;
+    // }
     
     public boolean atBottom() {
-    	return Math.abs(mTalon.getSelectedSensorPosition(0)+Constants.kElevatorBottomEncoderValue)<100;
+    	return false; //Math.abs(mTalon.getSelectedSensorPosition(0)+Constants.kWristBottomEncoderValue)<100;
     }
 
     public boolean atDesired() {
@@ -337,11 +344,11 @@ public class Wrist extends Subsystem {
     }
 
     public boolean checkSystem() {
-        System.out.println("Testing ELEVATOR.-----------------------------------");
+        System.out.println("Testing Wrist.-----------------------------------");
         return false;
     }
 
 	public boolean atTop() {
-		return Math.abs(mTalon.getSelectedSensorPosition(0)-Constants.kElevatorTopEncoderValue)<100;
+		return false; // Math.abs(mTalon.getSelectedSensorPosition(0)-Constants.kWristTopEncoderValue)<100;
 	}
 }
