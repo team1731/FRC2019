@@ -586,8 +586,6 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         try {
             
-            SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
-            
             double timestamp = Timer.getFPGATimestamp();
 
             // TODO FIXME RDB - for testing purposes only
@@ -775,6 +773,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putString("AutoCodesReceived", autoCodes);
         SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
         SmartDashboard.putBoolean("Cal Up", mControlBoard.getCalibrateUp());
+        SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
         ConnectionMonitor.getInstance().setLastPacketTime(Timer.getFPGATimestamp());
     }
 }

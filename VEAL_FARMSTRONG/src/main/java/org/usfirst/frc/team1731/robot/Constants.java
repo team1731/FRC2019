@@ -189,6 +189,9 @@ public class Constants extends ConstantsBase {
     public static int kElevatorCargoFloor_EncoderValue = 500;
     public static int kElevatorHomeEncoderValue = 0;
     public static int kElevatorEncoderRange = 20;
+
+    public static double kElevatorCalibrateUp = 0.4;
+    public static double kElevatorCalibrateDown = -0.4;
     
 
     // Hopper gains

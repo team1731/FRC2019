@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+
 
 //import com.ctre.phoenix.motorcontrol.StatusFrameRate;
 //import com.ctre.phoenix.motorcontrol.VelocityMeasWindow;
@@ -173,7 +175,7 @@ public class Elevator extends Subsystem {
         
         private SystemState handleCalibratingDown() {
             if (mStateChanged) {
-                mTalon.set(ControlMode.PercentOutput, -0.4);
+                mTalon.set(ControlMode.PercentOutput, Constants.kElevatorCalibrateDown);
             }
     		mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
             mWantedPosition = Constants.kElevatorHomeEncoderValue;
@@ -183,7 +185,7 @@ public class Elevator extends Subsystem {
 
 		private SystemState handleCalibratingUp() {
             if (mStateChanged) {
-                mTalon.set(ControlMode.PercentOutput, 0.8);
+                mTalon.set(ControlMode.PercentOutput, Constants.kElevatorCalibrateUp);
             }
             mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
             mWantedPosition = Constants.kElevatorHomeEncoderValue;

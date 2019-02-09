@@ -135,7 +135,7 @@ public class Superstructure extends Subsystem {
     private boolean mCompressorOverride = false;
     private double mCurrentStateStartTime;
     private boolean mStateChanged;
-    private double mWantedElevatorPosition = 0;
+    private double mWantedElevatorPosition = Constants.kElevatorHomeEncoderValue;
     private double mIntakeOutput = 0;
     //private boolean mIsOverTheTop = false;
     private GRABBER_POSITION mIsOverTheTop = GRABBER_POSITION.FLIP_UN_INIT; // Set to unknown to force it to be set
@@ -587,7 +587,8 @@ public class Superstructure extends Subsystem {
         }
 
 		private SystemState handleCalibrationDown() {
-        	mElevator.setWantedState(Elevator.WantedState.CALIBRATINGDOWN);
+            mElevator.setWantedState(Elevator.WantedState.CALIBRATINGDOWN);
+            mWantedElevatorPosition = Constants.kElevatorHomeEncoderValue;
         	
             switch (mWantedState) {
             case CLIMBINGUP:
@@ -622,7 +623,8 @@ public class Superstructure extends Subsystem {
         }
 
 		private SystemState handleCalibrationUp() {
-        	mElevator.setWantedState(Elevator.WantedState.CALIBRATINGUP);
+            mElevator.setWantedState(Elevator.WantedState.CALIBRATINGUP);
+            mWantedElevatorPosition = Constants.kElevatorHomeEncoderValue;
         	
             switch (mWantedState) {
             case CLIMBINGUP:
