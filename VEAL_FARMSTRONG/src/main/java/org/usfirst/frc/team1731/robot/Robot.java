@@ -615,11 +615,11 @@ public class Robot extends IterativeRobot {
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
                 if (elevatorPOV == 0) {
-                    mSuperstructure.setWantedElevatorPosition(500);
+                    mSuperstructure.setWantedElevatorPosition(Constants.kElevatorCargo3rd_EncoderValue);
                 } else if (elevatorPOV == 1) {
-                    mSuperstructure.setWantedElevatorPosition(500);
+                    mSuperstructure.setWantedElevatorPosition(Constants.kElevatorCargo2nd_EncoderValue);
                 } else if (elevatorPOV == 2) {
-                    mSuperstructure.setWantedElevatorPosition(500);
+                    mSuperstructure.setWantedElevatorPosition(Constants.kElevatorCargoFloor_EncoderValue);
                 }
             }
 

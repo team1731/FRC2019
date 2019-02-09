@@ -173,12 +173,12 @@ public class Constants extends ConstantsBase {
     //public static double kElevatorEncoderError = 100;
     //public static double kElevatorSafePos = 6000;
     public static int kElevatorTopEncoderValue = 2000;
-    public static int kElevatorHatch2_EncoderValue= 1200;
-    public static int kElevatorHatch1_EncoderValue= 700;
-    public static int kElevatorHatch0_EncoderValue= 200; 
-    public static int kElevatorCargo2_EncoderValue = 1500;
-    public static int kElevatorCargo1_EncoderValue = 1000;
-    public static int kElevatorCargo0_EncoderValue = 500;
+    public static int kElevatorHatch3rd_EncoderValue= 1200;
+    public static int kElevatorHatch2nd_EncoderValue= 700;
+    public static int kElevatorHatchFloor_EncoderValue= 200; 
+    public static int kElevatorCargo3rd_EncoderValue = 1500;
+    public static int kElevatorCargo2nd_EncoderValue = 1000;
+    public static int kElevatorCargoFloor_EncoderValue = 500;
     public static int kElevatorHomeEncoderValue = 0;
     
 
