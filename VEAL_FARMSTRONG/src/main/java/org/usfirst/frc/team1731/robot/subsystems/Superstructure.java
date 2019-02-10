@@ -7,7 +7,7 @@ import org.usfirst.frc.team1731.lib.util.InterpolatingDouble;
 import org.usfirst.frc.team1731.lib.util.drivers.RevRoboticsAirPressureSensor;
 import org.usfirst.frc.team1731.robot.Constants;
 import org.usfirst.frc.team1731.robot.Constants.GRABBER_POSITION;
-import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POV_POSITION;
+import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POSITION;
 import org.usfirst.frc.team1731.robot.Robot;
 import org.usfirst.frc.team1731.robot.RobotState;
 import org.usfirst.frc.team1731.robot.ShooterAimingParameters;
@@ -918,7 +918,7 @@ public class Superstructure extends Subsystem {
         enabledLooper.register(mLoop);
     }
 
-    public void setWantedElevatorPosition(ELEVATOR_POV_POSITION position) {
+    public void setWantedElevatorPosition(ELEVATOR_POSITION position) {
         boolean cargo = false; // cargo or hatch check when known
         double encoderValue = Constants.kElevatorHomeEncoderValue;
         if (cargo) {
@@ -932,6 +932,9 @@ public class Superstructure extends Subsystem {
                 case ELEVATOR_3RD:
                     encoderValue = (double) Constants.kElevatorCargo3rd_EncoderValue;
                     break;
+                case ELEVATOR_SHIP:
+                    encoderValue = (double) Constants.kElevatorCargoShip_EncoderValue;
+                    break;
             }
         } else {
             switch (position) {
@@ -943,6 +946,9 @@ public class Superstructure extends Subsystem {
                     break;
                 case ELEVATOR_3RD:
                     encoderValue = (double) Constants.kElevatorHatch3rd_EncoderValue;
+                    break;
+                case ELEVATOR_SHIP:
+                    encoderValue = (double) Constants.kElevatorHatchShip_EncoderValue;
                     break;
             }
         }

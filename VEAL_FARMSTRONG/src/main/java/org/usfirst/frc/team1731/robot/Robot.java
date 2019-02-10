@@ -12,7 +12,7 @@ import org.usfirst.frc.team1731.lib.util.InterpolatingDouble;
 import org.usfirst.frc.team1731.lib.util.InterpolatingTreeMap;
 import org.usfirst.frc.team1731.lib.util.LatchedBoolean;
 import org.usfirst.frc.team1731.lib.util.math.RigidTransform2d;
-import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POV_POSITION;
+import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POSITION;
 import org.usfirst.frc.team1731.robot.Constants.GRABBER_POSITION;
 import org.usfirst.frc.team1731.robot.auto.AutoModeBase;
 import org.usfirst.frc.team1731.robot.auto.AutoModeExecuter;
@@ -609,20 +609,23 @@ public class Robot extends IterativeRobot {
             boolean fishingPoleExtend = mControlBoard.getFishingPoleExtend();
             boolean fishingPoleRetract =mControlBoard.getFishingPoleRetract();
 
-            boolean pickupHatch =mControlBoard.getPickupPanel();
-            boolean ejectHatch =mControlBoard.getShootPanel();
-            boolean pickupCargo =mControlBoard.getPickupBall();
-            boolean ejectCargo =mControlBoard.getShootBall();
+            boolean pickupHatch = mControlBoard.getPickupPanel();
+            boolean ejectHatch = mControlBoard.getShootPanel();
+            boolean pickupCargo = mControlBoard.getPickupBall();
+            boolean ejectCargo = mControlBoard.getShootBall();
+            boolean elevCargoShipPos = mControlBoard.getCargoShipBall();
             
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
                 if (elevatorPOV == 0) {
-                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_FLOOR);
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_FLOOR);
                 } else if (elevatorPOV == 1) {
-                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_2ND);
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_2ND);
                 } else if (elevatorPOV == 2) {
-                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_3RD);
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_3RD);
                 }
+            } else if (elevCargoShipPos) {
+                mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_SHIP);
             }
 
             if (climbUp) {

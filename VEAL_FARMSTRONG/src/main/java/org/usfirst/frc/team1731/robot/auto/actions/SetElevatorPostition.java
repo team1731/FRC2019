@@ -3,7 +3,7 @@ package org.usfirst.frc.team1731.robot.auto.actions;
 import org.usfirst.frc.team1731.robot.subsystems.Drive;
 import org.usfirst.frc.team1731.robot.subsystems.Intake;
 import org.usfirst.frc.team1731.robot.subsystems.Superstructure;
-import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POV_POSITION;
+import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POSITION;
 
 /**
  * Action to begin shooting.
@@ -20,7 +20,7 @@ public class SetElevatorPostition extends RunOnceAction implements Action {
     @Override
     public void runOnce() {
 
-        Superstructure.getInstance().setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_FLOOR);
+        Superstructure.getInstance().setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_FLOOR);
  
     }
 
