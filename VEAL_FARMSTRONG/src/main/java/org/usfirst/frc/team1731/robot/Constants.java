@@ -32,7 +32,7 @@ public class Constants extends ConstantsBase {
     public static int kWristKI = 0;
     public static int kWristKD = 0;
     public static int kWristTalonKF = 0;
-    public static int kWristTalonKP = 1;
+    public static int kWristTalonKP = 30;
 
     
     // Shooter tuning parameters

@@ -13,7 +13,7 @@ import org.usfirst.frc.team1731.robot.RobotState;
 import org.usfirst.frc.team1731.robot.ShooterAimingParameters;
 import org.usfirst.frc.team1731.robot.loops.Loop;
 import org.usfirst.frc.team1731.robot.loops.Looper;
-import org.usfirst.frc.team1731.robot.subsystems.Wrist.WristPositions;
+
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -65,7 +65,7 @@ public class Superstructure extends Subsystem {
     }
 
     private final Elevator mElevator = Elevator.getInstance();
-    private final Wrist mWrist = Wrist.getInstance();
+
 
 
     private final Intake mIntake = Intake.getInstance();
@@ -103,7 +103,6 @@ public class Superstructure extends Subsystem {
         RETURNINGFROMINTAKE,
         RETURNING_HOME,
         ELEVATOR_TRACKING,
-        WRIST_TRACKING,
         CARGO_CAPTURED,
         CAPTURING_CARGO,
         EJECTING_HATCH,
@@ -128,8 +127,7 @@ public class Superstructure extends Subsystem {
         HATCH_CAPTURED,
         EJECTING_CARGO,
         EJECTING_HATCH,
-        CARGO_CAPTURED,
-        WRIST_TRACKING
+        CARGO_CAPTURED
     }
 
     private SystemState mSystemState = SystemState.IDLE;
@@ -140,7 +138,6 @@ public class Superstructure extends Subsystem {
     private double mCurrentStateStartTime;
     private boolean mStateChanged;
     private double mWantedElevatorPosition = Constants.kElevatorHomeEncoderValue;
-    private WristPositions mWantedWristPosition = WristPositions.STARTINGPOSITION;
     private double mIntakeOutput = 0;
     //private boolean mIsOverTheTop = false;
     private GRABBER_POSITION mIsOverTheTop = GRABBER_POSITION.FLIP_UN_INIT; // Set to unknown to force it to be set
@@ -196,9 +193,6 @@ public class Superstructure extends Subsystem {
                     break;
                     case ELEVATOR_TRACKING:
                     newState = handleElevatorTracking();
-                    break;
-                case WRIST_TRACKING:
-                    newState = handleWristTracking();
                     break;
                 case RETURNING_HOME:
                     newState = handleReturningHome();
@@ -263,8 +257,6 @@ public class Superstructure extends Subsystem {
                 return SystemState.WAITING_FOR_HIGH_POSITION;
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -305,8 +297,6 @@ public class Superstructure extends Subsystem {
             case ELEVATOR_TRACKING:
                  mTopRoller.set(DoubleSolenoid.Value.kReverse);
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -346,8 +336,6 @@ public class Superstructure extends Subsystem {
                 return SystemState.WAITING_FOR_HIGH_POSITION;
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -392,8 +380,6 @@ public class Superstructure extends Subsystem {
             case ELEVATOR_TRACKING:
                 mBeakLips.set(DoubleSolenoid.Value.kForward);
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case CARGO_CAPTURED:
                 return SystemState.CARGO_CAPTURED;
             case EJECTING_CARGO:
@@ -430,46 +416,6 @@ public class Superstructure extends Subsystem {
                 return SystemState.WAITING_FOR_HIGH_POSITION;
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
-            case HATCH_CAPTURED:
-                return SystemState.HATCH_CAPTURED;
-            case EJECTING_HATCH:
-                return SystemState.EJECTING_HATCH;
-            case CARGO_CAPTURED:
-                return SystemState.CARGO_CAPTURED;
-            case EJECTING_CARGO:
-                return SystemState.EJECTING_CARGO;
-            default:
-                return SystemState.IDLE;
-            }
-        }
-        
-        private SystemState handleWristTracking() {
-        	mWrist.setWantedPosition(mWantedWristPosition);
-        	mWrist.setWantedState(Wrist.WantedState.WRISTTRACKING);
-       	
-            switch (mWantedState) {
-            case CLIMBINGUP:
-                return SystemState.CLIMBINGUP;
-            case CLIMBINGDOWN:
-                return SystemState.CLIMBINGDOWN;
-            case AUTOINTAKING:
-                return SystemState.WAITING_FOR_LOW_POSITION;
-            case INTAKING:
-                return SystemState.WAITING_FOR_POWERCUBE_INTAKE;
-            case SPITTING:
-                return SystemState.SPITTING;
-            case CALIBRATINGDOWN:
-                return SystemState.CALIBRATINGDOWN;
-            case CALIBRATINGUP:
-                return SystemState.CALIBRATINGUP;
-            case OVERTHETOP:
-                return SystemState.WAITING_FOR_HIGH_POSITION;
-            case ELEVATOR_TRACKING:
-                return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -508,8 +454,6 @@ public class Superstructure extends Subsystem {
                 return SystemState.WAITING_FOR_HIGH_POSITION;
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -547,8 +491,6 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING_OUT_TOP;
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -591,8 +533,6 @@ public class Superstructure extends Subsystem {
                 }
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -630,8 +570,6 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING_OUT_TOP;
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -668,8 +606,6 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING_OUT_TOP;
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -706,8 +642,6 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING_OUT_TOP;
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -746,8 +680,6 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING_OUT_TOP;
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -795,8 +727,6 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING_OUT_TOP;
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-            case WRIST_TRACKING:
-                return SystemState.WRIST_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
@@ -847,8 +777,6 @@ public class Superstructure extends Subsystem {
             return SystemState.WAITING_FOR_HIGH_POSITION;
         case ELEVATOR_TRACKING:
             return SystemState.ELEVATOR_TRACKING;
-        case WRIST_TRACKING:
-            return SystemState.WRIST_TRACKING;
         case HATCH_CAPTURED:
             return SystemState.HATCH_CAPTURED;
         case EJECTING_HATCH:
@@ -955,10 +883,6 @@ public class Superstructure extends Subsystem {
         mWantedElevatorPosition = encoderValue;
     }
 
-    public void setWantedWristPosition(WristPositions position) {
-        mWantedWristPosition = position;
-    }
-
     public void setOverrideCompressor(boolean force_off) {
         mCompressorOverride = force_off;
     }
@@ -966,26 +890,5 @@ public class Superstructure extends Subsystem {
     public void reloadConstants() {
  //       mShooter.refreshControllerConsts();
     }
-
-
-	public void setFishingPoleUpdown(FISHING_POLE_UPDOWN updown) {
-		// TODO Auto-generated method stub
-        switch (updown) {
-        case DOWN:
-     //       mFishingPole1.set(false);
-     //       mFishingPole2.set(true);
-            break;
-        case UP:
-        //    mFishingPole1.set(true);
-      //      mFishingPole2.set(false);
-            break;
-        default: // Constants.kElevatorFlipNone
-       //     mFishingPole1.set(false);
-       //     mFishingPole2.set(false);
-        }
-	}
-
-
-
 
 }

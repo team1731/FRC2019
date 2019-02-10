@@ -81,9 +81,9 @@ public class Wrist extends Subsystem {
         mTalon.setInverted(true); //Constants.kMotorInvert);
 
         /* set the peak and nominal outputs, 12V means full */
-        mTalon.configNominalOutputForward(0.25, Constants.kTimeoutMs);
-        mTalon.configNominalOutputReverse(-0.25, Constants.kTimeoutMs);
-        mTalon.configPeakOutputForward(0.5, Constants.kTimeoutMs);
+        mTalon.configNominalOutputForward(0, Constants.kTimeoutMs);
+        mTalon.configNominalOutputReverse(0, Constants.kTimeoutMs);
+        mTalon.configPeakOutputForward(0.75, Constants.kTimeoutMs);
         mTalon.configPeakOutputReverse(-0.5, Constants.kTimeoutMs);
         /*
          * set the allowable closed-loop error, Closed-Loop output will be
@@ -105,10 +105,10 @@ public class Wrist extends Subsystem {
     }
 
     public enum WristPositions {
-    	CARGOPICKUP(610),   
-        STRAIGHTAHEAD(660), // moving
-        SHOOTHIGH(734),
-        STARTINGPOSITION(754);
+    	CARGOPICKUP(343),   
+        STRAIGHTAHEAD(393), // moving
+        SHOOTHIGH(462),
+        STARTINGPOSITION(493);
 
         private final int units;
 
