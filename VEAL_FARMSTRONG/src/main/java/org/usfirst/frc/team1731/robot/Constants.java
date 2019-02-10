@@ -165,7 +165,7 @@ public class Constants extends ConstantsBase {
 //    public static int kElevatorFlipUp = 2;
 //    public static int kElevatorFlipNone = 1;
 //    public static int kElevatorFlipDown = 0;
-    public static double kElevatorTalonKP = 0.3; //2.0;
+    public static double kElevatorTalonKP = 2.0; //2.0;
     public static double kElevatorTalonKI = 0.0;
     public static double kElevatorTalonKD = 0.0;
     public static double kElevatorTalonKF = 0.2; //0.0;
@@ -181,20 +181,24 @@ public class Constants extends ConstantsBase {
     public static int kElevatorLevel_Floor = 0;
     public static int kElevatorLevel_2nd = 1;
     public static int kElevatorLevel_3rd = 2;
-    public static int kElevatorTopEncoderValue = 5000;
-    public static int kElevatorHatch3rd_EncoderValue= 3000;
-    public static int kElevatorHatch2nd_EncoderValue= 2000;
+    public static int kElevatorTopEncoderValue = 10000;
+    public static int kElevatorHatch3rd_EncoderValue= 8000;
+    public static int kElevatorHatch2nd_EncoderValue= 4000;
     public static int kElevatorHatchFloor_EncoderValue= 0; 
     public static int kElevatorHatchShip_EncoderValue= 1200;
-    public static int kElevatorCargo3rd_EncoderValue = 2400;
-    public static int kElevatorCargo2nd_EncoderValue = 1600;
-    public static int kElevatorCargoFloor_EncoderValue = 800;
-    public static int kElevatorCargoShip_EncoderValue= 1200;
+    public static int kElevatorCargo3rd_EncoderValue = 6500;
+    public static int kElevatorCargo2nd_EncoderValue = 3500;
+    public static int kElevatorCargoFloor_EncoderValue = 2500;
+    public static int kElevatorCargoShip_EncoderValue= 1000;
     public static int kElevatorHomeEncoderValue = 0;
     public static int kElevatorEncoderRange = 20;
+    public static int kElevatorCruiseVelocity = 8000; //15000
+    public static int kElevatorAcceleration = 8000; //6000
 
-    public static double kElevatorCalibrateUp = 0.4;
-    public static double kElevatorCalibrateDown = -0.4;
+    //public static double kElevatorPeakForward = 0.6;
+    //public static double kElevatorPeakReverse = -0.3;
+    public static double kElevatorCalibrateUp = 0.8;
+    public static double kElevatorCalibrateDown = -0.3;
     
 
     // Hopper gains
