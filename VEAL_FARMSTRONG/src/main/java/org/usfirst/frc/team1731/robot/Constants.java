@@ -165,28 +165,31 @@ public class Constants extends ConstantsBase {
 //    public static int kElevatorFlipUp = 2;
 //    public static int kElevatorFlipNone = 1;
 //    public static int kElevatorFlipDown = 0;
-    public static double kElevatorTalonKP = 2.0;
+    public static double kElevatorTalonKP = 0.3; //2.0;
     public static double kElevatorTalonKI = 0.0;
     public static double kElevatorTalonKD = 0.0;
-    public static double kElevatorTalonKF = 0.0;
+    public static double kElevatorTalonKF = 0.2; //0.0;
     //public static double kElevatorMaxEncoder = 12000;
     //public static double kElevatorEncoderError = 100;
     //public static double kElevatorSafePos = 6000;
-    public static enum ELEVATOR_POV_POSITION {
+    public static enum ELEVATOR_POSITION {
     	ELEVATOR_FLOOR,
     	ELEVATOR_2ND,
-    	ELEVATOR_3RD
+        ELEVATOR_3RD,
+        ELEVATOR_SHIP
     }
     public static int kElevatorLevel_Floor = 0;
     public static int kElevatorLevel_2nd = 1;
     public static int kElevatorLevel_3rd = 2;
-    public static int kElevatorTopEncoderValue = 2000;
-    public static int kElevatorHatch3rd_EncoderValue= 1200;
-    public static int kElevatorHatch2nd_EncoderValue= 700;
-    public static int kElevatorHatchFloor_EncoderValue= 200; 
-    public static int kElevatorCargo3rd_EncoderValue = 1500;
-    public static int kElevatorCargo2nd_EncoderValue = 1000;
-    public static int kElevatorCargoFloor_EncoderValue = 500;
+    public static int kElevatorTopEncoderValue = 5000;
+    public static int kElevatorHatch3rd_EncoderValue= 3000;
+    public static int kElevatorHatch2nd_EncoderValue= 2000;
+    public static int kElevatorHatchFloor_EncoderValue= 0; 
+    public static int kElevatorHatchShip_EncoderValue= 1200;
+    public static int kElevatorCargo3rd_EncoderValue = 2400;
+    public static int kElevatorCargo2nd_EncoderValue = 1600;
+    public static int kElevatorCargoFloor_EncoderValue = 800;
+    public static int kElevatorCargoShip_EncoderValue= 1200;
     public static int kElevatorHomeEncoderValue = 0;
     public static int kElevatorEncoderRange = 20;
 
@@ -315,9 +318,6 @@ public class Constants extends ConstantsBase {
 	public static final int SlotIdx = 0;
 
 	public static  double kRotateTime = 500;
-
-
-
 
 
     // Analog Inputs
