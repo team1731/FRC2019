@@ -28,11 +28,11 @@ public class Constants extends ConstantsBase {
     public static double kBoilerRadius = 7.5;
 
     // Wrist parameters
-    public static int kWristTalon = 12;
-    public static int kWristKI = 12;
-    public static int kWristKD = 12;
-    public static int kWristTalonKF = 12;
-    public static int kWristTalonKP = 12;
+    public static int kWristTalon = 4;
+    public static int kWristKI = 0;
+    public static int kWristKD = 0;
+    public static int kWristTalonKF = 0;
+    public static int kWristTalonKP = 1;
 
     
     // Shooter tuning parameters
@@ -266,13 +266,6 @@ public class Constants extends ConstantsBase {
 	public static int kClimberPeakCurrentDurationMs = 200; //Ms
 	public static int kClimberPeakCurrentLimitAmps = 35;
 	
-	//FishingPole
-	public static int kFishingPoleId = 15;
-	public static int kFishingPoleLimitAmps = 30;
-	public static int kFishingPoleContinuousCurrentLimitAmps = 30;
-	public static int kFishingPolePeakCurrentDurationMs = 200; //Ms
-	public static int kFishingPolePeakCurrentLimitAmps = 35;
-
     // Shooter
 //    public static final int kRightShooterMasterId = 2;
 //    public static final int kRightShooterSlaveId = 1;

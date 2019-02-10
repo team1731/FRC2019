@@ -79,12 +79,12 @@ import org.usfirst.frc.team1731.robot.paths.profiles.PathAdapter;
 import org.usfirst.frc.team1731.robot.subsystems.ConnectionMonitor;
 import org.usfirst.frc.team1731.robot.subsystems.Drive;
 import org.usfirst.frc.team1731.robot.subsystems.Elevator;
-import org.usfirst.frc.team1731.robot.subsystems.FishingPole;
-import org.usfirst.frc.team1731.robot.subsystems.Climber;
+
 import org.usfirst.frc.team1731.robot.subsystems.Intake;
 import org.usfirst.frc.team1731.robot.subsystems.LED;
 import org.usfirst.frc.team1731.robot.subsystems.Superstructure;
 import org.usfirst.frc.team1731.robot.subsystems.Wrist;
+import org.usfirst.frc.team1731.robot.subsystems.Wrist.WristPositions;
 import org.usfirst.frc.team1731.robot.vision.VisionServer;
 
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -177,7 +177,7 @@ public class Robot extends IterativeRobot {
 
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
-                                    Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(), FishingPole.getInstance(),
+                                    Elevator.getInstance(), Intake.getInstance(), //Climber.getInstance(),
                                     ConnectionMonitor.getInstance(), LED.getInstance(), Wrist.getInstance() ));
 
     // Initialize other helper objects
@@ -663,22 +663,7 @@ public class Robot extends IterativeRobot {
                 mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_NONE);
                 //mSuperstructure.setWantedIntakeOutput(0);
             }
-            
-            if (fishingPoleUp) {
-            	mSuperstructure.setFishingPoleUpdown(Superstructure.FISHING_POLE_UPDOWN.UP);
-            } else if (fishingPoleDown) {
-            	mSuperstructure.setFishingPoleUpdown(Superstructure.FISHING_POLE_UPDOWN.DOWN);
-            } else {
-            	mSuperstructure.setFishingPoleUpdown(Superstructure.FISHING_POLE_UPDOWN.NONE);
-            }
-            
-            if (fishingPoleExtend) {
-            	mSuperstructure.setFishingPoleExtendRetract(Superstructure.FISHING_POLE_EXTEND_RETRACT.EXTEND);
-            } else if (fishingPoleRetract) {
-            	mSuperstructure.setFishingPoleExtendRetract(Superstructure.FISHING_POLE_EXTEND_RETRACT.RETRACT);
-            } else {
-            	mSuperstructure.setFishingPoleExtendRetract(Superstructure.FISHING_POLE_EXTEND_RETRACT.NONE);
-            }
+
 
             // Drive base
             double throttle = mControlBoard.getThrottle();
@@ -699,6 +684,11 @@ public class Robot extends IterativeRobot {
             boolean wantLowGear = mControlBoard.getLowGear();
             mDrive.setHighGear(!wantLowGear);
             
+            if(mControlBoard.getTestWrist()){
+                Wrist.getInstance().setWantedPosition(WristPositions.STRAIGHTAHEAD);
+                //mSuperstructure.setWantedState(Superstructure.WantedState.WRIST_TRACKING);
+                Wrist.getInstance().setWantedState(Wrist.WantedState.WRISTTRACKING);
+            }
             
 
             allPeriodic();

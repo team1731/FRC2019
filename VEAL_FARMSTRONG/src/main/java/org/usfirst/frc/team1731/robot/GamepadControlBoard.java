@@ -298,6 +298,12 @@ public class GamepadControlBoard implements ControlBoardInterface {
         return invertDrive;
     }
 
+	@Override
+    public boolean getTestWrist(){
+        return mDriver.getRawButton(4);
+    }
+
+
     //OPERATOR
 	@Override
     public boolean getFloorLevel(){
@@ -367,4 +373,5 @@ public class GamepadControlBoard implements ControlBoardInterface {
         // ball sensor combined with level button (floor, 2nd level, 34d level) will determine actual elevator position
         return mOperator.getRawButton(3);
     }
+
 }

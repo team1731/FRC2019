@@ -10,6 +10,7 @@ import org.usfirst.frc.team1731.robot.loops.Looper;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 //import com.ctre.PigeonImu.StatusFrameRate;
@@ -59,19 +60,19 @@ public class Wrist extends Subsystem {
         mTalon = new TalonSRX(Constants.kWristTalon);
         mTalon.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
         mTalon.set(ControlMode.Position, 0);
-        mTalon.configVelocityMeasurementWindow(10, 0);
-        mTalon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
-        mTalon.selectProfileSlot(0, 0);
+        //mTalon.configVelocityMeasurementWindow(10, 0);
+        //mTalon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
+        mTalon.selectProfileSlot(Constants.SlotIdx, 0);
         mTalon.config_kP(Constants.SlotIdx, Constants.kWristTalonKP, Constants.kTimeoutMs );
         mTalon.config_kI(Constants.SlotIdx, Constants.kWristKI, Constants.kTimeoutMs );
         mTalon.config_kD(Constants.SlotIdx, Constants.kWristKD, Constants.kTimeoutMs);
         mTalon.config_kF(Constants.SlotIdx, Constants.kWristTalonKF, Constants.kTimeoutMs );
         mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
-        //mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
         mTalon.configClosedloopRamp(0, Constants.kTimeoutMs);
-        mTalon.setSelectedSensorPosition(0, 0, 10); //-1793, 0, 10);
         mTalon.overrideLimitSwitchesEnable(false);
         
+        mTalon.setNeutralMode(NeutralMode.Brake);
+
         /* choose to ensure sensor is positive when output is positive */
         mTalon.setSensorPhase(Constants.kSensorPhase);
 
@@ -80,16 +81,16 @@ public class Wrist extends Subsystem {
         mTalon.setInverted(true); //Constants.kMotorInvert);
 
         /* set the peak and nominal outputs, 12V means full */
-        mTalon.configNominalOutputForward(.5, Constants.kTimeoutMs);
-        mTalon.configNominalOutputReverse(.9, Constants.kTimeoutMs);
-        mTalon.configPeakOutputForward(1.0, Constants.kTimeoutMs);
-        mTalon.configPeakOutputReverse(-1.0, Constants.kTimeoutMs);
+        mTalon.configNominalOutputForward(0.25, Constants.kTimeoutMs);
+        mTalon.configNominalOutputReverse(-0.25, Constants.kTimeoutMs);
+        mTalon.configPeakOutputForward(0.5, Constants.kTimeoutMs);
+        mTalon.configPeakOutputReverse(-0.5, Constants.kTimeoutMs);
         /*
          * set the allowable closed-loop error, Closed-Loop output will be
          * neutral within this range. See Table in Section 17.2.1 for native
          * units per rotation.
          */
-        mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 50, Constants.kTimeoutMs);
+        mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 3, Constants.kTimeoutMs);
 
     }
     	
@@ -104,19 +105,19 @@ public class Wrist extends Subsystem {
     }
 
     public enum WristPositions {
-    	CARGOPICKUP(0),   
-        STRAIGHTAHEAD(50), // moving
-        SHOOTHIGH(100),
-        STARTINGPOSITION(150);
+    	CARGOPICKUP(610),   
+        STRAIGHTAHEAD(660), // moving
+        SHOOTHIGH(734),
+        STARTINGPOSITION(754);
 
-        private final int pos;
+        private final int units;
 
-        private WristPositions(int pos){
-            this.pos = pos;
+        private WristPositions(int units){
+            this.units = units;
         }
 
         private int getPos(){
-            return pos;
+            return units;
         }
     }
 
@@ -144,7 +145,7 @@ public class Wrist extends Subsystem {
                 mWantedPosition = WristPositions.STARTINGPOSITION;
                 mPositionChanged = false;
                 mCurrentStateStartTime = timestamp;
-                mTalon.setSelectedSensorPosition(0, 0, 10);                
+                mTalon.setSelectedSensorPosition(0, 0, 10);             
               //  DriverStation.reportError("Wrist SystemState: " + mSystemState, false);
             }
         }
@@ -209,6 +210,7 @@ public class Wrist extends Subsystem {
 
     public synchronized void setWantedPosition(WristPositions position) {
         mWantedPosition = position;
+        mPositionChanged = true;
     }
 
     public synchronized int getCurrentPosition(boolean up) {

@@ -53,6 +53,7 @@ public interface ControlBoardInterface {
 		boolean getActivateAuto();
 		boolean getDeactivateAuto();
 		boolean getInvertDrive();
+		boolean getTestWrist();
 
 		//OPERATOR
 		boolean getFloorLevel();
