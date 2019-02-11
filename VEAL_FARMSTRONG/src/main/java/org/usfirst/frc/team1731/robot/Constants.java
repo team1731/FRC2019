@@ -165,7 +165,7 @@ public class Constants extends ConstantsBase {
 //    public static int kElevatorFlipUp = 2;
 //    public static int kElevatorFlipNone = 1;
 //    public static int kElevatorFlipDown = 0;
-    public static double kElevatorTalonKP = 2.0; //2.0;
+    public static double kElevatorTalonKP = 4.0; //2.0;
     public static double kElevatorTalonKI = 0.0;
     public static double kElevatorTalonKD = 0.0;
     public static double kElevatorTalonKF = 0.2; //0.0;
@@ -176,20 +176,22 @@ public class Constants extends ConstantsBase {
     	ELEVATOR_FLOOR,
     	ELEVATOR_2ND,
         ELEVATOR_3RD,
-        ELEVATOR_SHIP
+        ELEVATOR_SHIP,
+        ELEVATOR_CARGO_PICKUP
     }
     public static int kElevatorLevel_Floor = 0;
     public static int kElevatorLevel_2nd = 1;
     public static int kElevatorLevel_3rd = 2;
     public static int kElevatorTopEncoderValue = 10000;
-    public static int kElevatorHatch3rd_EncoderValue= 8000;
-    public static int kElevatorHatch2nd_EncoderValue= 4000;
+    public static int kElevatorHatch3rd_EncoderValue= 9918;
+    public static int kElevatorHatch2nd_EncoderValue= 4872;
     public static int kElevatorHatchFloor_EncoderValue= 0; 
     public static int kElevatorHatchShip_EncoderValue= 1200;
-    public static int kElevatorCargo3rd_EncoderValue = 6500;
-    public static int kElevatorCargo2nd_EncoderValue = 3500;
-    public static int kElevatorCargoFloor_EncoderValue = 2500;
-    public static int kElevatorCargoShip_EncoderValue= 1000;
+    public static int kElevatorCargo3rd_EncoderValue = 9918;
+    public static int kElevatorCargo2nd_EncoderValue = 6351;
+    public static int kElevatorCargoFloor_EncoderValue = 1479;
+    public static int kElevatorCargoShip_EncoderValue= 3000;
+    public static int kElevatorBallPickup_EncoderValue= 1044;
     public static int kElevatorHomeEncoderValue = 0;
     public static int kElevatorEncoderRange = 20;
     public static int kElevatorCruiseVelocity = 8000; //15000
@@ -257,9 +259,9 @@ public class Constants extends ConstantsBase {
 
 //	  public static final int kIntakeMasterId = 5;
 //    public static final int kIntakeSlaveId = 10;
-	public static final int kIntakeVictor1 = 8;
-	public static final int kIntakeVictor2 = 9;
-	public static final int kIntakeTalon = 1;
+	//public static final int kIntakeVictor1 = 8;
+	//public static final int kIntakeVictor2 = 9;
+	public static final int kIntakeTalon = 8;
 
     // Hopper / Floor
 //    public static final int kHopperMasterId = 6;

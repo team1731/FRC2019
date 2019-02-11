@@ -604,17 +604,13 @@ public class Robot extends IterativeRobot {
             boolean calibrateUp = mControlBoard.getCalibrateUp();
             boolean spitting = mControlBoard.getSpit();
             boolean pickUp = mControlBoard.getAutoPickUp();
-            boolean fishingPoleUp = mControlBoard.getFishingPoleUp();
-            boolean fishingPoleDown = mControlBoard.getFishingPoleDown();
-            boolean fishingPoleExtend = mControlBoard.getFishingPoleExtend();
-            boolean fishingPoleRetract =mControlBoard.getFishingPoleRetract();
-
             boolean pickupHatch = mControlBoard.getPickupPanel();
             boolean ejectHatch = mControlBoard.getShootPanel();
             boolean pickupCargo = mControlBoard.getPickupBall();
             boolean ejectCargo = mControlBoard.getShootBall();
             boolean elevCargoShipPos = mControlBoard.getCargoShipBall();
-            
+            boolean startingConfiguration = mControlBoard.getStartingConfiguration();
+
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
                 if (elevatorPOV == 0) {
@@ -640,6 +636,8 @@ public class Robot extends IterativeRobot {
             	mSuperstructure.setWantedState(Superstructure.WantedState.CALIBRATINGDOWN);
             } else if (calibrateUp) {
             	mSuperstructure.setWantedState(Superstructure.WantedState.CALIBRATINGUP);
+            } else if (startingConfiguration){
+                mSuperstructure.setWantedState(Superstructure.WantedState.STARTINGCONFIGURATION);
             } else if (pickUp) {
                 mSuperstructure.setWantedState(Superstructure.WantedState.AUTOINTAKING);
             } else if (ejectHatch) {

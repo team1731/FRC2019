@@ -157,6 +157,10 @@ public class Intake extends Subsystem {
         }
     }
     
+    public boolean hasCargo(){
+        return mTalon.getSensorCollection().isFwdLimitSwitchClosed();
+    }
+
     private SystemState handleIdle() {
         //setOpenLoop(0.0f);
         //if motor is not off, turn motor off

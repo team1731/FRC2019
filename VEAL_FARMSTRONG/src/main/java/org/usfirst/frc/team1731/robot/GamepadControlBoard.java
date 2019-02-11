@@ -376,4 +376,10 @@ public class GamepadControlBoard implements ControlBoardInterface {
         return mOperator.getRawButton(3);
     }
 
+	@Override
+    public boolean getStartingConfiguration(){
+        // ball sensor combined with level button (floor, 2nd level, 3d level) will determine actual elevator position
+        return mOperator.getRawButton(1);
+    }
+
 }

@@ -106,9 +106,9 @@ public class Wrist extends Subsystem {
 
     public enum WristPositions {
     	CARGOPICKUP(343),   
-        STRAIGHTAHEAD(393), // moving
-        SHOOTHIGH(462),
-        STARTINGPOSITION(493);
+        STRAIGHTAHEAD(420), // moving
+        SHOOTHIGH(448),
+        STARTINGPOSITION(520);
 
         private final int units;
 
@@ -211,6 +211,7 @@ public class Wrist extends Subsystem {
     public synchronized void setWantedPosition(WristPositions position) {
         mWantedPosition = position;
         mPositionChanged = true;
+        setWantedState(WantedState.WRISTTRACKING);
     }
 
     public synchronized int getCurrentPosition(boolean up) {

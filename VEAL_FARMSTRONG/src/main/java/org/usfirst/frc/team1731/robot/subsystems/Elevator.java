@@ -318,7 +318,7 @@ public class Elevator extends Subsystem {
     
 	public boolean atTop() {
 		int position = mTalon.getSelectedSensorPosition(0); 
-    	return (position >= (Constants.kElevatorTopEncoderValue - Constants.kElevatorEncoderRange));
+    	return (position >= (Constants.kElevatorCargo3rd_EncoderValue - 120));
     }
         
     public boolean atBottom() {
