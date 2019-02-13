@@ -686,10 +686,6 @@ public class Robot extends IterativeRobot {
 
             if(joystickAxesAreReversed){
                 throttle=-throttle;
-<<<<<<< HEAD
-                //turn=-turn;
-             }
-=======
                 turn=-turn;
                 toggleCamera();
              }
@@ -705,7 +701,6 @@ public class Robot extends IterativeRobot {
                 leftRightCameraControl.set(true);
                 networkTable.putString("CameraSelection", selectedCamera.getName());
             }
->>>>>>> cd94961f2e9828998b1fd73d164cdf4cda976441
 
 
             mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
