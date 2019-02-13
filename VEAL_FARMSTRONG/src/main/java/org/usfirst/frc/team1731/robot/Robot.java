@@ -87,6 +87,7 @@ import org.usfirst.frc.team1731.robot.subsystems.Superstructure;
 import org.usfirst.frc.team1731.robot.subsystems.Wrist;
 import org.usfirst.frc.team1731.robot.vision.VisionServer;
 
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -95,6 +96,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -174,6 +176,11 @@ public class Robot extends IterativeRobot {
     };
 
     private boolean joystickAxesAreReversed;
+    private UsbCamera camera1;
+    private UsbCamera camera2;
+    private UsbCamera selectedCamera;
+
+    private NetworkTable networkTable;
 
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
@@ -216,6 +223,8 @@ public class Robot extends IterativeRobot {
         try {
             CrashTracker.logRobotInit();
 
+            networkTable = NetworkTable.getTable("");
+
             leftRightCameraControl = new DigitalOutput(5);
 
             tapeSensor = new DigitalInput(0);
@@ -230,8 +239,9 @@ public class Robot extends IterativeRobot {
             
             //http://roborio-1731-frc.local:1181/?action=stream
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
-            CameraServer.getInstance().startAutomaticCapture(0);
-            
+            camera1 = CameraServer.getInstance().startAutomaticCapture(0);
+            camera2 = CameraServer.getInstance().startAutomaticCapture(1);
+            selectedCamera = camera1;
             
             switch(CHOSEN_AUTO_SCHEME) {
             
@@ -591,8 +601,6 @@ public class Robot extends IterativeRobot {
             
             double timestamp = Timer.getFPGATimestamp();
 
-            // TODO FIXME RDB - for testing purposes only
-            leftRightCameraControl.set(mControlBoard.getToggleCamera());
                 
             boolean climbUp = mControlBoard.getClimbUp();
             boolean climbDown = mControlBoard.getClimbDown();
@@ -608,6 +616,9 @@ public class Robot extends IterativeRobot {
             boolean fishingPoleDown = mControlBoard.getFishingPoleDown();
             boolean fishingPoleExtend = mControlBoard.getFishingPoleExtend();
             boolean fishingPoleRetract =mControlBoard.getFishingPoleRetract();
+
+            boolean frontCamera = mControlBoard.getFrontCamera();
+            boolean backCamera = mControlBoard.getBackCamera();           
 
             boolean pickupHatch =mControlBoard.getPickupPanel();
             boolean ejectHatch =mControlBoard.getShootPanel();
@@ -680,6 +691,7 @@ public class Robot extends IterativeRobot {
             	mSuperstructure.setFishingPoleExtendRetract(Superstructure.FISHING_POLE_EXTEND_RETRACT.NONE);
             }
 
+
             // Drive base
             double throttle = mControlBoard.getThrottle();
             double turn = mControlBoard.getTurn();
@@ -691,7 +703,20 @@ public class Robot extends IterativeRobot {
             if(joystickAxesAreReversed){
                 throttle=-throttle;
                 turn=-turn;
-             }
+                toggleCamera();
+            }
+        
+            if(frontCamera){
+                selectedCamera = camera1;
+                leftRightCameraControl.set(false);
+                networkTable.putString("CameraSelection", selectedCamera.getName());
+            }
+
+            if(backCamera){
+                selectedCamera = camera2;
+                leftRightCameraControl.set(true);
+                networkTable.putString("CameraSelection", selectedCamera.getName());
+            }
 
 
             mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
@@ -717,6 +742,19 @@ public class Robot extends IterativeRobot {
             CrashTracker.logThrowableCrash(t);
             throw t;
         }
+    }
+
+    private void toggleCamera(){
+
+        if(selectedCamera == camera1){
+            selectedCamera = camera2;
+            leftRightCameraControl.set(true);
+        }
+        else{
+            selectedCamera = camera1;
+            leftRightCameraControl.set(false);
+        }
+        networkTable.putString("CameraSelection", selectedCamera.getName());
     }
 
     @Override

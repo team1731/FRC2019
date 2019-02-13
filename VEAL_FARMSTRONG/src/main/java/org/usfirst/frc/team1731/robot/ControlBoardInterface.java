@@ -48,7 +48,8 @@ public interface ControlBoardInterface {
 
 
 		//DRIVER
-		boolean getToggleCamera();
+		boolean getFrontCamera();
+		boolean getBackCamera();
 		boolean getLegoLift();
 		boolean getActivateAuto();
 		boolean getDeactivateAuto();
