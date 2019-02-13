@@ -676,7 +676,7 @@ public class Robot extends IterativeRobot {
 
             if(joystickAxesAreReversed){
                 throttle=-throttle;
-                turn=-turn;
+                //turn=-turn;
              }
 
 
