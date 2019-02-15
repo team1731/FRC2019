@@ -179,6 +179,7 @@ public class Robot extends IterativeRobot {
     private UsbCamera camera1;
     private UsbCamera camera2;
     private UsbCamera selectedCamera;
+    private DigitalOutput arduinoLED;
 
     private NetworkTable networkTable;
 
@@ -228,6 +229,7 @@ public class Robot extends IterativeRobot {
             leftRightCameraControl = new DigitalOutput(5);
 
             tapeSensor = new DigitalInput(0);
+            arduinoLED = new DigitalOutput(7);
             SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
@@ -619,7 +621,9 @@ public class Robot extends IterativeRobot {
             boolean elevCargoShipPos = mControlBoard.getCargoShipBall();
             boolean startingConfiguration = mControlBoard.getStartingConfiguration();
             boolean frontCamera = mControlBoard.getFrontCamera();
-            boolean backCamera = mControlBoard.getBackCamera();           
+            boolean backCamera = mControlBoard.getBackCamera(); 
+            
+            arduinoLED.set(mControlBoard.getBlinkLEDButton());
 
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
