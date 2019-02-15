@@ -676,7 +676,6 @@ public class Robot extends IterativeRobot {
             }
 
 
-
             // Drive base
             double throttle = mControlBoard.getThrottle();
             double turn = mControlBoard.getTurn();
@@ -729,7 +728,7 @@ public class Robot extends IterativeRobot {
 
 
 
-             allPeriodic();
+            allPeriodic();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
