@@ -682,25 +682,27 @@ public class Robot extends IterativeRobot {
             double turn = mControlBoard.getTurn();
             
             if(mControlBoard.getInvertDrive()){
-                joystickAxesAreReversed = !joystickAxesAreReversed; 
+                joystickAxesAreReversed = !joystickAxesAreReversed;
+                toggleCamera(); 
             }
 
             if(joystickAxesAreReversed){
                 throttle=-throttle;
-                turn=-turn;
-                toggleCamera();
+                //turn=-turn;
+                leftRightCameraControl.set(true);
+            }
+            else{     
+                leftRightCameraControl.set(false);
             }
         
             if(frontCamera){
                 selectedCamera = camera1;
-                leftRightCameraControl.set(false);
-                networkTable.putString("CameraSelection", selectedCamera.getName());
+                //networkTable.putString("CameraSelection", selectedCamera.getName());
             }
 
             if(backCamera){
                 selectedCamera = camera2;
-                leftRightCameraControl.set(true);
-                networkTable.putString("CameraSelection", selectedCamera.getName());
+                //networkTable.putString("CameraSelection", selectedCamera.getName());
             }
 
 
@@ -738,13 +740,11 @@ public class Robot extends IterativeRobot {
 
         if(selectedCamera == camera1){
             selectedCamera = camera2;
-            leftRightCameraControl.set(true);
+
         }
         else{
             selectedCamera = camera1;
-            leftRightCameraControl.set(false);
         }
-        networkTable.putString("CameraSelection", selectedCamera.getName());
     }
 
     @Override
