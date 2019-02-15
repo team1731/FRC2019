@@ -712,12 +712,12 @@ public class Robot extends IterativeRobot {
         
             if(frontCamera){
                 selectedCamera = camera1;
-                //networkTable.putString("CameraSelection", selectedCamera.getName());
+                networkTable.putString("CameraSelection", selectedCamera.getName());
             }
 
             if(backCamera){
                 selectedCamera = camera2;
-                //networkTable.putString("CameraSelection", selectedCamera.getName());
+                networkTable.putString("CameraSelection", selectedCamera.getName());
             }
 
 
