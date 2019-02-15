@@ -601,9 +601,6 @@ public class Robot extends IterativeRobot {
             
             double timestamp = Timer.getFPGATimestamp();
 
-                
-            boolean climbUp = mControlBoard.getClimbUp();
-            boolean climbDown = mControlBoard.getClimbDown();
             boolean overTheTop = mControlBoard.getOverTheTopButton();
             boolean flipUp = mControlBoard.getFlipUpButton();
             boolean flipDown = mControlBoard.getFlipDownButton();
@@ -620,6 +617,7 @@ public class Robot extends IterativeRobot {
             boolean startingConfiguration = mControlBoard.getStartingConfiguration();
             boolean frontCamera = mControlBoard.getFrontCamera();
             boolean backCamera = mControlBoard.getBackCamera();           
+            int climber = mControlBoard.getClimber();           
 
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
@@ -634,10 +632,12 @@ public class Robot extends IterativeRobot {
                 mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_SHIP);
             }
 
-            if (climbUp) {
-            	mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
-            } else if (climbDown) {
-            	mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGDOWN);
+            if (climber > 0) {
+                if (climber == 1) {
+                    mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
+                } else {
+                    mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGDOWN);
+                }
             } else if (grabCube) {
             	mSuperstructure.setWantedState(Superstructure.WantedState.INTAKING);
             } else if (spitting) {
