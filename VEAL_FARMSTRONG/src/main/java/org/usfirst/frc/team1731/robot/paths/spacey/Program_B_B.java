@@ -1,4 +1,4 @@
-﻿package org.usfirst.frc.team1731.robot.paths.spacey;
+package org.usfirst.frc.team1731.robot.paths.spacey;
 
 import java.util.ArrayList;
 
