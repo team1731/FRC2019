@@ -1,4 +1,4 @@
-package org.usfirst.frc.team1731.robot.auto.modes;
+package org.usfirst.frc.team1731.robot.auto.modes.spacey;
 
 import java.util.Arrays;
 
