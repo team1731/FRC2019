@@ -292,10 +292,10 @@ public class Constants extends ConstantsBase {
     //
     // PCM 0 SOLENOIDS
     //
-    public static final int kRotateWristLong1 = 0; 
-    public static final int kRotateWristLong2 = 1; 
-    public static final int kRotateWristShort1 = 2; 
-    public static final int kRotateWristShort2 = 3; 
+    public static final int kRotateWristLong1 = 4; 
+    public static final int kRotateWristLong2 = 5; 
+    public static final int kRotateWristShort1 = 6; 
+    public static final int kRotateWristShort2 = 7; 
 
     //
     // PCM 1 SOLENOIDS
