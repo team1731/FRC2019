@@ -23,8 +23,6 @@ public interface ControlBoardInterface {
 
 		boolean getLowGear();
 
-		boolean getBlinkLEDButton();
-
 		boolean getGrabCubeButton();
 
 		boolean getOverTheTopButton();

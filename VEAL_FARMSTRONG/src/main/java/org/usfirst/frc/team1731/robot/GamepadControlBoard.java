@@ -109,10 +109,6 @@ public class GamepadControlBoard implements ControlBoardInterface {
         return 0; // pause/stop climber
     }
       
-    @Override
-    public boolean getBlinkLEDButton() {
-        return false;
-    }
 
     @Override
 	public double getElevatorControl() {
