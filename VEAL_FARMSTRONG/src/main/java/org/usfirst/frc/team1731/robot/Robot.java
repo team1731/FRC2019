@@ -633,9 +633,9 @@ public class Robot extends IterativeRobot {
             }
 
             if (climber > 0) {
-                if (climber == 1) {
+                if (climber == 1) { // Superstructure.CLIMBER_EXTEND_RETRACT.EXTEND
                     mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
-                } else {
+                } else { // Superstructure.CLIMBER_EXTEND_RETRACT.RETRACT
                     mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGDOWN);
                 }
             } else if (grabCube) {
