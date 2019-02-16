@@ -63,7 +63,7 @@ public class Climber extends Subsystem {
         // Left Talon
         mTalonL = new TalonSRX(Constants.kClimberTalonL);
 		/* Factory default hardware to prevent unexpected behavior */
-		mTalonL.configFactoryDefault();
+		//mTalonL.configFactoryDefault();
 
 		/* Configure Sensor Source for Pirmary PID */
         mTalonL.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
@@ -120,7 +120,7 @@ public class Climber extends Subsystem {
         //Right Talon
         mTalonR = new TalonSRX(Constants.kClimberTalonL);
 		/* Factory default hardware to prevent unexpected behavior */
-		mTalonR.configFactoryDefault();
+		//mTalonR.configFactoryDefault();
 
 		/* Configure Sensor Source for Pirmary PID */
         mTalonR.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
