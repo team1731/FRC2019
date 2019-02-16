@@ -10,7 +10,7 @@ import org.usfirst.frc.team1731.robot.paths.PathBuilder;
 import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
-public class Backup_Left_Turn_Rocket implements PathContainer {
+public class Program_2_A implements PathContainer {
     
     @Override
     public Path buildPath() {
