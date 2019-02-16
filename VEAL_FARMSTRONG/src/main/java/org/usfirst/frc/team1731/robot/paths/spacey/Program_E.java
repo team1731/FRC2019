@@ -10,6 +10,9 @@ import org.usfirst.frc.team1731.robot.paths.PathBuilder;
 import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
+/**
+ * @deprecated Program_E is split into {@link #Program_E_A()} and {@link #Program_E_B()}
+ */
 public class Program_E implements PathContainer {
     
     @Override

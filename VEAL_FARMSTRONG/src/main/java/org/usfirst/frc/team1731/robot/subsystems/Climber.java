@@ -272,8 +272,8 @@ public class Climber extends Subsystem {
     private SystemState handleExtending() {
         if (mStateChanged) {
             //mTalonL.set(ControlMode.PercentOutput, Constants.kClimberExtendPercent);
-            mTalonL.set(ControlMode.MotionMagic, Constants.kClimberExtendedPosition);
-            mTalonR.set(ControlMode.MotionMagic, Constants.kClimberExtendedPosition);
+            mTalonL.set(ControlMode.MotionMagic, Constants.kClimberExtendedPositionLeft);
+            mTalonR.set(ControlMode.MotionMagic, Constants.kClimberExtendedPositionRight);
         }
 
         return defaultStateTransfer();
@@ -282,8 +282,8 @@ public class Climber extends Subsystem {
     private SystemState handleRetracting() {
         if (mStateChanged) {
             //mTalonL.set(ControlMode.PercentOutput, Constants.kClimberRetractPercent);
-            mTalonL.set(ControlMode.MotionMagic, Constants.kClimberRetractedPosition);
-            mTalonR.set(ControlMode.MotionMagic, Constants.kClimberRetractedPosition);
+            mTalonL.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionLeft);
+            mTalonR.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionRight);
         }
 
         return defaultStateTransfer();
