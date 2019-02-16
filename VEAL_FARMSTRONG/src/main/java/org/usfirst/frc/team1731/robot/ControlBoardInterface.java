@@ -35,31 +35,22 @@ public interface ControlBoardInterface {
 
 		boolean getSpit();
 
-		boolean getClimbUp();
-
-		boolean getClimbDown();
+		int getClimber();
 
 		boolean getAutoPickUp();
-
-		boolean getFishingPoleDown();
-		boolean getFishingPoleUp();
-		boolean getFishingPoleExtend();
-		boolean getFishingPoleRetract();
-
 
 		//DRIVER
 		boolean getFrontCamera();
 		boolean getBackCamera();
-		boolean getLegoLift();
 		boolean getActivateAuto();
 		boolean getDeactivateAuto();
 		boolean getInvertDrive();
 		boolean getTestWrist();
 
 		//OPERATOR
-		boolean getFloorLevel();
-		boolean getSecondLevel();
-		boolean getThirdLevel();
+		//boolean getFloorLevel();
+		//boolean getSecondLevel();
+		//boolean getThirdLevel();
 		boolean getPickupPanel();
 		boolean getShootPanel();
 		boolean getPickupBall();

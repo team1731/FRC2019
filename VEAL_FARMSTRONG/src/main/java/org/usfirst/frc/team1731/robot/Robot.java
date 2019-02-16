@@ -85,6 +85,7 @@ import org.usfirst.frc.team1731.robot.subsystems.LED;
 import org.usfirst.frc.team1731.robot.subsystems.Superstructure;
 import org.usfirst.frc.team1731.robot.subsystems.Wrist;
 import org.usfirst.frc.team1731.robot.subsystems.Wrist.WristPositions;
+import org.usfirst.frc.team1731.robot.subsystems.Climber;
 import org.usfirst.frc.team1731.robot.vision.VisionServer;
 
 import edu.wpi.cscore.UsbCamera;
@@ -186,9 +187,8 @@ public class Robot extends IterativeRobot {
 
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
-                                    Elevator.getInstance(), Intake.getInstance(), //Climber.getInstance(),
-                                    ConnectionMonitor.getInstance(), LED.getInstance() //Wrist.getInstance()
-                                     ));
+                                    Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
+                                    ConnectionMonitor.getInstance(), LED.getInstance() /*, Wrist.getInstance()*/ ));
 
     // Initialize other helper objects
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
@@ -607,9 +607,6 @@ public class Robot extends IterativeRobot {
             
             double timestamp = Timer.getFPGATimestamp();
 
-                
-            boolean climbUp = mControlBoard.getClimbUp();
-            boolean climbDown = mControlBoard.getClimbDown();
             boolean overTheTop = mControlBoard.getOverTheTopButton();
             boolean flipUp = mControlBoard.getFlipUpButton();
             boolean flipDown = mControlBoard.getFlipDownButton();
@@ -625,7 +622,8 @@ public class Robot extends IterativeRobot {
             boolean elevCargoShipPos = mControlBoard.getCargoShipBall();
             boolean startingConfiguration = mControlBoard.getStartingConfiguration();
             boolean frontCamera = mControlBoard.getFrontCamera();
-            boolean backCamera = mControlBoard.getBackCamera(); 
+            boolean backCamera = mControlBoard.getBackCamera();           
+            int climber = mControlBoard.getClimber();           
             boolean tracktorDrive = mControlBoard.getTractorDrive();          
             
             arduinoLED.set(mControlBoard.ledTarget());
@@ -643,10 +641,12 @@ public class Robot extends IterativeRobot {
                 mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_SHIP);
             }
 
-            if (climbUp) {
-            	mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
-            } else if (climbDown) {
-            	mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGDOWN);
+            if (climber > 0) {
+                if (climber == 1) { // Superstructure.CLIMBER_EXTEND_RETRACT.EXTEND
+                    mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
+                } else { // Superstructure.CLIMBER_EXTEND_RETRACT.RETRACT
+                    mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGDOWN);
+                }
             } else if (grabCube) {
             	mSuperstructure.setWantedState(Superstructure.WantedState.INTAKING);
             } else if (spitting) {
