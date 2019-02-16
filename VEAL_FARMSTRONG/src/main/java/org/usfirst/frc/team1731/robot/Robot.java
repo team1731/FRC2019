@@ -628,7 +628,7 @@ public class Robot extends IterativeRobot {
             boolean backCamera = mControlBoard.getBackCamera(); 
             boolean tracktorDrive = mControlBoard.getTractorDrive();          
             
-            arduinoLED.set(mControlBoard.getBlinkLEDButton());
+            arduinoLED.set(mControlBoard.ledTarget());
 
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
