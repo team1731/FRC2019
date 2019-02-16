@@ -586,6 +586,7 @@ public class Robot extends IterativeRobot {
             zeroAllSensors();
             mSuperstructure.reloadConstants();
             mSuperstructure.setOverrideCompressor(false);
+            arduinoLED.set(false);
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
@@ -626,7 +627,6 @@ public class Robot extends IterativeRobot {
             int climber = mControlBoard.getClimber();           
             boolean tracktorDrive = mControlBoard.getTractorDrive();          
             
-            arduinoLED.set(mControlBoard.ledTarget());
 
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
@@ -719,8 +719,10 @@ public class Robot extends IterativeRobot {
                     System.out.println("x: "+visionTargetPosition[0]+ ", y: "+visionTargetPosition[1]);
                     turn = (Double.valueOf(visionTargetPosition[0])-160)/160;
                     System.out.println(turn);
+                    arduinoLED.set(true);
                  } else {
-                 System.out.println("No data received from vision camera");
+                    System.out.println("No data received from vision camera");
+                    arduinoLED.set(false);
                 } 
             }
 
