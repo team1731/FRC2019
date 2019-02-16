@@ -101,6 +101,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.SerialPort;
 
 /**
  * The main robot class, which instantiates all robot parts and helper classes and initializes all loops. Some classes
@@ -185,7 +186,8 @@ public class Robot extends IterativeRobot {
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
                                     Elevator.getInstance(), Intake.getInstance(), //Climber.getInstance(),
-                                    ConnectionMonitor.getInstance(), LED.getInstance(), Wrist.getInstance() ));
+                                    ConnectionMonitor.getInstance(), LED.getInstance() //Wrist.getInstance()
+                                     ));
 
     // Initialize other helper objects
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
@@ -204,6 +206,8 @@ public class Robot extends IterativeRobot {
     private static Solenoid _24vSolenoid = Constants.makeSolenoidForId(11, 2);
     
     private DigitalInput tapeSensor;
+ 
+    private SerialPort visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
 
     public Robot() {
         CrashTracker.logRobotConstruction();
@@ -619,7 +623,8 @@ public class Robot extends IterativeRobot {
             boolean elevCargoShipPos = mControlBoard.getCargoShipBall();
             boolean startingConfiguration = mControlBoard.getStartingConfiguration();
             boolean frontCamera = mControlBoard.getFrontCamera();
-            boolean backCamera = mControlBoard.getBackCamera();           
+            boolean backCamera = mControlBoard.getBackCamera(); 
+            boolean tracktorDrive = mControlBoard.getTractorDrive();          
 
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
@@ -701,6 +706,17 @@ public class Robot extends IterativeRobot {
                 selectedCamera = camera2;
                 leftRightCameraControl.set(true);
                 networkTable.putString("CameraSelection", selectedCamera.getName());
+            }
+
+            if(tracktorDrive) {
+                String[] visionTargetPosition = visionCam.readString().split(",");
+                if(visionTargetPosition.length > 0){
+                    System.out.println("x: "+visionTargetPosition[0]+ ", y: "+visionTargetPosition[1]);
+                    turn = (Double.valueOf(visionTargetPosition[0])-160)/160;
+                    System.out.println(turn);
+                 } else {
+                 System.out.println("No data received from vision camera");
+                } 
             }
 
 

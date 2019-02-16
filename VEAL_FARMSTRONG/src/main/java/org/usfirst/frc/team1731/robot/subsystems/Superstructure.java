@@ -42,6 +42,13 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public class Superstructure extends Subsystem {
 
+    public enum WantedWristPosition {
+    	CARGOPICKUP,   
+        STRAIGHTAHEAD, // moving
+        SHOOTHIGH,
+        STARTINGPOSITION
+    }
+
     public enum FISHING_POLE_UPDOWN {
     	UP,
     	DOWN,
@@ -74,6 +81,8 @@ public class Superstructure extends Subsystem {
     private final DoubleSolenoid mBeakSwinger = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakSwinger1, Constants.kBeakSwinger2);
     private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakOpener1, Constants.kBeakOpener2);
     private final DoubleSolenoid mMustache = Constants.makeDoubleSolenoidForIds(1, Constants.kMustache1, Constants.kMustache2);
+    private final DoubleSolenoid mRotateWristShort = Constants.makeDoubleSolenoidForIds(0, Constants.kRotateWristShort1, Constants.kRotateWristShort2);
+    private final DoubleSolenoid mRotateWristLong = Constants.makeDoubleSolenoidForIds(0, Constants.kRotateWristLong1, Constants.kRotateWristLong2); 
     //   private final Solenoid mOverTheTop2 = Constants.makeSolenoidForId(1, Constants.kOverTheTopSolenoid2);
  //   private final Solenoid mFishingPole1 = Constants.makeSolenoidForId(Constants.kFishingPoleSolenoid1);
   //  private final Solenoid mFishingPole2 = Constants.makeSolenoidForId(Constants.kFishingPoleSolenoid2);
@@ -81,7 +90,7 @@ public class Superstructure extends Subsystem {
     //private final Solenoid mGrabber2 = Constants.makeSolenoidForId(Constants.kGrabberSolenoid2);
     private final Compressor mCompressor = new Compressor(0);
     private final RevRoboticsAirPressureSensor mAirPressureSensor = new RevRoboticsAirPressureSensor(3);
-    private final Wrist mWrist = Wrist.getInstance();
+    //private final Wrist mWrist = Wrist.getInstance();
     
 
     // Superstructure doesn't own the drive, but needs to access it
@@ -280,8 +289,9 @@ public class Superstructure extends Subsystem {
             mBeakLips.set(DoubleSolenoid.Value.kReverse);
             mTopRoller.set(DoubleSolenoid.Value.kForward);
             mMustache.set(DoubleSolenoid.Value.kReverse);
-            mWrist.setWantedPosition(WristPositions.STARTINGPOSITION);
-        	
+            //mWrist.setWantedPosition(WristPositions.STARTINGPOSITION);
+            seWristtWantedPosition(WantedWristPosition.STARTINGPOSITION);
+
             switch (mWantedState) {
             case CLIMBINGUP:
                 return SystemState.CLIMBINGUP;
@@ -322,9 +332,9 @@ public class Superstructure extends Subsystem {
             mTopRoller.set(DoubleSolenoid.Value.kForward);
             mMustache.set(DoubleSolenoid.Value.kReverse);
             mIntake.setWantedState(Intake.WantedState.INTAKING);
-            mWrist.setWantedPosition(Wrist.WristPositions.CARGOPICKUP);
-            mElevator.setWantedPosition(Constants.kElevatorBallPickup_EncoderValue);
+            //mWrist.setWantedPosition(Wrist.WristPositions.CARGOPICKUP);
             setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_CARGO_PICKUP);
+            mElevator.setWantedPosition(Constants.kElevatorBallPickup_EncoderValue);
 
             switch (mWantedState) {
             case CLIMBINGUP:
@@ -347,7 +357,8 @@ public class Superstructure extends Subsystem {
                 return SystemState.WAITING_FOR_HIGH_POSITION;
             case ELEVATOR_TRACKING:
                  mTopRoller.set(DoubleSolenoid.Value.kReverse);
-                 mWrist.setWantedPosition(Wrist.WristPositions.STRAIGHTAHEAD);
+                 //mWrist.setWantedPosition(Wrist.WristPositions.STRAIGHTAHEAD);
+                 seWristtWantedPosition(WantedWristPosition.STRAIGHTAHEAD);
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
@@ -454,7 +465,8 @@ public class Superstructure extends Subsystem {
             //mIntake.setWantedState(Intake.WantedState.IDLE);
             
             if(mElevator.atTop() && mIntake.hasCargo()){
-                mWrist.setWantedPosition(WristPositions.SHOOTHIGH);
+                //mWrist.setWantedPosition(WristPositions.SHOOTHIGH);
+                seWristtWantedPosition(WantedWristPosition.SHOOTHIGH);
             }
 
             switch (mWantedState) {
@@ -965,6 +977,32 @@ public class Superstructure extends Subsystem {
                     break;            }
         }
         mWantedElevatorPosition = encoderValue;
+    }
+
+    public synchronized void seWristtWantedPosition(WantedWristPosition position) {
+
+        switch (position) {
+            case CARGOPICKUP:
+                mRotateWristShort.set(DoubleSolenoid.Value.kReverse);
+                mRotateWristLong.set(DoubleSolenoid.Value.kReverse);
+                break;
+            case STRAIGHTAHEAD:
+                mRotateWristShort.set(DoubleSolenoid.Value.kForward);
+                mRotateWristLong.set(DoubleSolenoid.Value.kReverse);
+                break;
+             case SHOOTHIGH:
+                mRotateWristShort.set(DoubleSolenoid.Value.kReverse);
+                mRotateWristLong.set(DoubleSolenoid.Value.kForward);
+                break;
+             case STARTINGPOSITION:
+                mRotateWristShort.set(DoubleSolenoid.Value.kForward);
+                mRotateWristLong.set(DoubleSolenoid.Value.kForward);
+                break;
+            default:
+                mRotateWristShort.set(DoubleSolenoid.Value.kForward);
+                mRotateWristLong.set(DoubleSolenoid.Value.kForward);
+        }
+
     }
 
     public void setOverrideCompressor(boolean force_off) {

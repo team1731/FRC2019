@@ -289,17 +289,28 @@ public class Constants extends ConstantsBase {
   //  public static final int kShifterSolenoidId1 = 1; //was 0 // PCM 0, Solenoid 0
  //   public static final int kShifterSolenoidId2 = 6;
     
-    public static final int kTopRoller1 = 0; // now PCM 1, solenoid 0
-    public static final int kTopRoller2 = 5; // now PCM 1, solenoid 5
+    //
+    // PCM 0 SOLENOIDS
+    //
+    public static final int kRotateWristLong1 = 0; 
+    public static final int kRotateWristLong2 = 1; 
+    public static final int kRotateWristShort1 = 2; 
+    public static final int kRotateWristShort2 = 3; 
+
+    //
+    // PCM 1 SOLENOIDS
+    //
+    public static final int kTopRoller1 = 0;
+    public static final int kTopRoller2 = 5;
     
-    public static final int kBeakSwinger1 = 4; // now PCM 1, solenoid 0
-    public static final int kBeakSwinger2 = 2; // now PCM 1, solenoid 5
+    public static final int kBeakSwinger1 = 4;
+    public static final int kBeakSwinger2 = 2;
     
-    public static final int kBeakOpener1 = 1; // now PCM 1, solenoid 0
-    public static final int kBeakOpener2 = 3; // now PCM 1, solenoid 5
+    public static final int kBeakOpener1 = 1;
+    public static final int kBeakOpener2 = 3;
     
-    public static final int kMustache1 = 7; // now PCM 1, solenoid 0
-    public static final int kMustache2 = 6; // now PCM 1, solenoid 5
+    public static final int kMustache1 = 7;
+    public static final int kMustache2 = 6;
 
    // public static final int kPincherSolenoid1 = 2; 
    // public static final int kPincherSolenoid2 = 5;
