@@ -184,11 +184,8 @@ public class Robot extends IterativeRobot {
     private UsbCamera cameraFront;
     private UsbCamera cameraBack;
     private UsbCamera selectedCamera;
-<<<<<<< HEAD
-=======
     private DigitalOutput arduinoLED;
 
->>>>>>> 76e15afc401900eb021daf3eea83be67fe292e4f
     private NetworkTable networkTable;
     private VideoSink videoSink;
 
@@ -624,17 +621,6 @@ public class Robot extends IterativeRobot {
             boolean calibrateUp = mControlBoard.getCalibrateUp();
             boolean spitting = mControlBoard.getSpit();
             boolean pickUp = mControlBoard.getAutoPickUp();
-<<<<<<< HEAD
-            boolean fishingPoleUp = mControlBoard.getFishingPoleUp();
-            boolean fishingPoleDown = mControlBoard.getFishingPoleDown();
-            boolean fishingPoleExtend = mControlBoard.getFishingPoleExtend();
-            boolean fishingPoleRetract =mControlBoard.getFishingPoleRetract();
-
-            boolean pickupHatch =mControlBoard.getPickupPanel();
-            boolean ejectHatch =mControlBoard.getShootPanel();
-            boolean pickupCargo =mControlBoard.getPickupBall();
-            boolean ejectCargo =mControlBoard.getShootBall();
-=======
             boolean pickupHatch = mControlBoard.getPickupPanel();
             boolean ejectHatch = mControlBoard.getShootPanel();
             boolean pickupCargo = mControlBoard.getPickupBall();
@@ -645,7 +631,6 @@ public class Robot extends IterativeRobot {
             boolean backCamera = mControlBoard.getBackCamera();           
             int climber = mControlBoard.getClimber();           
             boolean tracktorDrive = mControlBoard.getTractorDrive();          
->>>>>>> 76e15afc401900eb021daf3eea83be67fe292e4f
             
 
             double elevatorPOV = mControlBoard.getElevatorControl();
