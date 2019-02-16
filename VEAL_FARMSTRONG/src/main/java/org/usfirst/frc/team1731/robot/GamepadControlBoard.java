@@ -16,7 +16,7 @@ public class GamepadControlBoard implements ControlBoardInterface {
     private final Joystick mOperator;
 
     private Boolean invertDrivePrevious = Boolean.FALSE;
-    
+
     private static ControlBoardInterface mInstance = null;
     
     public static ControlBoardInterface getInstance() {
@@ -172,20 +172,6 @@ public class GamepadControlBoard implements ControlBoardInterface {
     //     int pov = mDriver.getPOV(0);
     //     return ((pov !=1) && (pov > 45) && (pov < 135));
     // }
-
-    @Override
-    public boolean getInvertCamera(){
-        boolean invertCamera=false;
-        synchronized(invertCameraPrevious){
-          boolean invertCameraCurrent = (selectedCamera == cameraFront && getBackCamera()) ||
-                                        (selectedCamera == cameraBack && getFrontCamera());
-            if(invertCameraCurrent && !invertCameraPrevious){
-                invertCamera=true;
-            }
-            invertCameraPrevious = invertCameraCurrent;
-        }
-        return invertCamera;
-    }
 
       @Override
     public boolean getFrontCamera(){

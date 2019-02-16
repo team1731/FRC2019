@@ -185,7 +185,7 @@ public class Robot extends IterativeRobot {
     private UsbCamera cameraBack;
     private UsbCamera selectedCamera;
     private DigitalOutput arduinoLED;
-
+    private Boolean invertCameraPrevious = Boolean.FALSE;
     private NetworkTable networkTable;
     private VideoSink videoSink;
 
@@ -708,7 +708,7 @@ public class Robot extends IterativeRobot {
                 leftRightCameraControl.set(false);
             }
         
-            if(mControlBoard.getInvertCamera()){
+            if(getInvertCamera()){
                 toggleCamera(); 
             }
             videoSink.setSource(selectedCamera);
@@ -755,6 +755,19 @@ public class Robot extends IterativeRobot {
             CrashTracker.logThrowableCrash(t);
             throw t;
         }
+    }
+
+    public boolean getInvertCamera(){
+        boolean invertCamera=false;
+        synchronized(invertCameraPrevious){
+          boolean invertCameraCurrent = (selectedCamera == cameraFront && mControlBoard.getBackCamera()) ||
+                                        (selectedCamera == cameraBack && mControlBoard.getFrontCamera());
+            if(invertCameraCurrent && !invertCameraPrevious){
+                invertCamera=true;
+            }
+            invertCameraPrevious = invertCameraCurrent;
+        }
+        return invertCamera;
     }
 
     private void toggleCamera(){
