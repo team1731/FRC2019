@@ -28,11 +28,11 @@ public class Constants extends ConstantsBase {
     public static double kBoilerRadius = 7.5;
 
     // Wrist parameters
-    public static int kWristTalon = 12;
-    public static int kWristKI = 12;
-    public static int kWristKD = 12;
-    public static int kWristTalonKF = 12;
-    public static int kWristTalonKP = 12;
+    public static int kWristTalon = 4;
+    public static int kWristKI = 0;
+    public static int kWristKD = 0;
+    public static int kWristTalonKF = 0;
+    public static int kWristTalonKP = 30;
 
     
     // Shooter tuning parameters
@@ -161,38 +161,69 @@ public class Constants extends ConstantsBase {
     	FLIP_UP,
     	FLIP_UN_INIT
     }
-//    public static int kElevatorFlipUnInit = 3;
-//    public static int kElevatorFlipUp = 2;
-//    public static int kElevatorFlipNone = 1;
-//    public static int kElevatorFlipDown = 0;
-    public static double kElevatorTalonKP = 2.0;
+
+    //Elevator
+    public static final int kElevatorTalon = 7;
+    public static double kElevatorTalonKP = 4.0; //2.0;
     public static double kElevatorTalonKI = 0.0;
     public static double kElevatorTalonKD = 0.0;
-    public static double kElevatorTalonKF = 0.0;
-    //public static double kElevatorMaxEncoder = 12000;
-    //public static double kElevatorEncoderError = 100;
-    //public static double kElevatorSafePos = 6000;
-    public static enum ELEVATOR_POV_POSITION {
+    public static double kElevatorTalonKF = 0.2; //0.0;
+
+    public static enum ELEVATOR_POSITION {
     	ELEVATOR_FLOOR,
     	ELEVATOR_2ND,
-    	ELEVATOR_3RD
+        ELEVATOR_3RD,
+        ELEVATOR_SHIP,
+        ELEVATOR_CARGO_PICKUP
     }
     public static int kElevatorLevel_Floor = 0;
     public static int kElevatorLevel_2nd = 1;
     public static int kElevatorLevel_3rd = 2;
-    public static int kElevatorTopEncoderValue = 2000;
-    public static int kElevatorHatch3rd_EncoderValue= 1200;
-    public static int kElevatorHatch2nd_EncoderValue= 700;
-    public static int kElevatorHatchFloor_EncoderValue= 200; 
-    public static int kElevatorCargo3rd_EncoderValue = 1500;
-    public static int kElevatorCargo2nd_EncoderValue = 1000;
-    public static int kElevatorCargoFloor_EncoderValue = 500;
+    public static int kElevatorTopEncoderValue = 10000;
+    public static int kElevatorHatch3rd_EncoderValue= 9918;
+    public static int kElevatorHatch2nd_EncoderValue= 4872;
+    public static int kElevatorHatchFloor_EncoderValue= 0; 
+    public static int kElevatorHatchShip_EncoderValue= 1200;
+    public static int kElevatorCargo3rd_EncoderValue = 9918;
+    public static int kElevatorCargo2nd_EncoderValue = 6351;
+    public static int kElevatorCargoFloor_EncoderValue = 1479;
+    public static int kElevatorCargoShip_EncoderValue= 3000;
+    public static int kElevatorBallPickup_EncoderValue= 0; //was 1044
     public static int kElevatorHomeEncoderValue = 0;
     public static int kElevatorEncoderRange = 20;
+    public static int kElevatorCruiseVelocity = 8000; //15000
+    public static int kElevatorAcceleration = 8000; //6000
 
-    public static double kElevatorCalibrateUp = 0.4;
-    public static double kElevatorCalibrateDown = -0.4;
+    //public static double kElevatorPeakForward = 0.6;
+    //public static double kElevatorPeakReverse = -0.3;
+    public static double kElevatorCalibrateUp = 0.8;
+    public static double kElevatorCalibrateDown = -0.3;
     
+    //Elevator
+    public static final int kClimberTalonL = 9;
+    public static final int kClimberTalonR = 4;
+    public static double kClimberTalonKP = 6.0; //2.0;
+    public static double kClimberTalonKI = 0.0;
+    public static double kClimberTalonKD = 0.0;
+    public static double kClimberTalonKF = 0.2; //0.0;
+
+    public static int kClimberCruiseVelocity = 8000; //15000
+    public static int kClimberAcceleration = 4000; //6000
+    public static double kClimberExtendPercent = 0.8;
+    public static double kClimberRetractPercent = -0.6;
+
+    public static int kClimberExtendedPositionLeft = 800;
+    public static int kClimberRetractedPositionLeft = 300;
+    public static int kClimberExtendedPositionRight = 800;
+    public static int kClimberRetractedPositionRight = 300;
+
+    //Climber
+	//public static int kClimberMasterId = 12;
+	//public static int kClimberSlaveId = 16;
+	//public static int kClimberContinuousCurrentLimitAmps = 30;
+	//public static int kClimberPeakCurrentDurationMs = 200; //Ms
+	//public static int kClimberPeakCurrentLimitAmps = 35;
+	
 
     // Hopper gains
     public static double kHopperRampRate = 48.0;
@@ -212,8 +243,6 @@ public class Constants extends ConstantsBase {
     public static final int kRightDriveMasterId = 3;
     public static final int kRightDriverSlaveId = 2;
     
-    //Elevator
-    public static final int kElevatorTalon = 7;
     /**
      * Which PID slot to pull gains from. Starting 2018, you can choose from
      * 0,1,2 or 3. Only the first two (0,1) are visible in web-based
@@ -250,29 +279,15 @@ public class Constants extends ConstantsBase {
 
 //	  public static final int kIntakeMasterId = 5;
 //    public static final int kIntakeSlaveId = 10;
-	public static final int kIntakeVictor1 = 8;
-	public static final int kIntakeVictor2 = 9;
-	public static final int kIntakeTalon = 1;
+	//public static final int kIntakeVictor1 = 8;
+	//public static final int kIntakeVictor2 = 9;
+	public static final int kIntakeTalon = 8;
 
     // Hopper / Floor
 //    public static final int kHopperMasterId = 6;
 //    public static final int kHopperSlaveId = 9;
 	public static final int kHopperVictor = 3;
 	
-	//Climber
-	public static int kClimberMasterId = 12;
-	public static int kClimberSlaveId = 16;
-	public static int kClimberContinuousCurrentLimitAmps = 30;
-	public static int kClimberPeakCurrentDurationMs = 200; //Ms
-	public static int kClimberPeakCurrentLimitAmps = 35;
-	
-	//FishingPole
-	public static int kFishingPoleId = 15;
-	public static int kFishingPoleLimitAmps = 30;
-	public static int kFishingPoleContinuousCurrentLimitAmps = 30;
-	public static int kFishingPolePeakCurrentDurationMs = 200; //Ms
-	public static int kFishingPolePeakCurrentLimitAmps = 35;
-
     // Shooter
 //    public static final int kRightShooterMasterId = 2;
 //    public static final int kRightShooterSlaveId = 1;
@@ -287,17 +302,40 @@ public class Constants extends ConstantsBase {
   //  public static final int kShifterSolenoidId1 = 1; //was 0 // PCM 0, Solenoid 0
  //   public static final int kShifterSolenoidId2 = 6;
     
-    public static final int kTopRoller1 = 0; // now PCM 1, solenoid 0
-    public static final int kTopRoller2 = 5; // now PCM 1, solenoid 5
+    //
+    // PCM 0 SOLENOIDS
+    //
+    // public static final int kRotateWristLong1 = 4; 
+    // public static final int kRotateWristLong2 = 5; 
+    // public static final int kRotateWristShort1 = 6; 
+    // public static final int kRotateWristShort2 = 7; 
+    public static final int kBeakSwinger1 = 4; 
+    public static final int kBeakSwinger2 = 5; 
+    public static final int kMustache1 = 7; 
+    public static final int kMustache2 = 6; 
+
+    //
+    // PCM 1 SOLENOIDS
+    //
+    // public static final int kTopRoller1 = 0;
+    // public static final int kTopRoller2 = 5;
+    public static final int kBeakOpener1 = 0;
+    public static final int kBeakOpener2 = 5;
     
-    public static final int kBeakSwinger1 = 4; // now PCM 1, solenoid 0
-    public static final int kBeakSwinger2 = 2; // now PCM 1, solenoid 5
+    // public static final int kBeakSwinger1 = 4;
+    // public static final int kBeakSwinger2 = 2;
+    public static final int kRotateWristShort1 = 2;
+    public static final int kRotateWristShort2 = 4;
     
-    public static final int kBeakOpener1 = 1; // now PCM 1, solenoid 0
-    public static final int kBeakOpener2 = 3; // now PCM 1, solenoid 5
+    // public static final int kBeakOpener1 = 1;
+    // public static final int kBeakOpener2 = 3;
+    public static final int kRotateWristLong1 = 3;
+    public static final int kRotateWristLong2 = 1;
     
-    public static final int kMustache1 = 7; // now PCM 1, solenoid 0
-    public static final int kMustache2 = 6; // now PCM 1, solenoid 5
+    // public static final int kMustache1 = 7;
+    // public static final int kMustache2 = 6;
+    public static final int kTopRoller1 = 7;
+    public static final int kTopRoller2 = 6;
 
    // public static final int kPincherSolenoid1 = 2; 
    // public static final int kPincherSolenoid2 = 5;
@@ -315,9 +353,6 @@ public class Constants extends ConstantsBase {
 	public static final int SlotIdx = 0;
 
 	public static  double kRotateTime = 500;
-
-
-
 
 
     // Analog Inputs

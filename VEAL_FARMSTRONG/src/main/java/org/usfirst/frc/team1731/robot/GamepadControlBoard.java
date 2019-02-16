@@ -16,7 +16,6 @@ public class GamepadControlBoard implements ControlBoardInterface {
     private final Joystick mOperator;
 
     private Boolean invertDrivePrevious = Boolean.FALSE;
-    private Boolean invertCameraPrevious = Boolean.FALSE;
     
     private static ControlBoardInterface mInstance = null;
     
@@ -40,6 +39,11 @@ public class GamepadControlBoard implements ControlBoardInterface {
     @Override
     public boolean getOverTheTopButton() {
         return false; // mOperator.getRawButton(5);
+    }
+
+    @Override
+    public boolean getTractorDrive() {
+        return mDriver.getRawButton(5);
     }
     
     @Override
@@ -84,7 +88,7 @@ public class GamepadControlBoard implements ControlBoardInterface {
     }
 
     @Override
-    public boolean getClimbUp() {
+    public int getClimber() {
         // A
 		//    	Get the angle in degrees of a POV on the HID. 
 		//
@@ -95,101 +99,31 @@ public class GamepadControlBoard implements ControlBoardInterface {
 		//
         //int pov = mOperator.getPOV(0);    	
         //return ((pov != -1) && (pov > 315 || pov < 45)) &&  mOperator.getRawButton(1);
-        return false;
+        boolean left_trigger = (Math.abs(mDriver.getRawAxis(2)) > 0.8);
+        boolean right_trigger = (Math.abs(mDriver.getRawAxis(3)) > 0.8);
+        if (mDriver.getRawButton(7) && mDriver.getRawButton(8)) {
+            return 2; // retract climber/legolift
+        } else if (left_trigger && right_trigger) {
+            return 1; // extend climber/legolift
+        }
+        return 0; // pause/stop climber
     }
-    
-    @Override
-    public boolean getClimbDown() {
-        // A
-		//    	Get the angle in degrees of a POV on the HID. 
-		//
-		//    	The POV angles start at 0 in the up direction, and increase clockwise
-    	//		(eg right is 90, upper-left is 315).
-		//    	Parameters:pov The index of the POV to read (starting at 0)
-    	//		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
-		//    	
-        //return (mOperator.getPOV(0) > 135 && mOperator.getPOV(0) < 225) &&  mOperator.getRawButton(1);
-        return false;
-    }
-
-    @Override
-    public boolean getFishingPoleExtend() {
-        // A
-		//    	Get the angle in degrees of a POV on the HID. 
-		//
-		//    	The POV angles start at 0 in the up direction, and increase clockwise
-    	//		(eg right is 90, upper-left is 315).
-		//    	Parameters:pov The index of the POV to read (starting at 0)
-    	//		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
-		//
-        //int pov = mOperator.getPOV(0);    	
-        //return ((pov != -1) && (pov > 310 || pov < 50)) && fishingPoleEnabled();
-        return false;
-    }
-    
-    @Override
-    public boolean getFishingPoleRetract() {
-        // A
-		//    	Get the angle in degrees of a POV on the HID. 
-		//
-		//    	The POV angles start at 0 in the up direction, and increase clockwise
-    	//		(eg right is 90, upper-left is 315).
-		//    	Parameters:pov The index of the POV to read (starting at 0)
-    	//		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
-		//  
-    	//int pov = mOperator.getPOV(0);
-        //return ((pov !=1) && (pov > 130) && (pov < 230)) && fishingPoleEnabled();
-        return false;
-    }
-    
-    @Override
-    public boolean getFishingPoleUp() {
-        // A
-		//    	Get the angle in degrees of a POV on the HID. 
-		//
-		//    	The POV angles start at 0 in the up direction, and increase clockwise
-    	//		(eg right is 90, upper-left is 315).
-		//    	Parameters:pov The index of the POV to read (starting at 0)
-    	//		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
-		//
-        //int pov = mOperator.getPOV(0);    	
-        //return ((pov != -1) && (pov > 45 && pov < 135)) && fishingPoleEnabled();
-        return false;
-    }
-    
-    @Override
-    public boolean getFishingPoleDown() {
-        // A
-		//    	Get the angle in degrees of a POV on the HID. 
-		//
-		//    	The POV angles start at 0 in the up direction, and increase clockwise
-    	//		(eg right is 90, upper-left is 315).
-		//    	Parameters:pov The index of the POV to read (starting at 0)
-    	//		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
-		//  
-    	//int pov = mOperator.getPOV(0);
-        //return ((pov !=1) && (pov > 225) && (pov < 315)) && fishingPoleEnabled();
-        return false;
-    }
-
-  
-    @Override
-    public boolean getBlinkLEDButton() {
-        return false;
-    }
+      
 
     @Override
 	public double getElevatorControl() {
         double angle = mOperator.getPOV(0); // getPOV
         double result = -1;
         if (angle != -1) {
-            if ((angle > 355) || (angle < 5)) {
+            if ((angle > 340) || (angle < 20)) {
                 result = 2;
-            } else if ((angle > 265) && (angle < 275)) {
+            } else if ((angle > 250) && (angle < 290)) {
                 result = 1;
-            } else if ((angle > 175) && (angle < 185)) {
+            } else if ((angle > 160) && (angle < 200)) {
                 result = 0;
             }
+            //} else if ((angle > 70) && (angle < 110)) {
+            //    result = 3;
         }
         return result;
 	}
@@ -208,10 +142,6 @@ public class GamepadControlBoard implements ControlBoardInterface {
     public boolean getAutoPickUp() {
         // R1
         return false; // mOperator.getRawButton(6);
-    }
-	
-	private boolean fishingPoleEnabled() {
-		return false; // mOperator.getRawButton(10);
     }
     
     // //DRIVER
@@ -270,11 +200,6 @@ public class GamepadControlBoard implements ControlBoardInterface {
     }
 
 	@Override
-    public boolean getLegoLift(){
-        return Math.abs(mDriver.getRawAxis(2)) > .8 && Math.abs(mDriver.getRawAxis(3)) > .8;
-    }
-
-	@Override
     public boolean getActivateAuto(){
         return mDriver.getRawButton(1);
     }
@@ -297,6 +222,12 @@ public class GamepadControlBoard implements ControlBoardInterface {
         return invertDrive;
     }
 
+	@Override
+    public boolean getTestWrist(){
+        return mDriver.getRawButton(4);
+    }
+
+    /*
     //OPERATOR
 	@Override
     public boolean getFloorLevel(){
@@ -339,6 +270,7 @@ public class GamepadControlBoard implements ControlBoardInterface {
         int pov = mOperator.getPOV(0);
         return ((pov != -1) && (pov > 315 || pov < 45));
     }
+    */
 
 	@Override
     public boolean getPickupPanel(){
@@ -363,7 +295,14 @@ public class GamepadControlBoard implements ControlBoardInterface {
 
 	@Override
     public boolean getCargoShipBall(){
-        // ball sensor combined with level button (floor, 2nd level, 34d level) will determine actual elevator position
+        // ball sensor combined with level button (floor, 2nd level, 3d level) will determine actual elevator position
         return mOperator.getRawButton(3);
     }
+
+	@Override
+    public boolean getStartingConfiguration(){
+        // ball sensor combined with level button (floor, 2nd level, 3d level) will determine actual elevator position
+        return mOperator.getRawButton(1);
+    }
+
 }

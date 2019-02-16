@@ -7,12 +7,13 @@ import org.usfirst.frc.team1731.lib.util.InterpolatingDouble;
 import org.usfirst.frc.team1731.lib.util.drivers.RevRoboticsAirPressureSensor;
 import org.usfirst.frc.team1731.robot.Constants;
 import org.usfirst.frc.team1731.robot.Constants.GRABBER_POSITION;
-import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POV_POSITION;
+import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POSITION;
 import org.usfirst.frc.team1731.robot.Robot;
 import org.usfirst.frc.team1731.robot.RobotState;
 import org.usfirst.frc.team1731.robot.ShooterAimingParameters;
 import org.usfirst.frc.team1731.robot.loops.Loop;
 import org.usfirst.frc.team1731.robot.loops.Looper;
+import org.usfirst.frc.team1731.robot.subsystems.Wrist.WristPositions;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -41,18 +42,17 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public class Superstructure extends Subsystem {
 
-    public enum FISHING_POLE_UPDOWN {
-    	UP,
-    	DOWN,
-    	NONE
+    //public enum CLIMBER_EXTEND_RETRACT{
+    //	EXTEND,
+    //	RETRACT,
+    //	NONE
+    //}    
+    public enum WantedWristPosition {
+    	CARGOPICKUP,   
+        STRAIGHTAHEAD, // moving
+        SHOOTHIGH,
+        STARTINGPOSITION
     }
-    
-    public enum FISHING_POLE_EXTEND_RETRACT{
-    	EXTEND,
-    	RETRACT,
-    	NONE
-    }
-    
     
 	static Superstructure mInstance = null;
 
@@ -64,23 +64,24 @@ public class Superstructure extends Subsystem {
     }
 
     private final Elevator mElevator = Elevator.getInstance();
-    private final Wrist mWrist = Wrist.getInstance();
-    private final Climber mClimber = Climber.getInstance();
-    private final FishingPole mFishingPole = FishingPole.getInstance();
+
     private final Intake mIntake = Intake.getInstance();
     private final LED mLED = LED.getInstance();
     private final DoubleSolenoid mTopRoller = Constants.makeDoubleSolenoidForIds(1, Constants.kTopRoller1, Constants.kTopRoller2);
-    private final DoubleSolenoid mBeakSwinger = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakSwinger1, Constants.kBeakSwinger2);
+    private final DoubleSolenoid mBeakSwinger = Constants.makeDoubleSolenoidForIds(0, Constants.kBeakSwinger1, Constants.kBeakSwinger2);
     private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakOpener1, Constants.kBeakOpener2);
-    private final DoubleSolenoid mMustache = Constants.makeDoubleSolenoidForIds(1, Constants.kMustache1, Constants.kMustache2);
-    //   private final Solenoid mOverTheTop2 = Constants.makeSolenoidForId(1, Constants.kOverTheTopSolenoid2);
- //   private final Solenoid mFishingPole1 = Constants.makeSolenoidForId(Constants.kFishingPoleSolenoid1);
-  //  private final Solenoid mFishingPole2 = Constants.makeSolenoidForId(Constants.kFishingPoleSolenoid2);
+    private final DoubleSolenoid mMustache = Constants.makeDoubleSolenoidForIds(0, Constants.kMustache1, Constants.kMustache2);
+    private final DoubleSolenoid mRotateWristShort = Constants.makeDoubleSolenoidForIds(1, Constants.kRotateWristShort1, Constants.kRotateWristShort2);
+    private final DoubleSolenoid mRotateWristLong = Constants.makeDoubleSolenoidForIds(1, Constants.kRotateWristLong1, Constants.kRotateWristLong2); 
+    //private final Solenoid mOverTheTop2 = Constants.makeSolenoidForId(1, Constants.kOverTheTopSolenoid2);
+    //private final Solenoid mFishingPole1 = Constants.makeSolenoidForId(Constants.kFishingPoleSolenoid1);
+    //private final Solenoid mFishingPole2 = Constants.makeSolenoidForId(Constants.kFishingPoleSolenoid2);
     //private final Solenoid mGrabber1 = Constants.makeSolenoidForId(Constants.kGrabberSolenoid1);
     //private final Solenoid mGrabber2 = Constants.makeSolenoidForId(Constants.kGrabberSolenoid2);
     private final Compressor mCompressor = new Compressor(0);
     private final RevRoboticsAirPressureSensor mAirPressureSensor = new RevRoboticsAirPressureSensor(3);
-    
+    private final Climber mClimber = Climber.getInstance();
+    //private final Wrist mWrist = Wrist.getInstance();
     
 
     // Superstructure doesn't own the drive, but needs to access it
@@ -107,7 +108,8 @@ public class Superstructure extends Subsystem {
         EJECTING_HATCH,
         EJECTING_CARGO,
         CAPTURING_HATCH,
-        HATCH_CAPTURED
+        HATCH_CAPTURED,
+        STARTINGCONFIGURATION
     };
 
     // Desired function from user
@@ -122,11 +124,11 @@ public class Superstructure extends Subsystem {
         CALIBRATINGUP,
         OVERTHETOP,
         ELEVATOR_TRACKING,
- //       CARGO_CAPTURED,
         HATCH_CAPTURED,
         EJECTING_CARGO,
         EJECTING_HATCH,
-        CARGO_CAPTURED
+        CARGO_CAPTURED,
+        STARTINGCONFIGURATION
     }
 
     private SystemState mSystemState = SystemState.IDLE;
@@ -165,6 +167,12 @@ public class Superstructure extends Subsystem {
                 case IDLE:
                     newState = handleIdle(mStateChanged);
                     break;
+                case CLIMBINGUP:
+                    newState = handleClimberExtending();
+                    break;
+                case CLIMBINGDOWN:
+                    newState = handleClimberRetracting();
+                    break;
                 case WAITING_FOR_LOW_POSITION:
                     newState = handleWaitingForLowPosition();
                     break;
@@ -174,17 +182,14 @@ public class Superstructure extends Subsystem {
                 case WAITING_FOR_POWERCUBE_INTAKE:
                     newState = waitingForPowerCubeIntake();
                     break;
-                case CLIMBINGUP:
-                    newState = handleClimbingUp();
-                    break;
-                case CLIMBINGDOWN:
-                    newState = handleClimbingDown();
-                    break;
                 case CALIBRATINGUP:
                     newState = handleCalibrationUp();
                     break;
                 case CALIBRATINGDOWN:
                     newState = handleCalibrationDown();
+                    break;
+                case STARTINGCONFIGURATION:
+                    newState = handleStartingConfiguration();
                     break;
                 case SPITTING:
                     newState = handleSpitting();
@@ -255,6 +260,52 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
+            case CALIBRATINGUP:
+                return SystemState.CALIBRATINGUP;
+            case OVERTHETOP:
+                return SystemState.WAITING_FOR_HIGH_POSITION;
+            case ELEVATOR_TRACKING:
+                return SystemState.ELEVATOR_TRACKING;
+            case HATCH_CAPTURED:
+                return SystemState.HATCH_CAPTURED;
+            case EJECTING_HATCH:
+                return SystemState.EJECTING_HATCH;
+            case CARGO_CAPTURED:
+                return SystemState.CARGO_CAPTURED;
+            case EJECTING_CARGO:
+                return SystemState.EJECTING_CARGO;
+            default:
+                return SystemState.IDLE;
+            }
+        }
+
+        private SystemState handleStartingConfiguration(){
+            mBeakSwinger.set(DoubleSolenoid.Value.kForward);
+            mBeakLips.set(DoubleSolenoid.Value.kReverse);
+            mTopRoller.set(DoubleSolenoid.Value.kForward);
+            mMustache.set(DoubleSolenoid.Value.kReverse);
+            mClimber.setWantedState(Climber.WantedState.IDLE);
+        	
+            //mWrist.setWantedPosition(WristPositions.STARTINGPOSITION);
+            seWristtWantedPosition(WantedWristPosition.STARTINGPOSITION);
+
+            switch (mWantedState) {
+            case CLIMBINGUP:
+                return SystemState.CLIMBINGUP;
+            case CLIMBINGDOWN:
+                return SystemState.CLIMBINGDOWN;
+            case AUTOINTAKING:
+                return SystemState.WAITING_FOR_LOW_POSITION;
+            case INTAKING:
+                return SystemState.WAITING_FOR_POWERCUBE_INTAKE;
+            case SPITTING:
+                return SystemState.SPITTING;
+            case CALIBRATINGDOWN:
+                return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
@@ -280,7 +331,11 @@ public class Superstructure extends Subsystem {
             mTopRoller.set(DoubleSolenoid.Value.kForward);
             mMustache.set(DoubleSolenoid.Value.kReverse);
             mIntake.setWantedState(Intake.WantedState.INTAKING);
-        	
+            //mWrist.setWantedPosition(Wrist.WristPositions.CARGOPICKUP);
+            seWristtWantedPosition(WantedWristPosition.CARGOPICKUP);
+            setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_CARGO_PICKUP);
+            mElevator.setWantedPosition(Constants.kElevatorBallPickup_EncoderValue);
+
             switch (mWantedState) {
             case CLIMBINGUP:
                 return SystemState.CLIMBINGUP;
@@ -294,12 +349,16 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
                 return SystemState.WAITING_FOR_HIGH_POSITION;
             case ELEVATOR_TRACKING:
                  mTopRoller.set(DoubleSolenoid.Value.kReverse);
+                 //mWrist.setWantedPosition(Wrist.WristPositions.STRAIGHTAHEAD);
+                 seWristtWantedPosition(WantedWristPosition.STRAIGHTAHEAD);
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
@@ -334,6 +393,8 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
@@ -373,6 +434,8 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
@@ -398,9 +461,15 @@ public class Superstructure extends Subsystem {
         	mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
             mIntake.setWantedState(Intake.WantedState.IDLE);
             mClimber.setWantedState(Climber.WantedState.IDLE);
+
             mMustache.set(DoubleSolenoid.Value.kReverse);
             //mIntake.setWantedState(Intake.WantedState.IDLE);
-        	
+            
+            if(mElevator.atTop() && mIntake.hasCargo()){
+                //mWrist.setWantedPosition(WristPositions.SHOOTHIGH);
+                seWristtWantedPosition(WantedWristPosition.SHOOTHIGH);
+            }
+
             switch (mWantedState) {
             case CLIMBINGUP:
                 return SystemState.CLIMBINGUP;
@@ -414,13 +483,15 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
                 return SystemState.WAITING_FOR_HIGH_POSITION;
             case ELEVATOR_TRACKING:
                 return SystemState.ELEVATOR_TRACKING;
-             case HATCH_CAPTURED:
+            case HATCH_CAPTURED:
                 return SystemState.HATCH_CAPTURED;
             case EJECTING_HATCH:
                 return SystemState.EJECTING_HATCH;
@@ -452,6 +523,8 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
@@ -489,6 +562,8 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
@@ -529,6 +604,8 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
@@ -568,6 +645,8 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
@@ -604,6 +683,8 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
@@ -640,6 +721,8 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
@@ -658,79 +741,10 @@ public class Superstructure extends Subsystem {
                 return SystemState.IDLE;
             }
         }
-		private SystemState handleClimbingDown() {
-            mClimber.setWantedState(Climber.WantedState.MECHANISM_DOWN);
-
-            switch (mWantedState) {
-            case CLIMBINGUP:
-                return SystemState.CLIMBINGUP;
-            case CLIMBINGDOWN:
-                return SystemState.CLIMBINGDOWN;
-            case AUTOINTAKING:
-                return SystemState.WAITING_FOR_LOW_POSITION;
-            case INTAKING:
-                return SystemState.WAITING_FOR_POWERCUBE_INTAKE;
-            case SPITTING:
-                return SystemState.SPITTING;
-            case CALIBRATINGDOWN:
-                return SystemState.CALIBRATINGDOWN;
-            case CALIBRATINGUP:
-                return SystemState.CALIBRATINGUP;
-            case OVERTHETOP:
-                return SystemState.SPITTING_OUT_TOP;
-            case ELEVATOR_TRACKING:
-                return SystemState.ELEVATOR_TRACKING;
-            case HATCH_CAPTURED:
-                return SystemState.HATCH_CAPTURED;
-            case EJECTING_HATCH:
-                return SystemState.EJECTING_HATCH;
-            case CARGO_CAPTURED:
-                return SystemState.CARGO_CAPTURED;
-            case EJECTING_CARGO:
-                return SystemState.EJECTING_CARGO;
-            default:
-                return SystemState.IDLE;
-            }
-        }
-
-		private SystemState handleClimbingUp() {
-            mClimber.setWantedState(Climber.WantedState.MECHANISM_UP);
-
-            switch (mWantedState) {
-            case CLIMBINGUP:
-                return SystemState.CLIMBINGUP;
-            case CLIMBINGDOWN:
-                return SystemState.CLIMBINGDOWN;
-            case AUTOINTAKING:
-                return SystemState.WAITING_FOR_LOW_POSITION;
-            case INTAKING:
-                return SystemState.WAITING_FOR_POWERCUBE_INTAKE;
-            case SPITTING:
-                return SystemState.SPITTING;
-            case CALIBRATINGDOWN:
-                return SystemState.CALIBRATINGDOWN;
-            case CALIBRATINGUP:
-                return SystemState.CALIBRATINGUP;
-            case OVERTHETOP:
-                return SystemState.SPITTING_OUT_TOP;
-            case ELEVATOR_TRACKING:
-                return SystemState.ELEVATOR_TRACKING;
-            case HATCH_CAPTURED:
-                return SystemState.HATCH_CAPTURED;
-            case EJECTING_HATCH:
-                return SystemState.EJECTING_HATCH;
-            case CARGO_CAPTURED:
-                return SystemState.CARGO_CAPTURED;
-            case EJECTING_CARGO:
-                return SystemState.EJECTING_CARGO;    
-            default:
-                return SystemState.IDLE;
-            }
-		}
 
 		private SystemState waitingForPowerCubeIntake() {
 
-       	mIntake.setWantedState(Intake.WantedState.INTAKING);
+       	    mIntake.setWantedState(Intake.WantedState.INTAKING);
         	
             switch (mWantedState) {
             case CLIMBINGUP:
@@ -748,6 +762,8 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
@@ -795,6 +811,8 @@ public class Superstructure extends Subsystem {
                 return SystemState.SPITTING;
             case CALIBRATINGDOWN:
                 return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
             case CALIBRATINGUP:
                 return SystemState.CALIBRATINGUP;
             case OVERTHETOP:
@@ -814,6 +832,61 @@ public class Superstructure extends Subsystem {
             }
         }
 
+        private SystemState handleClimberExtending() {
+            mClimber.setWantedState(Climber.WantedState.EXTENDING);
+        	
+            switch (mWantedState) {
+            case CLIMBINGUP:
+                return SystemState.CLIMBINGUP;
+            case CLIMBINGDOWN:
+                return SystemState.CLIMBINGDOWN;
+            case AUTOINTAKING:
+                return SystemState.WAITING_FOR_LOW_POSITION;
+            case INTAKING:
+                return SystemState.WAITING_FOR_POWERCUBE_INTAKE;
+            case SPITTING:
+                return SystemState.SPITTING;
+            case CALIBRATINGDOWN:
+                return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
+            case CALIBRATINGUP:
+                return SystemState.CALIBRATINGUP;
+            case ELEVATOR_TRACKING:
+                return SystemState.ELEVATOR_TRACKING;
+            default:
+                return SystemState.IDLE;
+            }
+        }
+
+        private SystemState handleClimberRetracting() {
+            mClimber.setWantedState(Climber.WantedState.RETRACTING);
+        	
+            switch (mWantedState) {
+            case CLIMBINGUP:
+                return SystemState.CLIMBINGUP;
+            case CLIMBINGDOWN:
+                return SystemState.CLIMBINGDOWN;
+            case AUTOINTAKING:
+                return SystemState.WAITING_FOR_LOW_POSITION;
+            case INTAKING:
+                return SystemState.WAITING_FOR_POWERCUBE_INTAKE;
+            case SPITTING:
+                return SystemState.SPITTING;
+            case CALIBRATINGDOWN:
+                return SystemState.CALIBRATINGDOWN;
+            case STARTINGCONFIGURATION:
+                return SystemState.STARTINGCONFIGURATION;
+            case CALIBRATINGUP:
+                return SystemState.CALIBRATINGUP;
+            case ELEVATOR_TRACKING:
+                return SystemState.ELEVATOR_TRACKING;
+            default:
+                return SystemState.IDLE;
+            }
+        }
+
+
 		@Override
         public void onStop(double timestamp) {
             stop();
@@ -828,10 +901,9 @@ public class Superstructure extends Subsystem {
             mLED.setWantedState(LED.WantedState.OFF);
             mElevator.setWantedState(Elevator.WantedState.IDLE);
             mIntake.setWantedState(Intake.WantedState.IDLE);
-         //   mClimber.setWantedState(Climber.WantedState.IDLE);
+            mClimber.setWantedState(Climber.WantedState.IDLE);
         }
         
-    	
         switch (mWantedState) {
         case CLIMBINGUP:
             return SystemState.CLIMBINGUP;
@@ -845,6 +917,8 @@ public class Superstructure extends Subsystem {
             return SystemState.SPITTING;
         case CALIBRATINGDOWN:
             return SystemState.CALIBRATINGDOWN;
+        case STARTINGCONFIGURATION:
+            return SystemState.STARTINGCONFIGURATION;
         case CALIBRATINGUP:
             return SystemState.CALIBRATINGUP;
         case OVERTHETOP:
@@ -856,9 +930,9 @@ public class Superstructure extends Subsystem {
         case EJECTING_HATCH:
             return SystemState.EJECTING_HATCH; 
         case CARGO_CAPTURED:
-                return SystemState.CARGO_CAPTURED;
+            return SystemState.CARGO_CAPTURED;
         case EJECTING_CARGO:
-                return SystemState.EJECTING_CARGO;     
+            return SystemState.EJECTING_CARGO;     
         default:
             return SystemState.IDLE;
         }
@@ -879,24 +953,22 @@ public class Superstructure extends Subsystem {
             mIsOverTheTop = wantsOverTheTop;
             //mOverTheTop1.set(!wantsOverTheTop);
             //mOverTheTop2.set(wantsOverTheTop);
-//
+
             switch (mIsOverTheTop) {
                 case FLIP_UP:
                 	//System.out.println("flip up");
- //                   mTopRoller.set(DoubleSolenoid.Value.kForward);
+                    //mTopRoller.set(DoubleSolenoid.Value.kForward);
                     break;
                 case FLIP_DOWN:
                 	//System.out.println("flip down");
-  //                  mTopRoller.set(DoubleSolenoid.Value.kReverse);
+                    //mTopRoller.set(DoubleSolenoid.Value.kReverse);
                     break;
                 default: // Constants.kElevatorFlipNone
                 	//System.out.println("flip default");
- //                  mTopRoller.set(DoubleSolenoid.Value.kOff);
+                    //mTopRoller.set(DoubleSolenoid.Value.kOff);
             }
-//
         }
     }
-    
 
     @Override
     public void outputToSmartDashboard() {
@@ -907,12 +979,10 @@ public class Superstructure extends Subsystem {
 
     @Override
     public void stop() {
-
     }
 
     @Override
     public void zeroSensors() {
-
     }
 
     @Override
@@ -920,8 +990,8 @@ public class Superstructure extends Subsystem {
         enabledLooper.register(mLoop);
     }
 
-    public void setWantedElevatorPosition(ELEVATOR_POV_POSITION position) {
-        boolean cargo = false; // cargo or hatch check when known
+    public void setWantedElevatorPosition(ELEVATOR_POSITION position) {
+        boolean cargo = mIntake.hasCargo();
         double encoderValue = Constants.kElevatorHomeEncoderValue;
         if (cargo) {
             switch (position) {
@@ -934,7 +1004,12 @@ public class Superstructure extends Subsystem {
                 case ELEVATOR_3RD:
                     encoderValue = (double) Constants.kElevatorCargo3rd_EncoderValue;
                     break;
-            }
+                case ELEVATOR_SHIP:
+                    encoderValue = (double) Constants.kElevatorCargoShip_EncoderValue;
+                    break;
+                case ELEVATOR_CARGO_PICKUP:
+                    encoderValue = (double) Constants.kElevatorBallPickup_EncoderValue;
+                    break;            }
         } else {
             switch (position) {
                 case ELEVATOR_FLOOR:
@@ -946,9 +1021,40 @@ public class Superstructure extends Subsystem {
                 case ELEVATOR_3RD:
                     encoderValue = (double) Constants.kElevatorHatch3rd_EncoderValue;
                     break;
-            }
+                case ELEVATOR_SHIP:
+                    encoderValue = (double) Constants.kElevatorHatchShip_EncoderValue;
+                    break;
+                case ELEVATOR_CARGO_PICKUP:
+                    encoderValue = (double) Constants.kElevatorBallPickup_EncoderValue;
+                    break;            }
         }
         mWantedElevatorPosition = encoderValue;
+    }
+
+    public synchronized void seWristtWantedPosition(WantedWristPosition position) {
+
+        switch (position) {
+            case CARGOPICKUP:
+                mRotateWristShort.set(DoubleSolenoid.Value.kReverse);
+                mRotateWristLong.set(DoubleSolenoid.Value.kReverse);
+                break;
+            case STRAIGHTAHEAD:
+                mRotateWristShort.set(DoubleSolenoid.Value.kForward);
+                mRotateWristLong.set(DoubleSolenoid.Value.kReverse);
+                break;
+             case SHOOTHIGH:
+                mRotateWristShort.set(DoubleSolenoid.Value.kReverse);
+                mRotateWristLong.set(DoubleSolenoid.Value.kForward);
+                break;
+             case STARTINGPOSITION:
+                mRotateWristShort.set(DoubleSolenoid.Value.kForward);
+                mRotateWristLong.set(DoubleSolenoid.Value.kForward);
+                break;
+            default:
+                mRotateWristShort.set(DoubleSolenoid.Value.kForward);
+                mRotateWristLong.set(DoubleSolenoid.Value.kForward);
+        }
+
     }
 
     public void setOverrideCompressor(boolean force_off) {
@@ -959,34 +1065,4 @@ public class Superstructure extends Subsystem {
  //       mShooter.refreshControllerConsts();
     }
 
-
-	public void setFishingPoleUpdown(FISHING_POLE_UPDOWN updown) {
-		// TODO Auto-generated method stub
-        switch (updown) {
-        case DOWN:
-     //       mFishingPole1.set(false);
-     //       mFishingPole2.set(true);
-            break;
-        case UP:
-        //    mFishingPole1.set(true);
-      //      mFishingPole2.set(false);
-            break;
-        default: // Constants.kElevatorFlipNone
-       //     mFishingPole1.set(false);
-       //     mFishingPole2.set(false);
-        }
-	}
-
-
-
-	public void setFishingPoleExtendRetract(FISHING_POLE_EXTEND_RETRACT extendRetract) {
-		if (extendRetract == FISHING_POLE_EXTEND_RETRACT.EXTEND) {
-			mFishingPole.setWantedState(FishingPole.WantedState.MECHANISM_UP);
-		} else if (extendRetract == FISHING_POLE_EXTEND_RETRACT.RETRACT)
-			mFishingPole.setWantedState(FishingPole.WantedState.MECHANISM_DOWN);	
-		else {
-			mFishingPole.setWantedState(FishingPole.WantedState.IDLE);
-		}
-		
-	}
 }

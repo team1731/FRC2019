@@ -45,9 +45,10 @@ public class Intake extends Subsystem {
     //private AnalogInput mIRSensor1;
     //private AnalogInput mIRSensor2;
 
+
     private Intake() {
         mTalon = new TalonSRX(Constants.kIntakeTalon);
-        mTalon.setInverted(true); //Constants.kMotorInvert);
+        mTalon.setInverted(false); //Constants.kMotorInvert);
     	//mIRSensor1 = new AnalogInput(1);
     	//mIRSensor2 = new AnalogInput(4);
     }
@@ -68,6 +69,12 @@ public class Intake extends Subsystem {
     }
 
     public enum WantedState {
+    	IDLE,   
+        SPITTING, // moving
+        INTAKING,
+    }
+
+    public enum WantedRotateWrist {
     	IDLE,   
         SPITTING, // moving
         INTAKING,
@@ -157,6 +164,10 @@ public class Intake extends Subsystem {
         }
     }
     
+    public boolean hasCargo(){
+        return mTalon.getSensorCollection().isFwdLimitSwitchClosed();
+    }
+
     private SystemState handleIdle() {
         //setOpenLoop(0.0f);
         //if motor is not off, turn motor off
