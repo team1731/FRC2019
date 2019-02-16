@@ -45,6 +45,7 @@ public class Intake extends Subsystem {
     //private AnalogInput mIRSensor1;
     //private AnalogInput mIRSensor2;
 
+
     private Intake() {
         mTalon = new TalonSRX(Constants.kIntakeTalon);
         mTalon.setInverted(true); //Constants.kMotorInvert);
@@ -68,6 +69,12 @@ public class Intake extends Subsystem {
     }
 
     public enum WantedState {
+    	IDLE,   
+        SPITTING, // moving
+        INTAKING,
+    }
+
+    public enum WantedRotateWrist {
     	IDLE,   
         SPITTING, // moving
         INTAKING,

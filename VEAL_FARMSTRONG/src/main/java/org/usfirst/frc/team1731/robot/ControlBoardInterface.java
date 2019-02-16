@@ -57,4 +57,6 @@ public interface ControlBoardInterface {
 		boolean getShootBall();
 		boolean getCargoShipBall();
 		boolean getStartingConfiguration();
+
+		boolean getTractorDrive();
 }

@@ -105,10 +105,10 @@ public class Wrist extends Subsystem {
     }
 
     public enum WristPositions {
-    	CARGOPICKUP(343),   
-        STRAIGHTAHEAD(420), // moving
-        SHOOTHIGH(448),
-        STARTINGPOSITION(520);
+    	CARGOPICKUP(522),   
+        STRAIGHTAHEAD(580), // moving
+        SHOOTHIGH(588),
+        STARTINGPOSITION(588);
 
         private final int units;
 

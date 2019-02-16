@@ -102,6 +102,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.SerialPort;
 
 /**
  * The main robot class, which instantiates all robot parts and helper classes and initializes all loops. Some classes
@@ -180,13 +181,14 @@ public class Robot extends IterativeRobot {
     private UsbCamera camera1;
     private UsbCamera camera2;
     private UsbCamera selectedCamera;
+    private DigitalOutput arduinoLED;
 
     private NetworkTable networkTable;
 
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
                                     Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
-                                    ConnectionMonitor.getInstance(), LED.getInstance(), Wrist.getInstance() ));
+                                    ConnectionMonitor.getInstance(), LED.getInstance() /*, Wrist.getInstance()*/ ));
 
     // Initialize other helper objects
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
@@ -205,6 +207,8 @@ public class Robot extends IterativeRobot {
     private static Solenoid _24vSolenoid = Constants.makeSolenoidForId(11, 2);
     
     private DigitalInput tapeSensor;
+ 
+    private SerialPort visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
 
     public Robot() {
         CrashTracker.logRobotConstruction();
@@ -229,6 +233,7 @@ public class Robot extends IterativeRobot {
             leftRightCameraControl = new DigitalOutput(5);
 
             tapeSensor = new DigitalInput(0);
+            arduinoLED = new DigitalOutput(7);
             SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
@@ -619,6 +624,9 @@ public class Robot extends IterativeRobot {
             boolean frontCamera = mControlBoard.getFrontCamera();
             boolean backCamera = mControlBoard.getBackCamera();           
             int climber = mControlBoard.getClimber();           
+            boolean tracktorDrive = mControlBoard.getTractorDrive();          
+            
+            arduinoLED.set(mControlBoard.getBlinkLEDButton());
 
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
@@ -677,31 +685,43 @@ public class Robot extends IterativeRobot {
             }
 
 
-
             // Drive base
             double throttle = mControlBoard.getThrottle();
             double turn = mControlBoard.getTurn();
             
             if(mControlBoard.getInvertDrive()){
-                joystickAxesAreReversed = !joystickAxesAreReversed; 
+                joystickAxesAreReversed = !joystickAxesAreReversed;
+                toggleCamera(); 
             }
 
             if(joystickAxesAreReversed){
                 throttle=-throttle;
-                turn=-turn;
-                toggleCamera();
+                //turn=-turn;
+                leftRightCameraControl.set(true);
+            }
+            else{     
+                leftRightCameraControl.set(false);
             }
         
             if(frontCamera){
                 selectedCamera = camera1;
-                leftRightCameraControl.set(false);
                 networkTable.putString("CameraSelection", selectedCamera.getName());
             }
 
             if(backCamera){
                 selectedCamera = camera2;
-                leftRightCameraControl.set(true);
                 networkTable.putString("CameraSelection", selectedCamera.getName());
+            }
+
+            if(tracktorDrive) {
+                String[] visionTargetPosition = visionCam.readString().split(",");
+                if(visionTargetPosition.length > 0){
+                    System.out.println("x: "+visionTargetPosition[0]+ ", y: "+visionTargetPosition[1]);
+                    turn = (Double.valueOf(visionTargetPosition[0])-160)/160;
+                    System.out.println(turn);
+                 } else {
+                 System.out.println("No data received from vision camera");
+                } 
             }
 
 
@@ -728,7 +748,7 @@ public class Robot extends IterativeRobot {
 
 
 
-             allPeriodic();
+            allPeriodic();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
@@ -739,13 +759,11 @@ public class Robot extends IterativeRobot {
 
         if(selectedCamera == camera1){
             selectedCamera = camera2;
-            leftRightCameraControl.set(true);
+
         }
         else{
             selectedCamera = camera1;
-            leftRightCameraControl.set(false);
         }
-        networkTable.putString("CameraSelection", selectedCamera.getName());
     }
 
     @Override
