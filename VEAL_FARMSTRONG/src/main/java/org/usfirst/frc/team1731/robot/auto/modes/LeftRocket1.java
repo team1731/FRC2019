@@ -13,10 +13,9 @@ import org.usfirst.frc.team1731.robot.auto.actions.PickUpAction;
 import org.usfirst.frc.team1731.robot.auto.actions.ResetPoseFromPathAction;
 import org.usfirst.frc.team1731.robot.auto.actions.RotateIntakeActionUp;
 import org.usfirst.frc.team1731.robot.auto.actions.SpitAction;
-import org.usfirst.frc.team1731.robot.auto.modes._new._BackupLeftTurnRocket;
+import org.usfirst.frc.team1731.robot.paths.spacey.Backup_Left_Turn_Rocket;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
-import org.usfirst.frc.team1731.robot.paths.Program_2;
-import org.usfirst.frc.team1731.robot.paths.Program_2_New;
+import org.usfirst.frc.team1731.robot.paths.spacey.Program_2_New;
 
 /**
  * Scores the preload gear onto the boiler-side peg then deploys the hopper and shoots all 60 balls (10 preload + 50
@@ -33,7 +32,7 @@ public class LeftRocket1 extends AutoModeBase {
     protected void routine() throws AutoModeEndedException {
     	System.out.println("Executing LeftRocket1");
     	
-    	PathContainer Path = new _BackupLeftTurnRocket();
+    	PathContainer Path = new Backup_Left_Turn_Rocket();
     	runAction(new ResetPoseFromPathAction(Path));
         runAction(new ParallelAction(Arrays.asList(new Action[] {
         		new ElevatorUp(), 

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team1731.robot.paths;
+package org.usfirst.frc.team1731.robot.paths.spacey;
 
 import java.util.ArrayList;
 
@@ -6,6 +6,7 @@ import org.usfirst.frc.team1731.lib.util.control.Path;
 import org.usfirst.frc.team1731.lib.util.math.RigidTransform2d;
 import org.usfirst.frc.team1731.lib.util.math.Rotation2d;
 import org.usfirst.frc.team1731.lib.util.math.Translation2d;
+import org.usfirst.frc.team1731.robot.paths.PathBuilder;
 import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
