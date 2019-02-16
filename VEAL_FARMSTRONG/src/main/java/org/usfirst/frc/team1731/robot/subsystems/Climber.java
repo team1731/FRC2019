@@ -115,7 +115,7 @@ public class Climber extends Subsystem {
          * neutral within this range. See Table in Section 17.2.1 for native
          * units per rotation.
          */
-        //mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 3, Constants.kTimeoutMs);
+        mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 3, Constants.kTimeoutMs);
     }
     /*
     public xClimber() {
@@ -284,14 +284,8 @@ public class Climber extends Subsystem {
 
     @Override
     public void outputToSmartDashboard() {
-        SmartDashboard.putString("ClimbSysState", mSystemState.name()); // .ordinal());
+        SmartDashboard.putString("ClimbSysState", mSystemState.name());
         SmartDashboard.putString("ClimbWantState", mWantedState.name());
-        //SmartDashboard.putNumber("ElevWantState", (double)mWantedState.ordinal());
-        //SmartDashboard.putNumber("ClimbWantPos", mWantedPosition);
-        //SmartDashboard.putNumber("ElevCurPos", mTalon.getSelectedSensorPosition(0));
-        //SmartDashboard.putNumber("ElevQuadPos", mTalon.getSensorCollection().getQuadraturePosition());
-        //SmartDashboard.putBoolean("ElevPosChange", mPositionChanged);
-        //SmartDashboard.putBoolean("ElevLastRevSw", mRevSwitchSet);
     }
 
     @Override

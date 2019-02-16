@@ -85,6 +85,7 @@ import org.usfirst.frc.team1731.robot.subsystems.LED;
 import org.usfirst.frc.team1731.robot.subsystems.Superstructure;
 import org.usfirst.frc.team1731.robot.subsystems.Wrist;
 import org.usfirst.frc.team1731.robot.subsystems.Wrist.WristPositions;
+import org.usfirst.frc.team1731.robot.subsystems.Climber;
 import org.usfirst.frc.team1731.robot.vision.VisionServer;
 
 import edu.wpi.cscore.UsbCamera;
@@ -184,7 +185,7 @@ public class Robot extends IterativeRobot {
 
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
-                                    Elevator.getInstance(), Intake.getInstance(), //Climber.getInstance(),
+                                    Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
                                     ConnectionMonitor.getInstance(), LED.getInstance(), Wrist.getInstance() ));
 
     // Initialize other helper objects

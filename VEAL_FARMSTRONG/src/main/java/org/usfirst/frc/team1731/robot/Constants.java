@@ -232,7 +232,7 @@ public class Constants extends ConstantsBase {
     // are attached to the master)
 
     // Drive
-    public static final int kLeftDriveMasterId = 5;
+    public static final int kLeftDriveMasterId = 11; //Climber is borrowing 5;
     public static final int kLeftDriveSlaveId = 6;
     public static final int kRightDriveMasterId = 3;
     public static final int kRightDriverSlaveId = 2;

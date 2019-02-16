@@ -94,8 +94,8 @@ public class GamepadControlBoard implements ControlBoardInterface {
 		//
         //int pov = mOperator.getPOV(0);    	
         //return ((pov != -1) && (pov > 315 || pov < 45)) &&  mOperator.getRawButton(1);
-        boolean left_trigger = (Math.abs(mOperator.getRawAxis(2)) > 0.8);
-        boolean right_trigger = (Math.abs(mOperator.getRawAxis(3)) > 0.8);
+        boolean left_trigger = (Math.abs(mDriver.getRawAxis(2)) > 0.8);
+        boolean right_trigger = (Math.abs(mDriver.getRawAxis(3)) > 0.8);
         if (mDriver.getRawButton(7) && mDriver.getRawButton(8)) {
             return 2; // retract climber/legolift
         } else if (left_trigger && right_trigger) {
