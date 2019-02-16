@@ -12,7 +12,7 @@ import org.usfirst.frc.team1731.lib.util.InterpolatingDouble;
 import org.usfirst.frc.team1731.lib.util.InterpolatingTreeMap;
 import org.usfirst.frc.team1731.lib.util.LatchedBoolean;
 import org.usfirst.frc.team1731.lib.util.math.RigidTransform2d;
-import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POV_POSITION;
+import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POSITION;
 import org.usfirst.frc.team1731.robot.Constants.GRABBER_POSITION;
 import org.usfirst.frc.team1731.robot.auto.AutoModeBase;
 import org.usfirst.frc.team1731.robot.auto.AutoModeExecuter;
@@ -79,14 +79,16 @@ import org.usfirst.frc.team1731.robot.paths.profiles.PathAdapter;
 import org.usfirst.frc.team1731.robot.subsystems.ConnectionMonitor;
 import org.usfirst.frc.team1731.robot.subsystems.Drive;
 import org.usfirst.frc.team1731.robot.subsystems.Elevator;
-import org.usfirst.frc.team1731.robot.subsystems.FishingPole;
-import org.usfirst.frc.team1731.robot.subsystems.Climber;
+
 import org.usfirst.frc.team1731.robot.subsystems.Intake;
 import org.usfirst.frc.team1731.robot.subsystems.LED;
 import org.usfirst.frc.team1731.robot.subsystems.Superstructure;
 import org.usfirst.frc.team1731.robot.subsystems.Wrist;
+import org.usfirst.frc.team1731.robot.subsystems.Wrist.WristPositions;
+import org.usfirst.frc.team1731.robot.subsystems.Climber;
 import org.usfirst.frc.team1731.robot.vision.VisionServer;
 
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -95,10 +97,12 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.SerialPort;
 
 /**
  * The main robot class, which instantiates all robot parts and helper classes and initializes all loops. Some classes
@@ -174,11 +178,17 @@ public class Robot extends IterativeRobot {
     };
 
     private boolean joystickAxesAreReversed;
+    private UsbCamera camera1;
+    private UsbCamera camera2;
+    private UsbCamera selectedCamera;
+    private DigitalOutput arduinoLED;
+
+    private NetworkTable networkTable;
 
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
-                                    Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(), FishingPole.getInstance(),
-                                    ConnectionMonitor.getInstance(), LED.getInstance(), Wrist.getInstance() ));
+                                    Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
+                                    ConnectionMonitor.getInstance(), LED.getInstance() /*, Wrist.getInstance()*/ ));
 
     // Initialize other helper objects
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
@@ -197,6 +207,8 @@ public class Robot extends IterativeRobot {
     private static Solenoid _24vSolenoid = Constants.makeSolenoidForId(11, 2);
     
     private DigitalInput tapeSensor;
+ 
+    private SerialPort visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
 
     public Robot() {
         CrashTracker.logRobotConstruction();
@@ -216,9 +228,12 @@ public class Robot extends IterativeRobot {
         try {
             CrashTracker.logRobotInit();
 
+            networkTable = NetworkTable.getTable("");
+
             leftRightCameraControl = new DigitalOutput(5);
 
             tapeSensor = new DigitalInput(0);
+            arduinoLED = new DigitalOutput(7);
             SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
@@ -230,8 +245,9 @@ public class Robot extends IterativeRobot {
             
             //http://roborio-1731-frc.local:1181/?action=stream
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
-            CameraServer.getInstance().startAutomaticCapture(0);
-            
+            camera1 = CameraServer.getInstance().startAutomaticCapture(0);
+            camera2 = CameraServer.getInstance().startAutomaticCapture(1);
+            selectedCamera = camera1;
             
             switch(CHOSEN_AUTO_SCHEME) {
             
@@ -591,11 +607,6 @@ public class Robot extends IterativeRobot {
             
             double timestamp = Timer.getFPGATimestamp();
 
-            // TODO FIXME RDB - for testing purposes only
-            leftRightCameraControl.set(mControlBoard.getToggleCamera());
-                
-            boolean climbUp = mControlBoard.getClimbUp();
-            boolean climbDown = mControlBoard.getClimbDown();
             boolean overTheTop = mControlBoard.getOverTheTopButton();
             boolean flipUp = mControlBoard.getFlipUpButton();
             boolean flipDown = mControlBoard.getFlipDownButton();
@@ -604,31 +615,38 @@ public class Robot extends IterativeRobot {
             boolean calibrateUp = mControlBoard.getCalibrateUp();
             boolean spitting = mControlBoard.getSpit();
             boolean pickUp = mControlBoard.getAutoPickUp();
-            boolean fishingPoleUp = mControlBoard.getFishingPoleUp();
-            boolean fishingPoleDown = mControlBoard.getFishingPoleDown();
-            boolean fishingPoleExtend = mControlBoard.getFishingPoleExtend();
-            boolean fishingPoleRetract =mControlBoard.getFishingPoleRetract();
-
-            boolean pickupHatch =mControlBoard.getPickupPanel();
-            boolean ejectHatch =mControlBoard.getShootPanel();
-            boolean pickupCargo =mControlBoard.getPickupBall();
-            boolean ejectCargo =mControlBoard.getShootBall();
+            boolean pickupHatch = mControlBoard.getPickupPanel();
+            boolean ejectHatch = mControlBoard.getShootPanel();
+            boolean pickupCargo = mControlBoard.getPickupBall();
+            boolean ejectCargo = mControlBoard.getShootBall();
+            boolean elevCargoShipPos = mControlBoard.getCargoShipBall();
+            boolean startingConfiguration = mControlBoard.getStartingConfiguration();
+            boolean frontCamera = mControlBoard.getFrontCamera();
+            boolean backCamera = mControlBoard.getBackCamera();           
+            int climber = mControlBoard.getClimber();           
+            boolean tracktorDrive = mControlBoard.getTractorDrive();          
             
+            arduinoLED.set(mControlBoard.getBlinkLEDButton());
+
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
                 if (elevatorPOV == 0) {
-                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_FLOOR);
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_FLOOR);
                 } else if (elevatorPOV == 1) {
-                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_2ND);
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_2ND);
                 } else if (elevatorPOV == 2) {
-                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POV_POSITION.ELEVATOR_3RD);
+                    mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_3RD);
                 }
+            } else if (elevCargoShipPos) {
+                mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_SHIP);
             }
 
-            if (climbUp) {
-            	mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
-            } else if (climbDown) {
-            	mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGDOWN);
+            if (climber > 0) {
+                if (climber == 1) { // Superstructure.CLIMBER_EXTEND_RETRACT.EXTEND
+                    mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
+                } else { // Superstructure.CLIMBER_EXTEND_RETRACT.RETRACT
+                    mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGDOWN);
+                }
             } else if (grabCube) {
             	mSuperstructure.setWantedState(Superstructure.WantedState.INTAKING);
             } else if (spitting) {
@@ -637,6 +655,8 @@ public class Robot extends IterativeRobot {
             	mSuperstructure.setWantedState(Superstructure.WantedState.CALIBRATINGDOWN);
             } else if (calibrateUp) {
             	mSuperstructure.setWantedState(Superstructure.WantedState.CALIBRATINGUP);
+            } else if (startingConfiguration){
+                mSuperstructure.setWantedState(Superstructure.WantedState.STARTINGCONFIGURATION);
             } else if (pickUp) {
                 mSuperstructure.setWantedState(Superstructure.WantedState.AUTOINTAKING);
             } else if (ejectHatch) {
@@ -663,35 +683,46 @@ public class Robot extends IterativeRobot {
                 mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_NONE);
                 //mSuperstructure.setWantedIntakeOutput(0);
             }
-            
-            if (fishingPoleUp) {
-            	mSuperstructure.setFishingPoleUpdown(Superstructure.FISHING_POLE_UPDOWN.UP);
-            } else if (fishingPoleDown) {
-            	mSuperstructure.setFishingPoleUpdown(Superstructure.FISHING_POLE_UPDOWN.DOWN);
-            } else {
-            	mSuperstructure.setFishingPoleUpdown(Superstructure.FISHING_POLE_UPDOWN.NONE);
-            }
-            
-            if (fishingPoleExtend) {
-            	mSuperstructure.setFishingPoleExtendRetract(Superstructure.FISHING_POLE_EXTEND_RETRACT.EXTEND);
-            } else if (fishingPoleRetract) {
-            	mSuperstructure.setFishingPoleExtendRetract(Superstructure.FISHING_POLE_EXTEND_RETRACT.RETRACT);
-            } else {
-            	mSuperstructure.setFishingPoleExtendRetract(Superstructure.FISHING_POLE_EXTEND_RETRACT.NONE);
-            }
+
 
             // Drive base
             double throttle = mControlBoard.getThrottle();
             double turn = mControlBoard.getTurn();
             
             if(mControlBoard.getInvertDrive()){
-                joystickAxesAreReversed = !joystickAxesAreReversed; 
+                joystickAxesAreReversed = !joystickAxesAreReversed;
+                toggleCamera(); 
             }
 
             if(joystickAxesAreReversed){
                 throttle=-throttle;
-                turn=-turn;
-             }
+                //turn=-turn;
+                leftRightCameraControl.set(true);
+            }
+            else{     
+                leftRightCameraControl.set(false);
+            }
+        
+            if(frontCamera){
+                selectedCamera = camera1;
+                networkTable.putString("CameraSelection", selectedCamera.getName());
+            }
+
+            if(backCamera){
+                selectedCamera = camera2;
+                networkTable.putString("CameraSelection", selectedCamera.getName());
+            }
+
+            if(tracktorDrive) {
+                String[] visionTargetPosition = visionCam.readString().split(",");
+                if(visionTargetPosition.length > 0){
+                    System.out.println("x: "+visionTargetPosition[0]+ ", y: "+visionTargetPosition[1]);
+                    turn = (Double.valueOf(visionTargetPosition[0])-160)/160;
+                    System.out.println(turn);
+                 } else {
+                 System.out.println("No data received from vision camera");
+                } 
+            }
 
 
             mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
@@ -699,12 +730,39 @@ public class Robot extends IterativeRobot {
             boolean wantLowGear = mControlBoard.getLowGear();
             mDrive.setHighGear(!wantLowGear);
             
+            if(mControlBoard.getTestWrist()){
+                Wrist.getInstance().setWantedPosition(WristPositions.STRAIGHTAHEAD);
+                //mSuperstructure.setWantedState(Superstructure.WantedState.WRIST_TRACKING);
+                Wrist.getInstance().setWantedState(Wrist.WantedState.WRISTTRACKING);
+            }
             
+             // Handle ball pickup and shooting
+             if(mControlBoard.getPickupBall() && !mControlBoard.getShootBall()){
+
+            }
+            else if(mControlBoard.getShootBall() && !mControlBoard.getPickupBall()){
+                if(Elevator.getInstance().atDesired()){
+                    
+                }
+             }
+
+
 
             allPeriodic();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
+        }
+    }
+
+    private void toggleCamera(){
+
+        if(selectedCamera == camera1){
+            selectedCamera = camera2;
+
+        }
+        else{
+            selectedCamera = camera1;
         }
     }
 
