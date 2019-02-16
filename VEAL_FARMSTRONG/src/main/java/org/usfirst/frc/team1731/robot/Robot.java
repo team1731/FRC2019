@@ -88,6 +88,7 @@ import org.usfirst.frc.team1731.robot.subsystems.Wrist;
 import org.usfirst.frc.team1731.robot.vision.VisionServer;
 
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -176,11 +177,13 @@ public class Robot extends IterativeRobot {
     };
 
     private boolean joystickAxesAreReversed;
-    private UsbCamera camera1;
-    private UsbCamera camera2;
+    private boolean camerasAreReversed;
+    
+    private UsbCamera cameraFront;
+    private UsbCamera cameraBack;
     private UsbCamera selectedCamera;
-
     private NetworkTable networkTable;
+    private VideoSink videoSink;
 
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
@@ -239,10 +242,11 @@ public class Robot extends IterativeRobot {
             
             //http://roborio-1731-frc.local:1181/?action=stream
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
-            camera1 = CameraServer.getInstance().startAutomaticCapture(0);
-            camera2 = CameraServer.getInstance().startAutomaticCapture(1);
-            selectedCamera = camera1;
-            
+            cameraFront = CameraServer.getInstance().startAutomaticCapture(0);
+            cameraBack = CameraServer.getInstance().startAutomaticCapture(1);
+            videoSink = CameraServer.getInstance().getServer();
+            selectedCamera = cameraFront;
+
             switch(CHOSEN_AUTO_SCHEME) {
             
             case OLD_SCHEME: // Haymarket, Alexandria
@@ -617,9 +621,6 @@ public class Robot extends IterativeRobot {
             boolean fishingPoleExtend = mControlBoard.getFishingPoleExtend();
             boolean fishingPoleRetract =mControlBoard.getFishingPoleRetract();
 
-            boolean frontCamera = mControlBoard.getFrontCamera();
-            boolean backCamera = mControlBoard.getBackCamera();           
-
             boolean pickupHatch =mControlBoard.getPickupPanel();
             boolean ejectHatch =mControlBoard.getShootPanel();
             boolean pickupCargo =mControlBoard.getPickupBall();
@@ -703,22 +704,17 @@ public class Robot extends IterativeRobot {
 
             if(joystickAxesAreReversed){
                 throttle=-throttle;
-                //turn=-turn;
                 leftRightCameraControl.set(true);
             }
+
             else{     
                 leftRightCameraControl.set(false);
             }
         
-            if(frontCamera){
-                selectedCamera = camera1;
-                networkTable.putString("CameraSelection", selectedCamera.getName());
+            if(mControlBoard.getInvertCamera()){
+                toggleCamera(); 
             }
-
-            if(backCamera){
-                selectedCamera = camera2;
-                networkTable.putString("CameraSelection", selectedCamera.getName());
-            }
+            videoSink.setSource(selectedCamera);
 
 
             mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
@@ -747,15 +743,15 @@ public class Robot extends IterativeRobot {
     }
 
     private void toggleCamera(){
-
-        if(selectedCamera == camera1){
-            selectedCamera = camera2;
-
+        camerasAreReversed = !camerasAreReversed;
+        if(selectedCamera == cameraFront){
+            selectedCamera = cameraBack;
         }
+
         else{
-            selectedCamera = camera1;
-        }
-    }
+            selectedCamera = cameraFront;
+        } 
+      }
 
     @Override
     public void disabledInit() {
