@@ -13,9 +13,9 @@ import org.usfirst.frc.team1731.robot.auto.actions.PickUpAction;
 import org.usfirst.frc.team1731.robot.auto.actions.ResetPoseFromPathAction;
 import org.usfirst.frc.team1731.robot.auto.actions.RotateIntakeActionUp;
 import org.usfirst.frc.team1731.robot.auto.actions.SpitAction;
-import org.usfirst.frc.team1731.robot.paths.spacey.Backup_Left_Turn_Rocket;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
-import org.usfirst.frc.team1731.robot.paths.spacey.Program_2_New;
+import org.usfirst.frc.team1731.robot.paths.spacey.Program_2_A;
+import org.usfirst.frc.team1731.robot.paths.spacey.Program_2_B;
 
 /**
  * Scores the preload gear onto the boiler-side peg then deploys the hopper and shoots all 60 balls (10 preload + 50
@@ -25,14 +25,13 @@ import org.usfirst.frc.team1731.robot.paths.spacey.Program_2_New;
  * 
  * @see AutoModeBase
  */
-@Deprecated
-public class LeftRocket1 extends AutoModeBase {
+public class LeftRocket2 extends AutoModeBase {
 
     @Override
     protected void routine() throws AutoModeEndedException {
-    	System.out.println("Executing LeftRocket1");
+    	System.out.println("Executing "+this.toString());
     	
-    	PathContainer Path = new Backup_Left_Turn_Rocket();
+    	PathContainer Path = new Program_2_A();
     	runAction(new ResetPoseFromPathAction(Path));
         runAction(new ParallelAction(Arrays.asList(new Action[] {
         		new ElevatorUp(), 
@@ -42,7 +41,7 @@ public class LeftRocket1 extends AutoModeBase {
         
         runAction(new SpitAction());
         
-        Path = new Program_2_New();
+        Path = new Program_2_B();
         runAction(new ParallelAction(Arrays.asList(new Action[] {
         		new PickUpAction(), 
         		new DrivePathAction(Path)
