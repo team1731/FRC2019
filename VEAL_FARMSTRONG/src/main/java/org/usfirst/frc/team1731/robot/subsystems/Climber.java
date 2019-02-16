@@ -56,100 +56,125 @@ public class Climber extends Subsystem {
         return sInstance;
     }
 
-    private final TalonSRX mTalon;
-    //private final Solenoid mOverTop1;
-    //private final Solenoid mOverTop2;
+    private final TalonSRX mTalonL;
+    private final TalonSRX mTalonR;
     
     public Climber() {
-        mTalon = new TalonSRX(Constants.kClimberTalon);
+        // Left Talon
+        mTalonL = new TalonSRX(Constants.kClimberTalonL);
 		/* Factory default hardware to prevent unexpected behavior */
-		mTalon.configFactoryDefault();
+		mTalonL.configFactoryDefault();
 
 		/* Configure Sensor Source for Pirmary PID */
-        mTalon.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
+        mTalonL.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
 
 		/**
 		 * Configure Talon SRX Output and Sesnor direction accordingly
 		 * Invert Motor to have green LEDs when driving Talon Forward / Requesting Postiive Output
 		 * Phase sensor to have positive increment when driving Talon Forward (Green LED)
 		 */
-		mTalon.setSensorPhase(Constants.kSensorPhase);
-		mTalon.setInverted(true);  //old was true
+		mTalonL.setSensorPhase(Constants.kSensorPhase);
+		mTalonL.setInverted(true);  //old was true
 
 		/* Set relevant frame periods to be at least as fast as periodic rate */
-		mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
-		mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
+		mTalonL.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
+		mTalonL.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
 
 		/* Set the peak and nominal outputs */
-		mTalon.configNominalOutputForward(0, Constants.kTimeoutMs);
-		mTalon.configNominalOutputReverse(0, Constants.kTimeoutMs);
-		mTalon.configPeakOutputForward(0.3, Constants.kTimeoutMs);
-		mTalon.configPeakOutputReverse(-0.1, Constants.kTimeoutMs);
+		mTalonL.configNominalOutputForward(0, Constants.kTimeoutMs);
+		mTalonL.configNominalOutputReverse(0, Constants.kTimeoutMs);
+		mTalonL.configPeakOutputForward(0.8, Constants.kTimeoutMs);
+		mTalonL.configPeakOutputReverse(-0.4, Constants.kTimeoutMs);
 
 		/* Set Motion Magic gains in slot0 - see documentation */
-		mTalon.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
-		mTalon.config_kF(Constants.kSlotIdx, Constants.kClimberTalonKF, Constants.kTimeoutMs);
-		mTalon.config_kP(Constants.kSlotIdx, Constants.kClimberTalonKP, Constants.kTimeoutMs);
-		mTalon.config_kI(Constants.kSlotIdx, Constants.kClimberTalonKI, Constants.kTimeoutMs);
-		mTalon.config_kD(Constants.kSlotIdx, Constants.kClimberTalonKD, Constants.kTimeoutMs);
+		mTalonL.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+		mTalonL.config_kF(Constants.kSlotIdx, Constants.kClimberTalonKF, Constants.kTimeoutMs);
+		mTalonL.config_kP(Constants.kSlotIdx, Constants.kClimberTalonKP, Constants.kTimeoutMs);
+		mTalonL.config_kI(Constants.kSlotIdx, Constants.kClimberTalonKI, Constants.kTimeoutMs);
+		mTalonL.config_kD(Constants.kSlotIdx, Constants.kClimberTalonKD, Constants.kTimeoutMs);
 
 		/* Set acceleration and vcruise velocity - see documentation */
-		mTalon.configMotionCruiseVelocity(Constants.kClimberCruiseVelocity, Constants.kTimeoutMs);
-		mTalon.configMotionAcceleration(Constants.kClimberAcceleration, Constants.kTimeoutMs);
+		mTalonL.configMotionCruiseVelocity(Constants.kClimberCruiseVelocity, Constants.kTimeoutMs);
+		mTalonL.configMotionAcceleration(Constants.kClimberAcceleration, Constants.kTimeoutMs);
 
 		/* Zero the sensor */
-        //mTalon.setSelectedSensorPosition(Constants.kClimberHomeEncoderValue, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
-        mTalon.set(ControlMode.PercentOutput, 0);
+        //mTalonL.setSelectedSensorPosition(Constants.kClimberHomeEncoderValue, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+        mTalonL.set(ControlMode.PercentOutput, 0);
 
         // FROM WRIST CODE
-        //--mTalon.set(ControlMode.Position, 0);
-        //--mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
-        //mTalon.configClosedloopRamp(0, Constants.kTimeoutMs);
-        //mTalon.overrideLimitSwitchesEnable(false);
-        //mTalon.setNeutralMode(NeutralMode.Brake);
+        //--mTalonL.set(ControlMode.Position, 0);
+        //--mTalonL.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
+        mTalonL.configClosedloopRamp(0, Constants.kTimeoutMs);
+        //mTalonL.overrideLimitSwitchesEnable(false);
+        mTalonL.setNeutralMode(NeutralMode.Brake);
         /* choose based on what direction you want forward/positive to be.
          * This does not affect sensor phase. */ 
-        //mTalon.setInverted(true); //Constants.kMotorInvert);
+        mTalonL.setInverted(true); //Constants.kMotorInvert);
         /*
          * set the allowable closed-loop error, Closed-Loop output will be
          * neutral within this range. See Table in Section 17.2.1 for native
          * units per rotation.
          */
-        mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 3, Constants.kTimeoutMs);
-    }
-    /*
-    public xClimber() {
-        ///mTalon = new TalonSRX(Constants.kClimberTalon);
-        ///mTalon.set(ControlMode.Position, 0);
-        mTalon.configVelocityMeasurementWindow(10, 0);
-        mTalon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
-        ///mTalon.selectProfileSlot(0, 0);
-        ///mTalon.config_kP(Constants.SlotIdx, Constants.kClimberTalonKP, Constants.kTimeoutMs );
-        ///mTalon.config_kI(Constants.SlotIdx, Constants.kClimberTalonKI, Constants.kTimeoutMs );
-        ///mTalon.config_kD(Constants.SlotIdx, Constants.kClimberTalonKD, Constants.kTimeoutMs);
-        ///mTalon.config_kF(Constants.SlotIdx, Constants.kClimberTalonKF, Constants.kTimeoutMs );
-        ///mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
-        ///mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
-        mTalon.configClosedloopRamp(0, Constants.kTimeoutMs);
-        ///mTalon.setSelectedSensorPosition(0, 0, 10); //-1793, 0, 10);
-        mTalon.overrideLimitSwitchesEnable(false);
-        
-        / * choose to ensure sensor is positive when output is positive * /
-        ///mTalon.setSensorPhase(Constants.kSensorPhase);
+        mTalonL.configAllowableClosedloopError(Constants.kPIDLoopIdx, 3, Constants.kTimeoutMs);
 
+        //Right Talon
+        mTalonR = new TalonSRX(Constants.kClimberTalonL);
+		/* Factory default hardware to prevent unexpected behavior */
+		mTalonR.configFactoryDefault();
+
+		/* Configure Sensor Source for Pirmary PID */
+        mTalonR.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
+
+		/**
+		 * Configure Talon SRX Output and Sesnor direction accordingly
+		 * Invert Motor to have green LEDs when driving Talon Forward / Requesting Postiive Output
+		 * Phase sensor to have positive increment when driving Talon Forward (Green LED)
+		 */
+		mTalonR.setSensorPhase(Constants.kSensorPhase);
+		mTalonR.setInverted(true);  //old was true
+
+		/* Set relevant frame periods to be at least as fast as periodic rate */
+		mTalonR.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
+		mTalonR.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
+
+		/* Set the peak and nominal outputs */
+		mTalonR.configNominalOutputForward(0, Constants.kTimeoutMs);
+		mTalonR.configNominalOutputReverse(0, Constants.kTimeoutMs);
+		mTalonR.configPeakOutputForward(0.8, Constants.kTimeoutMs);
+		mTalonR.configPeakOutputReverse(-0.4, Constants.kTimeoutMs);
+
+		/* Set Motion Magic gains in slot0 - see documentation */
+		mTalonR.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+		mTalonR.config_kF(Constants.kSlotIdx, Constants.kClimberTalonKF, Constants.kTimeoutMs);
+		mTalonR.config_kP(Constants.kSlotIdx, Constants.kClimberTalonKP, Constants.kTimeoutMs);
+		mTalonR.config_kI(Constants.kSlotIdx, Constants.kClimberTalonKI, Constants.kTimeoutMs);
+		mTalonR.config_kD(Constants.kSlotIdx, Constants.kClimberTalonKD, Constants.kTimeoutMs);
+
+		/* Set acceleration and vcruise velocity - see documentation */
+		mTalonR.configMotionCruiseVelocity(Constants.kClimberCruiseVelocity, Constants.kTimeoutMs);
+		mTalonR.configMotionAcceleration(Constants.kClimberAcceleration, Constants.kTimeoutMs);
+
+		/* Zero the sensor */
+        //mTalonR.setSelectedSensorPosition(Constants.kClimberHomeEncoderValue, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+        mTalonR.set(ControlMode.PercentOutput, 0);
+
+        // FROM WRIST CODE
+        //--mTalonR.set(ControlMode.Position, 0);
+        //--mTalonR.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
+        mTalonR.configClosedloopRamp(0, Constants.kTimeoutMs);
+        //mTalonR.overrideLimitSwitchesEnable(false);
+        mTalonR.setNeutralMode(NeutralMode.Brake);
         /* choose based on what direction you want forward/positive to be.
-         * This does not affect sensor phase. * / 
-        ////mTalon.setInverted(true); //Constants.kMotorInvert);
-
-        / * set the peak and nominal outputs, 12V means full * /
-        ///mTalon.configNominalOutputForward(.5, Constants.kTimeoutMs);
-        ///mTalon.configNominalOutputReverse(.9, Constants.kTimeoutMs);
-        ///mTalon.configPeakOutputForward(1.0, Constants.kTimeoutMs);
-        ///mTalon.configPeakOutputReverse(-1.0, Constants.kTimeoutMs);
-        
-        mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 50, Constants.kTimeoutMs);
+         * This does not affect sensor phase. */ 
+        mTalonR.setInverted(true); //Constants.kMotorInvert);
+        /*
+         * set the allowable closed-loop error, Closed-Loop output will be
+         * neutral within this range. See Table in Section 17.2.1 for native
+         * units per rotation.
+         */
+        mTalonR.configAllowableClosedloopError(Constants.kPIDLoopIdx, 3, Constants.kTimeoutMs);        
     }
-    */
+
     public enum SystemState {	
         IDLE,   // stop all motors
         EXTENDING, // lego lift extend
@@ -182,7 +207,7 @@ public class Climber extends Subsystem {
                 //mPositionChanged = false;
                 //mWantedPosition = 0;
                 mCurrentStateStartTime = timestamp;
-                //mTalon.setSelectedSensorPosition(0, 0, 10);                
+                //mTalonL.setSelectedSensorPosition(0, 0, 10);                
               //  DriverStation.reportError("Climber SystemState: " + mSystemState, false);
             }
         }
@@ -238,47 +263,35 @@ public class Climber extends Subsystem {
     
     private SystemState handleIdle() {
         if (mStateChanged) {
-            mTalon.set(ControlMode.PercentOutput, 0);
+            mTalonL.set(ControlMode.PercentOutput, 0);
+            mTalonR.set(ControlMode.PercentOutput, 0);
         }
         return defaultStateTransfer();
     }
 
     private SystemState handleExtending() {
         if (mStateChanged) {
-            mTalon.set(ControlMode.PercentOutput, Constants.kClimberExtendPercent);
+            //mTalonL.set(ControlMode.PercentOutput, Constants.kClimberExtendPercent);
+            mTalonL.set(ControlMode.MotionMagic, Constants.kClimberExtendedPosition);
+            mTalonR.set(ControlMode.MotionMagic, Constants.kClimberExtendedPosition);
         }
-        //mPositionChanged = true;
-        //mWantedPosition = Constants.kClimberHomeEncoderValue;
-        //wasCalibrated = true;
+
         return defaultStateTransfer();
     }
 
     private SystemState handleRetracting() {
         if (mStateChanged) {
-            mTalon.set(ControlMode.PercentOutput, Constants.kClimberRetractPercent);
+            //mTalonL.set(ControlMode.PercentOutput, Constants.kClimberRetractPercent);
+            mTalonL.set(ControlMode.MotionMagic, Constants.kClimberRetractedPosition);
+            mTalonR.set(ControlMode.MotionMagic, Constants.kClimberRetractedPosition);
         }
-        //mPositionChanged = true;
-        //mWantedPosition = Constants.kClimberHomeEncoderValue;
-        //mTalon.setSelectedSensorPosition(Constants.kClimberHomeEncoderValue, 0, 0);
-        //wasCalibrated = true;
+
         return defaultStateTransfer();
     }
-    /*
-    public synchronized void setWantedPosition(double position) {
-        
-        if (position != mWantedPosition) {
-            if ((mWantedPosition >= Constants.kClimberHomeEncoderValue) && 
-                    (mWantedPosition < Constants.kClimberTopEncoderValue)) {
-                mWantedPosition = position;
-                mPositionChanged = true;
-            }
-        }
-    }
-    */
+
     public synchronized void setWantedState(WantedState state) {
         if (state != mWantedState) {
             mWantedState = state;
-            //DriverStation.reportError("Climber WantedState: " + mWantedState, false);
         }
     }
 
@@ -286,6 +299,8 @@ public class Climber extends Subsystem {
     public void outputToSmartDashboard() {
         SmartDashboard.putString("ClimbSysState", mSystemState.name());
         SmartDashboard.putString("ClimbWantState", mWantedState.name());
+        SmartDashboard.putNumber("ClimbCurPosLeft", mTalonL.getSelectedSensorPosition(0));
+        SmartDashboard.putNumber("ClimbCurPosRight", mTalonR.getSelectedSensorPosition(0));
     }
 
     @Override
@@ -293,23 +308,23 @@ public class Climber extends Subsystem {
         // mVictor.set(0);
         setWantedState(WantedState.IDLE);
     }
-    /*
-    public synchronized int getCurrentPosition() {
-    	return mTalon.getSelectedSensorPosition(0);
-    }
     
+    public synchronized int getCurrentPosition() {
+    	return mTalonL.getSelectedSensorPosition(0);
+    }
+    /*
 	public boolean atTop() {
-		int position = mTalon.getSelectedSensorPosition(0); 
+		int position = mTalonL.getSelectedSensorPosition(0); 
     	return (position >= (Constants.kClimberCargo3rd_EncoderValue - 120));
     }
         
     public boolean atBottom() {
-        int position = mTalon.getSelectedSensorPosition(0); 
+        int position = mTalonL.getSelectedSensorPosition(0); 
     	return (position <= (Constants.kClimberHomeEncoderValue + Constants.kClimberEncoderRange));
     }
 
     public boolean atDesired() {
-        int position = mTalon.getSelectedSensorPosition(0);
+        int position = mTalonL.getSelectedSensorPosition(0);
         int hi = (int) mWantedPosition + Constants.kClimberEncoderRange;
         int lo = (int) mWantedPosition - Constants.kClimberEncoderRange;
         boolean result = false;
@@ -322,7 +337,7 @@ public class Climber extends Subsystem {
     
     @Override
     public void zeroSensors() {
-        //mTalon.setSelectedSensorPosition(Constants.kClimberHomeEncoderValue, 0, 0);
+        //mTalonL.setSelectedSensorPosition(Constants.kClimberHomeEncoderValue, 0, 0);
     }
     @Override
     public void registerEnabledLoops(Looper in) {
@@ -333,19 +348,5 @@ public class Climber extends Subsystem {
         System.out.println("Testing ELEVATOR.-----------------------------------");
         return false;
     }
-
-    //private boolean checkRevSwitch() {
-    //    boolean revSwitch = mTalon.getSensorCollection().isRevLimitSwitchClosed();
-    //    if (revSwitch) {
-    //        if (!mRevSwitchSet) {
-    //            mTalon.setSelectedSensorPosition(-1 * (int)Constants.kClimberHomeEncoderValue, 0, 10);
-    //            mRevSwitchSet = true;
-    //        }
-    //    } else {
-    //        mRevSwitchSet = false;
-    //    }
-    //    
-    //    return revSwitch;
-    //}
     
 }

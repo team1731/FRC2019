@@ -200,16 +200,20 @@ public class Constants extends ConstantsBase {
     public static double kElevatorCalibrateDown = -0.3;
     
     //Elevator
-    public static final int kClimberTalon = 5;
-    public static double kClimberTalonKP = 1.0; //2.0;
+    public static final int kClimberTalonL = 5;
+    public static final int kClimberTalonR = 6;
+    public static double kClimberTalonKP = 6.0; //2.0;
     public static double kClimberTalonKI = 0.0;
     public static double kClimberTalonKD = 0.0;
     public static double kClimberTalonKF = 0.2; //0.0;
 
-    public static int kClimberCruiseVelocity = 4000; //15000
+    public static int kClimberCruiseVelocity = 8000; //15000
     public static int kClimberAcceleration = 2000; //6000
-    public static double kClimberExtendPercent = 0.3;
-    public static double kClimberRetractPercent = -0.3;
+    public static double kClimberExtendPercent = 0.8;
+    public static double kClimberRetractPercent = -0.6;
+
+    public static int kClimberExtendedPosition = 800;
+    public static int kClimberRetractedPosition = 300;
 
     //Climber
 	//public static int kClimberMasterId = 12;
@@ -233,7 +237,7 @@ public class Constants extends ConstantsBase {
 
     // Drive
     public static final int kLeftDriveMasterId = 11; //Climber is borrowing 5;
-    public static final int kLeftDriveSlaveId = 6;
+    public static final int kLeftDriveSlaveId = 12; // Climber is borrowing 6;
     public static final int kRightDriveMasterId = 3;
     public static final int kRightDriverSlaveId = 2;
     
