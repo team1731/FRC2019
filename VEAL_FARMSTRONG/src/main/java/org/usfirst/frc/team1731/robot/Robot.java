@@ -180,6 +180,7 @@ public class Robot extends IterativeRobot {
     private UsbCamera camera1;
     private UsbCamera camera2;
     private UsbCamera selectedCamera;
+    private DigitalOutput arduinoLED;
 
     private NetworkTable networkTable;
 
@@ -232,6 +233,7 @@ public class Robot extends IterativeRobot {
             leftRightCameraControl = new DigitalOutput(5);
 
             tapeSensor = new DigitalInput(0);
+            arduinoLED = new DigitalOutput(7);
             SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
@@ -625,6 +627,8 @@ public class Robot extends IterativeRobot {
             boolean frontCamera = mControlBoard.getFrontCamera();
             boolean backCamera = mControlBoard.getBackCamera(); 
             boolean tracktorDrive = mControlBoard.getTractorDrive();          
+            
+            arduinoLED.set(mControlBoard.getBlinkLEDButton());
 
             double elevatorPOV = mControlBoard.getElevatorControl();
             if (elevatorPOV != -1) {
@@ -681,30 +685,31 @@ public class Robot extends IterativeRobot {
             }
 
 
-
             // Drive base
             double throttle = mControlBoard.getThrottle();
             double turn = mControlBoard.getTurn();
             
             if(mControlBoard.getInvertDrive()){
-                joystickAxesAreReversed = !joystickAxesAreReversed; 
+                joystickAxesAreReversed = !joystickAxesAreReversed;
+                toggleCamera(); 
             }
 
             if(joystickAxesAreReversed){
                 throttle=-throttle;
-                turn=-turn;
-                toggleCamera();
+                //turn=-turn;
+                leftRightCameraControl.set(true);
+            }
+            else{     
+                leftRightCameraControl.set(false);
             }
         
             if(frontCamera){
                 selectedCamera = camera1;
-                leftRightCameraControl.set(false);
                 networkTable.putString("CameraSelection", selectedCamera.getName());
             }
 
             if(backCamera){
                 selectedCamera = camera2;
-                leftRightCameraControl.set(true);
                 networkTable.putString("CameraSelection", selectedCamera.getName());
             }
 
@@ -743,7 +748,7 @@ public class Robot extends IterativeRobot {
 
 
 
-             allPeriodic();
+            allPeriodic();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
@@ -754,13 +759,11 @@ public class Robot extends IterativeRobot {
 
         if(selectedCamera == camera1){
             selectedCamera = camera2;
-            leftRightCameraControl.set(true);
+
         }
         else{
             selectedCamera = camera1;
-            leftRightCameraControl.set(false);
         }
-        networkTable.putString("CameraSelection", selectedCamera.getName());
     }
 
     @Override

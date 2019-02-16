@@ -271,7 +271,7 @@ public class GamepadControlBoard implements ControlBoardInterface {
     //		Returns:the angle of the POV in degrees, or -1 if the POV is not pressed.
     //  
         int pov = mDriver.getPOV(0);
-        return ((pov !=1) && (pov > 315 || pov < 45));
+        return false;//pov > 315 || pov < 45));
     }
 
 	@Override
