@@ -68,11 +68,11 @@ public class Superstructure extends Subsystem {
     private final Intake mIntake = Intake.getInstance();
     private final LED mLED = LED.getInstance();
     private final DoubleSolenoid mTopRoller = Constants.makeDoubleSolenoidForIds(1, Constants.kTopRoller1, Constants.kTopRoller2);
-    private final DoubleSolenoid mBeakSwinger = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakSwinger1, Constants.kBeakSwinger2);
+    private final DoubleSolenoid mBeakSwinger = Constants.makeDoubleSolenoidForIds(0, Constants.kBeakSwinger1, Constants.kBeakSwinger2);
     private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakOpener1, Constants.kBeakOpener2);
-    private final DoubleSolenoid mMustache = Constants.makeDoubleSolenoidForIds(1, Constants.kMustache1, Constants.kMustache2);
-    private final DoubleSolenoid mRotateWristShort = Constants.makeDoubleSolenoidForIds(0, Constants.kRotateWristShort1, Constants.kRotateWristShort2);
-    private final DoubleSolenoid mRotateWristLong = Constants.makeDoubleSolenoidForIds(0, Constants.kRotateWristLong1, Constants.kRotateWristLong2); 
+    private final DoubleSolenoid mMustache = Constants.makeDoubleSolenoidForIds(0, Constants.kMustache1, Constants.kMustache2);
+    private final DoubleSolenoid mRotateWristShort = Constants.makeDoubleSolenoidForIds(1, Constants.kRotateWristShort1, Constants.kRotateWristShort2);
+    private final DoubleSolenoid mRotateWristLong = Constants.makeDoubleSolenoidForIds(1, Constants.kRotateWristLong1, Constants.kRotateWristLong2); 
     //private final Solenoid mOverTheTop2 = Constants.makeSolenoidForId(1, Constants.kOverTheTopSolenoid2);
     //private final Solenoid mFishingPole1 = Constants.makeSolenoidForId(Constants.kFishingPoleSolenoid1);
     //private final Solenoid mFishingPole2 = Constants.makeSolenoidForId(Constants.kFishingPoleSolenoid2);
@@ -332,6 +332,7 @@ public class Superstructure extends Subsystem {
             mMustache.set(DoubleSolenoid.Value.kReverse);
             mIntake.setWantedState(Intake.WantedState.INTAKING);
             //mWrist.setWantedPosition(Wrist.WristPositions.CARGOPICKUP);
+            seWristtWantedPosition(WantedWristPosition.CARGOPICKUP);
             setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_CARGO_PICKUP);
             mElevator.setWantedPosition(Constants.kElevatorBallPickup_EncoderValue);
 

@@ -188,7 +188,7 @@ public class Constants extends ConstantsBase {
     public static int kElevatorCargo2nd_EncoderValue = 6351;
     public static int kElevatorCargoFloor_EncoderValue = 1479;
     public static int kElevatorCargoShip_EncoderValue= 3000;
-    public static int kElevatorBallPickup_EncoderValue= 1044;
+    public static int kElevatorBallPickup_EncoderValue= 0; //was 1044
     public static int kElevatorHomeEncoderValue = 0;
     public static int kElevatorEncoderRange = 20;
     public static int kElevatorCruiseVelocity = 8000; //15000
@@ -309,8 +309,8 @@ public class Constants extends ConstantsBase {
     // public static final int kRotateWristShort2 = 7; 
     public static final int kBeakSwinger1 = 4; 
     public static final int kBeakSwinger2 = 5; 
-    public static final int kMustache1 = 6; 
-    public static final int kMustache2 = 7; 
+    public static final int kMustache1 = 7; 
+    public static final int kMustache2 = 6; 
 
     //
     // PCM 1 SOLENOIDS
@@ -322,13 +322,13 @@ public class Constants extends ConstantsBase {
     
     // public static final int kBeakSwinger1 = 4;
     // public static final int kBeakSwinger2 = 2;
-    public static final int kRotateWristShort1 = 4;
-    public static final int kRotateWristShort2 = 2;
+    public static final int kRotateWristShort1 = 2;
+    public static final int kRotateWristShort2 = 4;
     
     // public static final int kBeakOpener1 = 1;
     // public static final int kBeakOpener2 = 3;
-    public static final int kRotateWristLong1 = 1;
-    public static final int kRotateWristLong2 = 3;
+    public static final int kRotateWristLong1 = 3;
+    public static final int kRotateWristLong2 = 1;
     
     // public static final int kMustache1 = 7;
     // public static final int kMustache2 = 6;

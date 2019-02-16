@@ -48,7 +48,7 @@ public class Intake extends Subsystem {
 
     private Intake() {
         mTalon = new TalonSRX(Constants.kIntakeTalon);
-        mTalon.setInverted(true); //Constants.kMotorInvert);
+        mTalon.setInverted(false); //Constants.kMotorInvert);
     	//mIRSensor1 = new AnalogInput(1);
     	//mIRSensor2 = new AnalogInput(4);
     }
