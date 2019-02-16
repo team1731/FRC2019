@@ -303,25 +303,37 @@ public class Constants extends ConstantsBase {
     //
     // PCM 0 SOLENOIDS
     //
-    public static final int kRotateWristLong1 = 4; 
-    public static final int kRotateWristLong2 = 5; 
-    public static final int kRotateWristShort1 = 6; 
-    public static final int kRotateWristShort2 = 7; 
+    // public static final int kRotateWristLong1 = 4; 
+    // public static final int kRotateWristLong2 = 5; 
+    // public static final int kRotateWristShort1 = 6; 
+    // public static final int kRotateWristShort2 = 7; 
+    public static final int kBeakSwinger1 = 4; 
+    public static final int kBeakSwinger2 = 5; 
+    public static final int kMustache1 = 6; 
+    public static final int kMustache2 = 7; 
 
     //
     // PCM 1 SOLENOIDS
     //
-    public static final int kTopRoller1 = 0;
-    public static final int kTopRoller2 = 5;
+    // public static final int kTopRoller1 = 0;
+    // public static final int kTopRoller2 = 5;
+    public static final int kBeakOpener1 = 0;
+    public static final int kBeakOpener2 = 5;
     
-    public static final int kBeakSwinger1 = 4;
-    public static final int kBeakSwinger2 = 2;
+    // public static final int kBeakSwinger1 = 4;
+    // public static final int kBeakSwinger2 = 2;
+    public static final int kRotateWristShort1 = 4;
+    public static final int kRotateWristShort2 = 2;
     
-    public static final int kBeakOpener1 = 1;
-    public static final int kBeakOpener2 = 3;
+    // public static final int kBeakOpener1 = 1;
+    // public static final int kBeakOpener2 = 3;
+    public static final int kRotateWristLong1 = 1;
+    public static final int kRotateWristLong2 = 3;
     
-    public static final int kMustache1 = 7;
-    public static final int kMustache2 = 6;
+    // public static final int kMustache1 = 7;
+    // public static final int kMustache2 = 6;
+    public static final int kTopRoller1 = 7;
+    public static final int kTopRoller2 = 6;
 
    // public static final int kPincherSolenoid1 = 2; 
    // public static final int kPincherSolenoid2 = 5;

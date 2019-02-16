@@ -10,6 +10,9 @@ import org.usfirst.frc.team1731.robot.paths.PathBuilder;
 import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
+/**
+ * Should be followed by {@link #Program_B_B()}
+ */
 public class Program_B_A implements PathContainer {
     
     @Override
@@ -29,9 +32,9 @@ public class Program_B_A implements PathContainer {
 
     @Override
     public boolean isReversed() {
-        return false; 
+        return true; 
     }
 	// WAYPOINT_DATA: [{"position":{"x":31,"y":295},"speed":0,"radius":0,"comment":""},{"position":{"x":61,"y":295},"speed":60,"radius":15,"comment":""},{"position":{"x":61,"y":265},"speed":60,"radius":0,"comment":""}]
-	// IS_REVERSED: false
-	// FILE_NAME: Backup_Right_Turn_feed_station
+	// IS_REVERSED: true
+	// FILE_NAME: Program_B_A
 }
