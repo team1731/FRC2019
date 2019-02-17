@@ -25,7 +25,6 @@ import org.usfirst.frc.team1731.robot.paths.spacey.Program_6_B;
  * 
  * @see AutoModeBase
  */
-@Deprecated
 public class Mode_6 extends AutoModeBase {
 
     @Override

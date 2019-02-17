@@ -16,61 +16,9 @@ import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POSITION;
 import org.usfirst.frc.team1731.robot.Constants.GRABBER_POSITION;
 import org.usfirst.frc.team1731.robot.auto.AutoModeBase;
 import org.usfirst.frc.team1731.robot.auto.AutoModeExecuter;
-import org.usfirst.frc.team1731.robot.auto.modes.AutoDetectAllianceSwitchThenPlaceMode;
-import org.usfirst.frc.team1731.robot.auto.modes.LeftPutCubeOnLeftScale;
-import org.usfirst.frc.team1731.robot.auto.modes.LeftPutCubeOnLeftScaleAndLeftSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes.LeftPutCubeOnRightScaleAndRightSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes.MiddleRightPutCubeOnLeftSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes.MiddleRightPutCubeOnRightSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes.RightPut3CubesOnLeftScale;
-import org.usfirst.frc.team1731.robot.auto.modes.RightPutCubeOnLeftScale;
-import org.usfirst.frc.team1731.robot.auto.modes.RightPutCubeOnLeftScaleAndLeftSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes.RightPut2CubesOnRightScale;
-import org.usfirst.frc.team1731.robot.auto.modes.RightPutCubeOnRightScale;
-import org.usfirst.frc.team1731.robot.auto.modes.StandStillMode;
-import org.usfirst.frc.team1731.robot.auto.modes.TestAuto;
-import org.usfirst.frc.team1731.robot.auto.modes._new._55_LeftDriveForward;
-import org.usfirst.frc.team1731.robot.auto.modes._new._56_RightPut1Exchange;
-import org.usfirst.frc.team1731.robot.auto.modes._new._57_RightPut2Exchange;
-import org.usfirst.frc.team1731.robot.auto.modes._new._58_LeftPut1Exchange;
-import org.usfirst.frc.team1731.robot.auto.modes._new._59_LeftPut2Exchange;
-import org.usfirst.frc.team1731.robot.auto.modes._new._60_RightPut3LeftScale;
-import org.usfirst.frc.team1731.robot.auto.modes._new._61_RightPut3RightScaleChamps;
-import org.usfirst.frc.team1731.robot.auto.modes._new._24_LeftPut1LeftScale1RightSwitchEnd;
-import org.usfirst.frc.team1731.robot.auto.modes._new._49_LeftPut1LeftScaleEnd;
-import org.usfirst.frc.team1731.robot.auto.modes._new._52_LeftPut1LeftScaleEnd1RightSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._50_LeftPut1LeftSwitchEnd1LeftScaleEnd;
-import org.usfirst.frc.team1731.robot.auto.modes._new._27_LeftPut1LeftSwitchEnd1LeftSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._28_LeftPut1LeftSwitchEnd1RightScale;
-import org.usfirst.frc.team1731.robot.auto.modes._new._54_LeftPut1RightScale2RightSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._31_LeftPut2LeftScale1LeftSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._25_LeftPut2LeftScale1RightSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._48_LeftPut2LeftScaleEnd;
-import org.usfirst.frc.team1731.robot.auto.modes._new._20_LeftPut2RightScale1RightSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._23_LeftPut3LeftScale;
-import org.usfirst.frc.team1731.robot.auto.modes._new._19_LeftPut3RightScale;
-import org.usfirst.frc.team1731.robot.auto.modes._new._47_MiddleDriveForward;
-import org.usfirst.frc.team1731.robot.auto.modes._new._34_MiddlePut1LeftSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._36_MiddlePut1LeftSwitch1Exchange;
-import org.usfirst.frc.team1731.robot.auto.modes._new._37_MiddlePut1RightSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._39_MiddlePut1RightSwitch1Exchange;
-import org.usfirst.frc.team1731.robot.auto.modes._new._35_MiddlePut2LeftSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._38_MiddlePut2RightSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._05_RightDriveForward;
-import org.usfirst.frc.team1731.robot.auto.modes._new._40_RightPut1LeftScale2LeftSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._08_RightPut1RightScale1LeftSwitchEnd;
-import org.usfirst.frc.team1731.robot.auto.modes._new._41_RightPut1RightScaleEnd;
-import org.usfirst.frc.team1731.robot.auto.modes._new._42_RightPut1RightScaleEnd1LeftSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._12_RightPut1RightSwitchEnd1LeftScale;
-import org.usfirst.frc.team1731.robot.auto.modes._new._46_RightPut1RightSwitchEnd1RightScaleEnd;
-import org.usfirst.frc.team1731.robot.auto.modes._new._11_RightPut1RightSwitchEnd1RightSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._03_RightPut2LeftScale1LeftSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._09_RightPut2RightScale1LeftSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._15_RightPut2RightScale1RightSwitch;
-import org.usfirst.frc.team1731.robot.auto.modes._new._43_RightPut2RightScaleEnd;
-import org.usfirst.frc.team1731.robot.auto.modes._new._00_DO_NOTHING;
-import org.usfirst.frc.team1731.robot.auto.modes._new._02_RightPut3LeftScale;
-import org.usfirst.frc.team1731.robot.auto.modes._new._07_RightPut3RightScale;
+import org.usfirst.frc.team1731.robot.auto.modes.*;
+import org.usfirst.frc.team1731.robot.auto.modes._new.*;
+import org.usfirst.frc.team1731.robot.auto.modes.spacey.*;
 import org.usfirst.frc.team1731.robot.loops.Looper;
 import org.usfirst.frc.team1731.robot.loops.RobotStateEstimator;
 import org.usfirst.frc.team1731.robot.loops.VisionProcessor;
@@ -125,17 +73,20 @@ public class Robot extends IterativeRobot {
 		OLD_SCHEME, // Haymarket, Alexandria
 		NEW_SCHEME  // Maryland, Detroit
 	}
-	public static AutoScheme CHOSEN_AUTO_SCHEME = AutoScheme.NEW_SCHEME; // or, AutoScheme.OLD_SCHEME
+	public static AutoScheme CHOSEN_AUTO_SCHEME = AutoScheme.OLD_SCHEME; // or, AutoScheme.NEW_SCHEME
 		
 	private static final String AUTO_CODES = "AutoCodes";
     private static Map<Integer, AutoModeBase> AUTO_MODES; // 35 modes defined in Mark's "BIBLE"
     private static Map<String, String[]> ALLOWABLE_AUTO_MODES; //  as defined in Mark's "BIBLE"
     
+    /*
 	static {
 		initAutoModes();
         initAllowableAutoModes();
-	}
-	
+    }
+    */
+    
+    /*
 	public static String getGameDataFromField() {     // "LLR" for example
         String gameData = DriverStation.getInstance().getGameSpecificMessage().trim();
         int retries = 100;
@@ -155,7 +106,7 @@ public class Robot extends IterativeRobot {
         return gameData;
         
 	}
-	
+	*/
 
 	
 	// Get subsystem instances
@@ -249,6 +200,9 @@ public class Robot extends IterativeRobot {
             camera2 = CameraServer.getInstance().startAutomaticCapture(1);
             selectedCamera = camera1;
             
+            SmartDashboard.putString("Auto Selector", "1");
+
+            /*
             switch(CHOSEN_AUTO_SCHEME) {
             
             case OLD_SCHEME: // Haymarket, Alexandria
@@ -279,6 +233,7 @@ public class Robot extends IterativeRobot {
             	SmartDashboard.putString(AUTO_CODES, "3 7 2 15");
             	break;
             }
+            */
             
           //  mDelayedAimButton = new DelayedBoolean(Timer.getFPGATimestamp(), 0.1);
             // Force an true update now to prevent robot from running at start.
@@ -326,6 +281,7 @@ public class Robot extends IterativeRobot {
             mEnabledLooper.start();
             mSuperstructure.reloadConstants();
             
+            /*
             switch(CHOSEN_AUTO_SCHEME) {
             
             case OLD_SCHEME: // Haymarket, Alexandria
@@ -348,14 +304,18 @@ public class Robot extends IterativeRobot {
             	
             	String gameData = Robot.getGameDataFromField(); //RRL for example
             	String autoCodes = SmartDashboard.getString("AutoCodes", "3 7 2 15");// JUSTIN's numbers
-            	System.out.println("Stephen: There's no logical reason for it to be doing this! The codes being sent are "+autoCodes+", but we put in "+SmartDashboard.getString("AutoCodes", "CODES NOT FOUND, USING DEFAULTS"));
                 autoModeToExecute = determineAutoModeToExecute(gameData, autoCodes);
             	break;
             }
+            */
+
             
+
+            /*
             mAutoModeExecuter = new AutoModeExecuter();
-            mAutoModeExecuter.setAutoMode(autoModeToExecute);
+            mAutoModeExecuter.setAutoMode(/*autoModeToExecute/ new Mode_A());
             mAutoModeExecuter.start();
+            */
             
             //WPILIB WAY TO GET AUTONOMOUS MODE...
             //
@@ -369,7 +329,9 @@ public class Robot extends IterativeRobot {
             throw t;
         }
     }
-                                                  // RRL for example
+    
+    /*
+    // RRL for example
     private AutoModeBase determineAutoModeToExecute(String gameData, String autoCodes) {
     	System.out.println("Got field configuration: " + gameData);
     	System.out.println("Got these auto modes from the dashboard: " + autoCodes);
@@ -417,7 +379,10 @@ public class Robot extends IterativeRobot {
     		return new _00_DO_NOTHING();
     	}
 		return selectedAutoMode;
-	}
+    }
+    */
+    
+
 
 	private static void initAutoModes() {
     	AUTO_MODES = new HashMap<Integer, AutoModeBase>();//THESE ARE FROM MARK'S "BIBLE"
@@ -464,6 +429,8 @@ public class Robot extends IterativeRobot {
         AUTO_MODES.put(61,  /* 	SC x3 sped up			 */ new _61_RightPut3RightScaleChamps());
         
     }
+
+    /*
                                         //   41 for example
 	private AutoModeBase lookupMode(String autoCode) {
 		AutoModeBase mode = null;
@@ -475,7 +442,8 @@ public class Robot extends IterativeRobot {
 			}
 		}
 		return mode == null ? new StandStillMode() : mode;
-	}
+    }
+    
 
 	private static void initAllowableAutoModes() {
 		ALLOWABLE_AUTO_MODES = new HashMap<String, String[]>();// as defined in Mark's "BIBLE"
@@ -559,7 +527,8 @@ public class Robot extends IterativeRobot {
 													"_59_LeftPut2Exchange",
 													"_61_RightPut3RightScaleChamps"
 													});
-	}
+    }
+    */
 	
 	/**
      * This function is called periodically during autonomous
@@ -768,6 +737,73 @@ public class Robot extends IterativeRobot {
         }
     }
 
+    private void AutoSelectorSanityCheck(){
+        String received = SmartDashboard.getString("Auto Selector", "1").toUpperCase();
+        if(received != "1" && received != "2" && received != "3" && received != "4" && received != "5" && received != "6" && received != "7" && received != "8" && received != "9" && received != "10"
+        && received != "A" && received != "B" && received != "C" && received != "D" && received != "E" && received != "F" && received != "G" && received != "H" && received != "I" && received != "J"){
+            SmartDashboard.putString("Auto Selector", "1");
+        }
+    }
+
+    private AutoModeBase StringToAutoMode(String input){
+        switch(input){
+            case "1":
+                return new Mode_1();
+            case "2":
+                return new Mode_2();
+            case "3":
+                return new Mode_3();
+            case "4":
+                return new Mode_4();
+            case "5":
+                return new Mode_5();
+            case "6":
+                return new Mode_6();
+            case "7":
+                return new Mode_7();
+            case "8":
+                return new Mode_8();
+            case "9":
+                return new Mode_9();
+            case "10":
+                return new Mode_10();
+            case "A":
+                return new Mode_A();
+            case "B":
+                return new Mode_B();
+            case "C":
+                return new Mode_C();
+            case "D":
+                return new Mode_D();
+            case "E":
+                return new Mode_E();
+            case "F":
+                return new Mode_F();
+            case "G":
+                return new Mode_G();
+            case "H":
+                return new Mode_H();
+            case "I":
+                return new Mode_I();
+            case "J":
+                return new Mode_J();           
+            default:
+                return new StandStillMode();
+        }
+    }
+
+    private void UpdateAutoDriving(){
+        if(mControlBoard.getActivateAuto()){
+            mAutoModeExecuter = new AutoModeExecuter();
+            mAutoModeExecuter.setAutoMode(StringToAutoMode(SmartDashboard.getString("Auto Selector", "1")));
+            mAutoModeExecuter.start();
+        } else if(mControlBoard.getDeactivateAuto()){
+            if(mAutoModeExecuter != null){
+                mAutoModeExecuter.stop();
+            }
+        }
+    }
+
     @Override
     public void disabledInit() {
         try {
@@ -842,11 +878,13 @@ public class Robot extends IterativeRobot {
         mSubsystemManager.writeToLog();
         mEnabledLooper.outputToSmartDashboard();
         //SmartDashboard.putBoolean("camera_connected", mVisionServer.isConnected());
-        String autoCodes = SmartDashboard.getString("AutoCodes", "3 7 2 15");
-        SmartDashboard.putString("AutoCodesReceived", autoCodes);
+        //String autoCodes = SmartDashboard.getString("AutoCodes", "3 7 2 15");
+        //SmartDashboard.putString("AutoCodesReceived", autoCodes);
         SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
         SmartDashboard.putBoolean("Cal Up", mControlBoard.getCalibrateUp());
         SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
         ConnectionMonitor.getInstance().setLastPacketTime(Timer.getFPGATimestamp());
+        AutoSelectorSanityCheck();
+        UpdateAutoDriving();
     }
 }
