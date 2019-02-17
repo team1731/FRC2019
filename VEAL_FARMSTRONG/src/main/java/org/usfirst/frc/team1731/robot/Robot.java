@@ -81,7 +81,7 @@ import org.usfirst.frc.team1731.robot.subsystems.Drive;
 import org.usfirst.frc.team1731.robot.subsystems.Elevator;
 
 import org.usfirst.frc.team1731.robot.subsystems.Intake;
-import org.usfirst.frc.team1731.robot.subsystems.LED;
+//import org.usfirst.frc.team1731.robot.subsystems.LED;
 import org.usfirst.frc.team1731.robot.subsystems.Superstructure;
 import org.usfirst.frc.team1731.robot.subsystems.Wrist;
 import org.usfirst.frc.team1731.robot.subsystems.Wrist.WristPositions;
@@ -162,7 +162,7 @@ public class Robot extends IterativeRobot {
 	// Get subsystem instances
     private Drive mDrive = Drive.getInstance();
     private Superstructure mSuperstructure = Superstructure.getInstance();
-    private LED mLED = LED.getInstance();
+    //private LED mLED = LED.getInstance();
     private RobotState mRobotState = RobotState.getInstance();
     private AutoModeExecuter mAutoModeExecuter = null;
 //    private Command autonomousCommand;
@@ -184,7 +184,10 @@ public class Robot extends IterativeRobot {
     private UsbCamera cameraFront;
     private UsbCamera cameraBack;
     private UsbCamera selectedCamera;
-    private DigitalOutput arduinoLED;
+    private DigitalOutput arduinoLed0;
+    private DigitalOutput arduinoLed1;
+    private DigitalOutput arduinoLed2;
+
     private Boolean invertCameraPrevious = Boolean.FALSE;
     private NetworkTable networkTable;
     private VideoSink videoSink;
@@ -192,7 +195,7 @@ public class Robot extends IterativeRobot {
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
                                     Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
-                                    ConnectionMonitor.getInstance(), LED.getInstance() /*, Wrist.getInstance()*/ ));
+                                    ConnectionMonitor.getInstance()/*, LED.getInstance() , Wrist.getInstance()*/ ));
 
     // Initialize other helper objects
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
@@ -237,7 +240,9 @@ public class Robot extends IterativeRobot {
             leftRightCameraControl = new DigitalOutput(5);
 
             tapeSensor = new DigitalInput(0);
-            arduinoLED = new DigitalOutput(7);
+            arduinoLed0 = new DigitalOutput(Constants.kArduinoLed0);
+            arduinoLed1 = new DigitalOutput(Constants.kArduinoLed1);
+            arduinoLed2 = new DigitalOutput(Constants.kArduinoLed2);
             SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
@@ -591,7 +596,7 @@ public class Robot extends IterativeRobot {
             zeroAllSensors();
             mSuperstructure.reloadConstants();
             mSuperstructure.setOverrideCompressor(false);
-            arduinoLED.set(false);
+            arduinoLedOutput(Constants.kArduino_TEAM);
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
@@ -634,6 +639,7 @@ public class Robot extends IterativeRobot {
             
 
             double elevatorPOV = mControlBoard.getElevatorControl();
+
             if (elevatorPOV != -1) {
                 if (elevatorPOV == 0) {
                     mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_FLOOR);
@@ -719,10 +725,10 @@ public class Robot extends IterativeRobot {
                     System.out.println("x: "+visionTargetPosition[0]+ ", y: "+visionTargetPosition[1]);
                     turn = (Double.valueOf(visionTargetPosition[0])-160)/160;
                     System.out.println(turn);
-                    arduinoLED.set(true);
+                    arduinoLedOutput(Constants.kArduino_GREEN);
                  } else {
                     System.out.println("No data received from vision camera");
-                    arduinoLED.set(false);
+                    arduinoLedOutput(Constants.kArduino_RED);
                 } 
             }
 
@@ -781,6 +787,12 @@ public class Robot extends IterativeRobot {
         } 
       }
 
+    private void arduinoLedOutput(int value) {
+        arduinoLed0.set((value & 0x01)==0 ? Boolean.FALSE: Boolean.TRUE);
+        arduinoLed1.set((value & 0x02)==0 ? Boolean.FALSE: Boolean.TRUE);
+        arduinoLed2.set((value & 0x04)==0 ? Boolean.FALSE: Boolean.TRUE);
+    }
+
     @Override
     public void disabledInit() {
         try {
@@ -817,9 +829,9 @@ public class Robot extends IterativeRobot {
     public void disabledPeriodic() {
         final double kVoltageThreshold = 0.15;
         if (mCheckLightButton.getAverageVoltage() < kVoltageThreshold) {
-            mLED.setLEDOn();
+            //mLED.setLEDOn();
         } else {
-            mLED.setLEDOff();
+            //mLED.setLEDOff();
         }
 
         zeroAllSensors();

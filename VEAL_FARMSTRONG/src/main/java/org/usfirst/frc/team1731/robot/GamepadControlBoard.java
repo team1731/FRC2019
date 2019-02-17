@@ -16,7 +16,6 @@ public class GamepadControlBoard implements ControlBoardInterface {
     private final Joystick mOperator;
 
     private Boolean invertDrivePrevious = Boolean.FALSE;
-
     private static ControlBoardInterface mInstance = null;
     
     public static ControlBoardInterface getInstance() {
@@ -113,8 +112,9 @@ public class GamepadControlBoard implements ControlBoardInterface {
     @Override
 	public double getElevatorControl() {
         double angle = mOperator.getPOV(0); // getPOV
+
         double result = -1;
-        if (angle != -1) {
+        if (angle != -1 && "kXInputGamepad".equalsIgnoreCase(mOperator.getType().toString().trim())) {
             if ((angle > 340) || (angle < 20)) {
                 result = 2;
             } else if ((angle > 250) && (angle < 290)) {
@@ -125,6 +125,8 @@ public class GamepadControlBoard implements ControlBoardInterface {
             //} else if ((angle > 70) && (angle < 110)) {
             //    result = 3;
         }
+        //System.out.println(mOperator.getType() + "   result=" + result);
+
         return result;
 	}
 
