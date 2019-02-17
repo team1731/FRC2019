@@ -184,15 +184,11 @@ public class Robot extends IterativeRobot {
     private UsbCamera cameraFront;
     private UsbCamera cameraBack;
     private UsbCamera selectedCamera;
-<<<<<<< HEAD
     private DigitalOutput arduinoLed0;
     private DigitalOutput arduinoLed1;
     private DigitalOutput arduinoLed2;
 
-=======
-    private DigitalOutput arduinoLED;
     private Boolean invertCameraPrevious = Boolean.FALSE;
->>>>>>> dev
     private NetworkTable networkTable;
     private VideoSink videoSink;
 
@@ -791,9 +787,9 @@ public class Robot extends IterativeRobot {
       }
 
     private void arduinoLedOutput(int value) {
-        arduinoLed0.set((value & 0x01)==0 ? false: true);
-        arduinoLed1.set((value & 0x02)==0 ? false: true);
-        arduinoLed2.set((value & 0x04)==0 ? false: true);
+        arduinoLed0.set((value & 0x01)==0 ? Boolean.FALSE: Boolean.TRUE);
+        arduinoLed1.set((value & 0x02)==0 ? Boolean.FALSE: Boolean.TRUE);
+        arduinoLed2.set((value & 0x04)==0 ? Boolean.FALSE: Boolean.TRUE);
     }
 
     @Override
