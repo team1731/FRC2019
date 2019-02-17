@@ -639,6 +639,7 @@ public class Robot extends IterativeRobot {
             
 
             double elevatorPOV = mControlBoard.getElevatorControl();
+
             if (elevatorPOV != -1) {
                 if (elevatorPOV == 0) {
                     mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_FLOOR);
