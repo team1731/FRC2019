@@ -359,8 +359,17 @@ public class Constants extends ConstantsBase {
     public static int kLEDOnId = 2;
 
     // Digital Outputs
-    public static int kGreenLEDId = 9;
-    public static int kRangeLEDId = 8;
+    public static int kArduinoLed0 = 7;
+    public static int kArduinoLed1 = 8;
+    public static int kArduinoLed2 = 9;
+    public static int kArduino_TEAM  = 0; // blue/yellow 1731 team wheel
+    public static int kArduino_RED   = 1; // solid red
+    public static int kArduino_GREEN = 2; // solid green
+    public static int kArduino_BLUE  = 3; // solid blue
+    public static int kArduino_REDW = 4; // red wipe
+    public static int kArduino_GREENW = 5; // green wipe
+    public static int kArduino_BLUEW = 6; // blue wipe
+    public static int kArduino_YELLW = 7; // yellow wipe
 
     // Phone
     public static int kAndroidAppTcpPort = 8254;

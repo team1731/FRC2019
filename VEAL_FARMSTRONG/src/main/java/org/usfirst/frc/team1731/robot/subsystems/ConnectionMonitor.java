@@ -24,13 +24,13 @@ public class ConnectionMonitor extends Subsystem {
     private double mLastPacketTime;
     private LatchedBoolean mJustReconnected;
     private LatchedBoolean mJustDisconnected;
-    private LED mLED;
+    //private LED mLED;
 
     ConnectionMonitor() {
         mLastPacketTime = 0.0;
         mJustReconnected = new LatchedBoolean();
         mJustDisconnected = new LatchedBoolean();
-        mLED = LED.getInstance();
+        //mLED = LED.getInstance();
     }
 
     @Override
@@ -48,18 +48,18 @@ public class ConnectionMonitor extends Subsystem {
                 synchronized (ConnectionMonitor.this) {
                     boolean has_connection = true;
                     if (timestamp - mLastPacketTime > kConnectionTimeoutSec) {
-                        mLED.setWantedState(LED.WantedState.BLINK);
+                        //mLED.setWantedState(LED.WantedState.BLINK);
                         has_connection = false;
                     }
 
                     if (mJustReconnected.update(has_connection)) {
                         // Reconfigure blink if we are just connected.
-                        mLED.configureBlink(LED.kDefaultBlinkCount, LED.kDefaultBlinkDuration);
+                        //mLED.configureBlink(LED.kDefaultBlinkCount, LED.kDefaultBlinkDuration);
                     }
 
                     if (mJustDisconnected.update(!has_connection)) {
                         // Reconfigure blink if we are just disconnected.
-                        mLED.configureBlink(LED.kDefaultBlinkCount, LED.kDefaultBlinkDuration * 2.0);
+                        //mLED.configureBlink(LED.kDefaultBlinkCount, LED.kDefaultBlinkDuration * 2.0);
                     }
                 }
             }
