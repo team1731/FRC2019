@@ -10,32 +10,29 @@ import org.usfirst.frc.team1731.robot.paths.PathBuilder;
 import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
-/**
- * @deprecated Program_G is split into {@link #Program_G_A()} and {@link #Program_G_B()}
- */
-public class Program_G implements PathContainer {
+public class Program_8_B implements PathContainer {
     
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(25,35,0,0));
-        sWaypoints.add(new Waypoint(90,35,25,60));
-        sWaypoints.add(new Waypoint(150,153,25,60));
-        sWaypoints.add(new Waypoint(205,153,0,60));
+        sWaypoints.add(new Waypoint(285,65,0,60));
+        sWaypoints.add(new Waypoint(100,65,15,60));
+        sWaypoints.add(new Waypoint(100,33,15,60));
+        sWaypoints.add(new Waypoint(17,33,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(25, 35), Rotation2d.fromDegrees(0.0)); 
+        return new RigidTransform2d(new Translation2d(285, 65), Rotation2d.fromDegrees(0.0)); 
     }
 
     @Override
     public boolean isReversed() {
         return false; 
     }
-	// WAYPOINT_DATA: [{"position":{"x":25,"y":35},"speed":0,"radius":0,"comment":""},{"position":{"x":90,"y":35},"speed":60,"radius":25,"comment":""},{"position":{"x":150,"y":153},"speed":60,"radius":25,"comment":""},{"position":{"x":205,"y":153},"speed":60,"radius":0,"comment":""}]
+	// WAYPOINT_DATA: [{"position":{"x":285,"y":65},"speed":60,"radius":0,"comment":""},{"position":{"x":100,"y":65},"speed":60,"radius":15,"comment":""},{"position":{"x":100,"y":33},"speed":60,"radius":15,"comment":""},{"position":{"x":17,"y":33},"speed":60,"radius":0,"comment":""}]
 	// IS_REVERSED: false
-	// FILE_NAME: Program G
+	// FILE_NAME: Program_8_B
 }

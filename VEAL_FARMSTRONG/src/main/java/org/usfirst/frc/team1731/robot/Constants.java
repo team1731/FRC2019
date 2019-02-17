@@ -188,7 +188,7 @@ public class Constants extends ConstantsBase {
     public static int kElevatorCargo2nd_EncoderValue = 6351;
     public static int kElevatorCargoFloor_EncoderValue = 1479;
     public static int kElevatorCargoShip_EncoderValue= 3000;
-    public static int kElevatorBallPickup_EncoderValue= 1044;
+    public static int kElevatorBallPickup_EncoderValue= 0; //was 1044
     public static int kElevatorHomeEncoderValue = 0;
     public static int kElevatorEncoderRange = 20;
     public static int kElevatorCruiseVelocity = 8000; //15000
@@ -200,20 +200,22 @@ public class Constants extends ConstantsBase {
     public static double kElevatorCalibrateDown = -0.3;
     
     //Elevator
-    public static final int kClimberTalonL = 55;
-    public static final int kClimberTalonR = 66;
+    public static final int kClimberTalonL = 9;
+    public static final int kClimberTalonR = 4;
     public static double kClimberTalonKP = 6.0; //2.0;
     public static double kClimberTalonKI = 0.0;
     public static double kClimberTalonKD = 0.0;
     public static double kClimberTalonKF = 0.2; //0.0;
 
-    public static int kClimberCruiseVelocity = 8000; //15000
-    public static int kClimberAcceleration = 2000; //6000
+    public static int kClimberCruiseVelocity = 15000; //15000
+    public static int kClimberAcceleration = 6000; //6000
     public static double kClimberExtendPercent = 0.8;
     public static double kClimberRetractPercent = -0.6;
 
-    public static int kClimberExtendedPosition = 800;
-    public static int kClimberRetractedPosition = 300;
+    public static int kClimberExtendedPositionLeft = 940;
+    public static int kClimberRetractedPositionLeft = 240;
+    public static int kClimberExtendedPositionRight = 795;
+    public static int kClimberRetractedPositionRight = 95;
 
     //Climber
 	//public static int kClimberMasterId = 12;
@@ -303,25 +305,37 @@ public class Constants extends ConstantsBase {
     //
     // PCM 0 SOLENOIDS
     //
-    public static final int kRotateWristLong1 = 4; 
-    public static final int kRotateWristLong2 = 5; 
-    public static final int kRotateWristShort1 = 6; 
-    public static final int kRotateWristShort2 = 7; 
+    // public static final int kRotateWristLong1 = 4; 
+    // public static final int kRotateWristLong2 = 5; 
+    // public static final int kRotateWristShort1 = 6; 
+    // public static final int kRotateWristShort2 = 7; 
+    public static final int kBeakSwinger1 = 4; 
+    public static final int kBeakSwinger2 = 5; 
+    public static final int kMustache1 = 7; 
+    public static final int kMustache2 = 6; 
 
     //
     // PCM 1 SOLENOIDS
     //
-    public static final int kTopRoller1 = 0;
-    public static final int kTopRoller2 = 5;
+    // public static final int kTopRoller1 = 0;
+    // public static final int kTopRoller2 = 5;
+    public static final int kBeakOpener1 = 0;
+    public static final int kBeakOpener2 = 5;
     
-    public static final int kBeakSwinger1 = 4;
-    public static final int kBeakSwinger2 = 2;
+    // public static final int kBeakSwinger1 = 4;
+    // public static final int kBeakSwinger2 = 2;
+    public static final int kRotateWristShort1 = 2;
+    public static final int kRotateWristShort2 = 4;
     
-    public static final int kBeakOpener1 = 1;
-    public static final int kBeakOpener2 = 3;
+    // public static final int kBeakOpener1 = 1;
+    // public static final int kBeakOpener2 = 3;
+    public static final int kRotateWristLong1 = 3;
+    public static final int kRotateWristLong2 = 1;
     
-    public static final int kMustache1 = 7;
-    public static final int kMustache2 = 6;
+    // public static final int kMustache1 = 7;
+    // public static final int kMustache2 = 6;
+    public static final int kTopRoller1 = 7;
+    public static final int kTopRoller2 = 6;
 
    // public static final int kPincherSolenoid1 = 2; 
    // public static final int kPincherSolenoid2 = 5;
