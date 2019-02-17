@@ -209,8 +209,8 @@ public class Constants extends ConstantsBase {
 
     public static int kClimberCruiseVelocity = 15000; //15000
     public static int kClimberAcceleration = 6000; //6000
-    public static double kClimberExtendPercent = 0.8;
-    public static double kClimberRetractPercent = -0.6;
+    public static double kClimberExtendPercent = 1.0; //0.8;
+    public static double kClimberRetractPercent = -1.0; //-0.6;
 
     public static int kClimberExtendedPositionLeft = 940;
     public static int kClimberRetractedPositionLeft = 240;
