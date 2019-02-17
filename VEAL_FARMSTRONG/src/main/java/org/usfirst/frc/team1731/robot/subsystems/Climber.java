@@ -83,8 +83,8 @@ public class Climber extends Subsystem {
 		/* Set the peak and nominal outputs */
 		mTalonL.configNominalOutputForward(0, Constants.kTimeoutMs);
 		mTalonL.configNominalOutputReverse(0, Constants.kTimeoutMs);
-		mTalonL.configPeakOutputForward(0.8, Constants.kTimeoutMs);
-		mTalonL.configPeakOutputReverse(-0.4, Constants.kTimeoutMs);
+		mTalonL.configPeakOutputForward(1, Constants.kTimeoutMs);
+		mTalonL.configPeakOutputReverse(-1, Constants.kTimeoutMs);
 
 		/* Set Motion Magic gains in slot0 - see documentation */
 		mTalonL.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
@@ -140,8 +140,8 @@ public class Climber extends Subsystem {
 		/* Set the peak and nominal outputs */
 		mTalonR.configNominalOutputForward(0, Constants.kTimeoutMs);
 		mTalonR.configNominalOutputReverse(0, Constants.kTimeoutMs);
-		mTalonR.configPeakOutputForward(0.8, Constants.kTimeoutMs);
-		mTalonR.configPeakOutputReverse(-0.4, Constants.kTimeoutMs);
+		mTalonR.configPeakOutputForward(1.0, Constants.kTimeoutMs);
+		mTalonR.configPeakOutputReverse(-1.0, Constants.kTimeoutMs);
 
 		/* Set Motion Magic gains in slot0 - see documentation */
 		mTalonR.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
