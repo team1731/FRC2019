@@ -41,7 +41,7 @@ public class AutoDetectAllianceSwitchThenPlaceMode  {
 	}
 	
     public static AutoModeBase pickAutoMode(startingPositions startingPos, boolean isAllianceTrustworthy)  {
-    	String gameData = Robot.getGameDataFromField();
+    	String gameData = "LLL";//Robot.getGameDataFromField();
     	
     	AutoModeBase defaultFallbackMode = new StandStillMode();
         AutoModeBase selectedAutoMode = defaultFallbackMode;
