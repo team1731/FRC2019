@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.usfirst.frc.team1731.lib.util.math.Rotation2d;
 import org.usfirst.frc.team1731.robot.RobotState;
 import org.usfirst.frc.team1731.robot.ShooterAimingParameters;
-import org.usfirst.frc.team1731.robot.subsystems.LED;
+//import org.usfirst.frc.team1731.robot.subsystems.LED;
 
 import edu.wpi.first.wpilibj.Timer;
 
@@ -20,7 +20,7 @@ public class TurnUntilSeesTargetAction extends TurnToHeadingAction {
 
     public TurnUntilSeesTargetAction(Rotation2d heading) {
         super(heading);
-        LED.getInstance().setWantedState(LED.WantedState.FIND_RANGE);
+        //LED.getInstance().setWantedState(LED.WantedState.FIND_RANGE);
         // TODO Auto-generated constructor stub
     }
 

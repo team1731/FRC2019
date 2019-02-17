@@ -6,7 +6,7 @@ import org.usfirst.frc.team1731.lib.util.DriveSignal;
 import org.usfirst.frc.team1731.robot.RobotState;
 import org.usfirst.frc.team1731.robot.ShooterAimingParameters;
 import org.usfirst.frc.team1731.robot.subsystems.Drive;
-import org.usfirst.frc.team1731.robot.subsystems.LED;
+//import org.usfirst.frc.team1731.robot.subsystems.LED;
 
 import edu.wpi.first.wpilibj.Timer;
 
@@ -49,7 +49,7 @@ public class OpenLoopUntilSeesTargetAction implements Action {
 
     @Override
     public void start() {
-        LED.getInstance().setWantedState(LED.WantedState.FIND_RANGE);
+        //LED.getInstance().setWantedState(LED.WantedState.FIND_RANGE);
         Drive.getInstance().setOpenLoop(new DriveSignal(left, right));
     }
 

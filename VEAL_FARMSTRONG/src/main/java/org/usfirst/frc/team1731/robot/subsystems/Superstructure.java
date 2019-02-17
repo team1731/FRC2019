@@ -66,7 +66,7 @@ public class Superstructure extends Subsystem {
     private final Elevator mElevator = Elevator.getInstance();
 
     private final Intake mIntake = Intake.getInstance();
-    private final LED mLED = LED.getInstance();
+    //private final LED mLED = LED.getInstance();
     private final DoubleSolenoid mTopRoller = Constants.makeDoubleSolenoidForIds(1, Constants.kTopRoller1, Constants.kTopRoller2);
     private final DoubleSolenoid mBeakSwinger = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakSwinger1, Constants.kBeakSwinger2);
     private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakOpener1, Constants.kBeakOpener2);
@@ -897,7 +897,7 @@ public class Superstructure extends Subsystem {
         if (stateChanged) {
             stop();
             mMustache.set(DoubleSolenoid.Value.kReverse);
-            mLED.setWantedState(LED.WantedState.OFF);
+           // mLED.setWantedState(LED.WantedState.OFF);
             mElevator.setWantedState(Elevator.WantedState.IDLE);
             mIntake.setWantedState(Intake.WantedState.IDLE);
             mClimber.setWantedState(Climber.WantedState.IDLE);
