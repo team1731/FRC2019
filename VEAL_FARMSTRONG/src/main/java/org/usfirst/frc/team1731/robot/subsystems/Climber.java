@@ -83,8 +83,8 @@ public class Climber extends Subsystem {
 		/* Set the peak and nominal outputs */
 		mTalonL.configNominalOutputForward(0, Constants.kTimeoutMs);
 		mTalonL.configNominalOutputReverse(0, Constants.kTimeoutMs);
-		mTalonL.configPeakOutputForward(0.8, Constants.kTimeoutMs);
-		mTalonL.configPeakOutputReverse(-0.4, Constants.kTimeoutMs);
+		mTalonL.configPeakOutputForward(1.0, Constants.kTimeoutMs);
+		mTalonL.configPeakOutputReverse(-1.0, Constants.kTimeoutMs);
 
 		/* Set Motion Magic gains in slot0 - see documentation */
 		mTalonL.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
@@ -106,10 +106,7 @@ public class Climber extends Subsystem {
         //--mTalonL.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
         mTalonL.configClosedloopRamp(0, Constants.kTimeoutMs);
         //mTalonL.overrideLimitSwitchesEnable(false);
-        mTalonL.setNeutralMode(NeutralMode.Brake);
-        /* choose based on what direction you want forward/positive to be.
-         * This does not affect sensor phase. */ 
-        mTalonL.setInverted(true); //Constants.kMotorInvert);
+        mTalonL.setNeutralMode(NeutralMode.Brake); 
         /*
          * set the allowable closed-loop error, Closed-Loop output will be
          * neutral within this range. See Table in Section 17.2.1 for native
@@ -118,7 +115,7 @@ public class Climber extends Subsystem {
         mTalonL.configAllowableClosedloopError(Constants.kPIDLoopIdx, 3, Constants.kTimeoutMs);
 
         //Right Talon
-        mTalonR = new TalonSRX(Constants.kClimberTalonL);
+        mTalonR = new TalonSRX(Constants.kClimberTalonR);
 		/* Factory default hardware to prevent unexpected behavior */
 		//mTalonR.configFactoryDefault();
 
@@ -140,8 +137,8 @@ public class Climber extends Subsystem {
 		/* Set the peak and nominal outputs */
 		mTalonR.configNominalOutputForward(0, Constants.kTimeoutMs);
 		mTalonR.configNominalOutputReverse(0, Constants.kTimeoutMs);
-		mTalonR.configPeakOutputForward(0.8, Constants.kTimeoutMs);
-		mTalonR.configPeakOutputReverse(-0.4, Constants.kTimeoutMs);
+		mTalonR.configPeakOutputForward(1.0, Constants.kTimeoutMs);
+		mTalonR.configPeakOutputReverse(-1.0, Constants.kTimeoutMs);
 
 		/* Set Motion Magic gains in slot0 - see documentation */
 		mTalonR.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
@@ -164,9 +161,6 @@ public class Climber extends Subsystem {
         mTalonR.configClosedloopRamp(0, Constants.kTimeoutMs);
         //mTalonR.overrideLimitSwitchesEnable(false);
         mTalonR.setNeutralMode(NeutralMode.Brake);
-        /* choose based on what direction you want forward/positive to be.
-         * This does not affect sensor phase. */ 
-        mTalonR.setInverted(true); //Constants.kMotorInvert);
         /*
          * set the allowable closed-loop error, Closed-Loop output will be
          * neutral within this range. See Table in Section 17.2.1 for native
