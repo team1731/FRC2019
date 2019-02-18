@@ -57,6 +57,7 @@ public class Drive extends Subsystem {
     // The robot drivetrain's various states.
     public enum DriveControlState {
         OPEN_LOOP, // open loop voltage control
+        CLIMB_BACKUP,
         VELOCITY_SETPOINT, // velocity PID control
         PATH_FOLLOWING, // used for autonomous driving
         AIM_TO_GOAL, // turn to face the boiler
@@ -82,7 +83,8 @@ public class Drive extends Subsystem {
         if (state == DriveControlState.AIM_TO_GOAL ||
                 state == DriveControlState.TURN_TO_HEADING ||
                 state == DriveControlState.DRIVE_TOWARDS_GOAL_COARSE_ALIGN ||
-                state == DriveControlState.DRIVE_TOWARDS_GOAL_APPROACH) {
+                state == DriveControlState.DRIVE_TOWARDS_GOAL_APPROACH ||
+                state == DriveControlState.CLIMB_BACKUP) {
             return true;
         }
         return false;
@@ -131,6 +133,8 @@ public class Drive extends Subsystem {
                 switch (mDriveControlState) {
                 case OPEN_LOOP:
                     return;
+                case CLIMB_BACKUP:
+                    return;
                 case VELOCITY_SETPOINT:
                     return;
                 case PATH_FOLLOWING:
@@ -178,7 +182,7 @@ public class Drive extends Subsystem {
         //mLeftMaster.reverseSensor(true);
         mLeftMaster.setInverted(false);                               //RDB 3/6/18
         //mLeftMaster.reverseOutput(false);
-        mLeftMaster.setSensorPhase(false);
+        mLeftMaster.setSensorPhase(true);
 
         int leftSensorPresent = mLeftMaster.getSensorCollection().getPulseWidthRiseToRiseUs();
 
@@ -204,7 +208,7 @@ public class Drive extends Subsystem {
         //mRightMaster.reverseSensor(false);
         mRightMaster.setInverted(true); // was true);
        // mRightMaster.reverseOutput(true);
-        mRightMaster.setSensorPhase(false);
+        mRightMaster.setSensorPhase(true);
         //mRightMaster.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         mRightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.kTimeoutMs);
         
@@ -300,6 +304,13 @@ public class Drive extends Subsystem {
 
     public boolean isBrakeMode() {
         return mIsBrakeMode;
+    }
+
+    public boolean isBackupComplete(){
+        System.out.println(mLeftMaster.getClosedLoopError() + " ----------- " 
+                         + mRightMaster.getClosedLoopError());
+        return mLeftMaster.getClosedLoopError() < 10 &&
+               mRightMaster.getClosedLoopError() < 10;
     }
 
     public synchronized void setBrakeMode(boolean on) {
@@ -720,6 +731,18 @@ public class Drive extends Subsystem {
             mTargetHeading = getGyroAngle();
         }
         setHighGear(false);
+    }
+
+    /**
+     * Configures the drivebase for backing up prior to climbing
+     */
+    public synchronized void setWantClimbBackup(double inches) {
+        mIsOnTarget = false;
+        configureTalonsForPositionControl();
+        mDriveControlState = DriveControlState.CLIMB_BACKUP;
+        mLeftMaster.setSelectedSensorPosition(0);
+        mRightMaster.setSelectedSensorPosition(0);
+        updatePositionSetpoint(-inches, -inches);
     }
 
     /**

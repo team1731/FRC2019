@@ -161,6 +161,7 @@ public class Robot extends IterativeRobot {
 	
 	// Get subsystem instances
     private Drive mDrive = Drive.getInstance();
+    private Climber mClimber = Climber.getInstance();
     private Superstructure mSuperstructure = Superstructure.getInstance();
     //private LED mLED = LED.getInstance();
     private RobotState mRobotState = RobotState.getInstance();
@@ -636,7 +637,6 @@ public class Robot extends IterativeRobot {
             boolean backCamera = mControlBoard.getBackCamera();           
             int climber = mControlBoard.getClimber();           
             boolean tracktorDrive = mControlBoard.getTractorDrive();          
-            
 
             double elevatorPOV = mControlBoard.getElevatorControl();
 
@@ -652,12 +652,8 @@ public class Robot extends IterativeRobot {
                 mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_SHIP);
             }
 
-            if (climber > 0) {
-                if (climber == 1) { // Superstructure.CLIMBER_EXTEND_RETRACT.EXTEND
-                    mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
-                } else { // Superstructure.CLIMBER_EXTEND_RETRACT.RETRACT
-                    mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGDOWN);
-                }
+            if (climber == 1) {
+                mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
             } else if (grabCube) {
             	mSuperstructure.setWantedState(Superstructure.WantedState.INTAKING);
             } else if (spitting) {
@@ -732,12 +728,14 @@ public class Robot extends IterativeRobot {
                 } 
             }
 
+            if(climber != 1){
+                mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
+                        !mControlBoard.getLowGear()));
+                boolean wantLowGear = mControlBoard.getLowGear();
+                mDrive.setHighGear(!wantLowGear);
+                mClimber.setWantedState(Climber.WantedState.IDLE);
+            }
 
-            mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
-                    !mControlBoard.getLowGear()));
-            boolean wantLowGear = mControlBoard.getLowGear();
-            mDrive.setHighGear(!wantLowGear);
-            
             if(mControlBoard.getTestWrist()){
                 Wrist.getInstance().setWantedPosition(WristPositions.STRAIGHTAHEAD);
                 //mSuperstructure.setWantedState(Superstructure.WantedState.WRIST_TRACKING);

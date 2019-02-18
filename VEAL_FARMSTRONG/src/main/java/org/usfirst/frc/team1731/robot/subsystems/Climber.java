@@ -3,6 +3,7 @@ package org.usfirst.frc.team1731.robot.subsystems;
 import java.util.Arrays;
 
 import org.usfirst.frc.team1731.lib.util.Util;
+import org.usfirst.frc.team1731.lib.util.CheesyDriveHelper;
 import org.usfirst.frc.team1731.lib.util.drivers.TalonSRXFactory;
 import org.usfirst.frc.team1731.robot.Constants;
 import org.usfirst.frc.team1731.robot.loops.Loop;
@@ -12,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 //import com.ctre.PigeonImu.StatusFrameRate;
 
@@ -58,7 +60,11 @@ public class Climber extends Subsystem {
 
     private final TalonSRX mTalonL;
     private final TalonSRX mTalonR;
-    
+
+    private final DoubleSolenoid mDartLatch = Constants.makeDoubleSolenoidForIds(0, Constants.kDartLatch1, Constants.kDartLatch2);
+    private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
+    private Drive mDrive = Drive.getInstance();
+
     public Climber() {
         // Left Talon
         mTalonL = new TalonSRX(Constants.kClimberTalonL);
@@ -171,14 +177,15 @@ public class Climber extends Subsystem {
 
     public enum SystemState {	
         IDLE,   // stop all motors
-        EXTENDING, // lego lift extend
-        RETRACTING, // lego lift retract
+        BACKINGUP, // backing up and releasing latch
+        LIFTINGNOWHEELS, // lifting without wheels turning
+        LIFTINGWITHWHEELS, // lifting with wheels going forward
+        RETRACTING // retracting darts
     }
 
     public enum WantedState {
     	IDLE,   
-        EXTENDING, // lego lift extend
-        RETRACTING, // lego lift retract
+        CLIMBING // lego lift extend
     }
 
     private SystemState mSystemState = SystemState.IDLE;
@@ -212,11 +219,18 @@ public class Climber extends Subsystem {
         	synchronized (Climber.this) {
                 SystemState newState;
                 switch (mSystemState) {
+
                     case IDLE:
                         newState = handleIdle();
                         break;
-                    case EXTENDING:
-                        newState = handleExtending();
+                    case BACKINGUP:
+                        newState = handleBackingUp();
+                        break;
+                    case LIFTINGNOWHEELS:
+                        newState = handleLiftingNoWheels();
+                        break;
+                    case LIFTINGWITHWHEELS:
+                        newState = handleLiftingWithWheels();
                         break;
                     case RETRACTING:
                         newState = handleRetracting();
@@ -243,44 +257,69 @@ public class Climber extends Subsystem {
         }
     };
 
-    private SystemState defaultStateTransfer() {
+    private SystemState defaultStateTransfer(SystemState currentState) {
         switch (mWantedState) {
-            case EXTENDING:
-                return SystemState.EXTENDING;
-            case RETRACTING:
-                return SystemState.RETRACTING;
-
-            default:
+            case IDLE:
                 return SystemState.IDLE;
+            case CLIMBING:
+                return currentState;
         }
+        return SystemState.IDLE;
     }
     
     private SystemState handleIdle() {
         if (mStateChanged) {
-            mTalonL.set(ControlMode.PercentOutput, 0);
-            mTalonR.set(ControlMode.PercentOutput, 0);
-        }
-        return defaultStateTransfer();
-    }
-
-    private SystemState handleExtending() {
-        if (mStateChanged) {
-            //mTalonL.set(ControlMode.PercentOutput, Constants.kClimberExtendPercent);
-            mTalonL.set(ControlMode.MotionMagic, Constants.kClimberExtendedPositionLeft);
-            mTalonR.set(ControlMode.MotionMagic, Constants.kClimberExtendedPositionRight);
-        }
-
-        return defaultStateTransfer();
-    }
-
-    private SystemState handleRetracting() {
-        if (mStateChanged) {
-            //mTalonL.set(ControlMode.PercentOutput, Constants.kClimberRetractPercent);
             mTalonL.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionLeft);
             mTalonR.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionRight);
         }
+        switch (mWantedState) {
+            case IDLE:
+                return SystemState.IDLE;
+            case CLIMBING:
+                return SystemState.BACKINGUP;
+        }
+        return defaultStateTransfer(mSystemState);
+    }
 
-        return defaultStateTransfer();
+    private SystemState handleBackingUp() {
+        if (mStateChanged) {
+            mDartLatch.set(DoubleSolenoid.Value.kForward); // unlock climber
+            mDrive.setWantClimbBackup(6.0); // drive backwards 6"
+        }
+        if(mDrive.isBackupComplete()){
+            return SystemState.LIFTINGNOWHEELS;
+        }
+        return defaultStateTransfer(mSystemState);
+    }
+
+    private SystemState handleLiftingNoWheels() {
+        if (mStateChanged) {
+            mTalonL.set(ControlMode.MotionMagic, Constants.kClimberExtendedPositionLeft);
+            mTalonR.set(ControlMode.MotionMagic, Constants.kClimberExtendedPositionRight);
+        }
+        if(mTalonL.getSelectedSensorPosition() > 0.50*Constants.kClimberExtendedPositionLeft  &&
+           mTalonR.getSelectedSensorPosition() > 0.50*Constants.kClimberExtendedPositionRight ){
+            return SystemState.LIFTINGWITHWHEELS;
+        }
+        return defaultStateTransfer(mSystemState);
+    }
+
+    private SystemState handleLiftingWithWheels() {
+        mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(0.5, 0.0, false, true));
+        if(mTalonL.getSelectedSensorPosition() > 0.95*Constants.kClimberExtendedPositionLeft  &&
+           mTalonR.getSelectedSensorPosition() > 0.95*Constants.kClimberExtendedPositionRight ){
+            return SystemState.RETRACTING;
+        }
+        return defaultStateTransfer(mSystemState);
+    }
+
+    private SystemState handleRetracting() {
+        // TODO FIXME once we get here, additional climb attempts need to be disabled
+        if (mStateChanged) {
+            mTalonL.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionLeft);
+            mTalonR.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionRight);
+        }
+        return defaultStateTransfer(mSystemState);
     }
 
     public synchronized void setWantedState(WantedState state) {
@@ -302,10 +341,7 @@ public class Climber extends Subsystem {
         // mVictor.set(0);
         setWantedState(WantedState.IDLE);
     }
-    
-    public synchronized int getCurrentPosition() {
-    	return mTalonL.getSelectedSensorPosition(0);
-    }
+
     /*
 	public boolean atTop() {
 		int position = mTalonL.getSelectedSensorPosition(0); 
@@ -339,7 +375,7 @@ public class Climber extends Subsystem {
     }
 
     public boolean checkSystem() {
-        System.out.println("Testing ELEVATOR.-----------------------------------");
+        System.out.println("Testing CLIMBER.-----------------------------------");
         return false;
     }
     
