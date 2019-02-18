@@ -211,11 +211,11 @@ public class Robot extends IterativeRobot {
 
     private InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> mTuningFlywheelMap = new InterpolatingTreeMap<>();
 
-    private static Solenoid _24vSolenoid = Constants.makeSolenoidForId(11, 2);
+    //private static Solenoid _24vSolenoid = Constants.makeSolenoidForId(11, 2);
     
     private DigitalInput tapeSensor;
  
-    private SerialPort visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
+    //private SerialPort visionCam = new SerialPort(115200, SerialPort.Port.kMXP); // .kOnBoard .kUSB2
 
     public Robot() {
         CrashTracker.logRobotConstruction();
@@ -718,7 +718,7 @@ public class Robot extends IterativeRobot {
                 toggleCamera(); 
             }
             videoSink.setSource(selectedCamera);
-
+            /*
             if(tracktorDrive) {
                 String[] visionTargetPosition = visionCam.readString().split(",");
                 if(visionTargetPosition.length > 0){
@@ -731,7 +731,7 @@ public class Robot extends IterativeRobot {
                     arduinoLedOutput(Constants.kArduino_RED);
                 } 
             }
-
+            */
 
             mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
                     !mControlBoard.getLowGear()));
@@ -778,12 +778,12 @@ public class Robot extends IterativeRobot {
 
     private void toggleCamera(){
         camerasAreReversed = !camerasAreReversed;
-        if(selectedCamera == cameraFront){
+        if (selectedCamera == cameraFront) {
             selectedCamera = cameraBack;
-        }
-
-        else{
+            arduinoLedOutput(Constants.kArduino_BLUEW);
+        } else {
             selectedCamera = cameraFront;
+            arduinoLedOutput(Constants.kArduino_BLUEW);
         } 
       }
 
