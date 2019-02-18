@@ -355,7 +355,7 @@ public class Constants extends ConstantsBase {
 	public static final int SlotIdx = 0;
 
 	public static  double kRotateTime = 500;
-
+    public static  double kUnlockClimberTime = 500;
 
     // Analog Inputs
     public static int kLEDOnId = 2;

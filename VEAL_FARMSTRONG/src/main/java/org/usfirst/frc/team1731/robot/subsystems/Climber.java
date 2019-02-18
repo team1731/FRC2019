@@ -225,7 +225,7 @@ public class Climber extends Subsystem {
                         newState = handleIdle();
                         break;
                     case BACKINGUP:
-                        newState = handleBackingUp();
+                        newState = handleBackingUp(timestamp);
                         break;
                     case LIFTINGNOWHEELS:
                         newState = handleLiftingNoWheels();
@@ -284,13 +284,13 @@ public class Climber extends Subsystem {
         return defaultStateTransfer(mSystemState);
     }
 
-    private SystemState handleBackingUp() {
+    private SystemState handleBackingUp(double timestamp) {
         if (mStateChanged) {
             mDartLatch.set(DoubleSolenoid.Value.kForward); // unlock climber
             //commented-out! WE DON'T NEED TO BACK-UP -----mDrive.setWantClimbBackup(6.0); // drive backwards 6"
             //***NOTE*** Backing up doesn't work anyway!!!
         }
-        if( true /* go immediately to LIFTINGNOWHEELS */ ){ //mDrive.isBackupComplete()){
+        if ((timestamp - mCurrentStateStartTime < Constants.kUnlockClimberTime)) {//mDrive.isBackupComplete()){
             return SystemState.LIFTINGNOWHEELS;
         }
         return defaultStateTransfer(mSystemState);
