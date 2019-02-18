@@ -45,7 +45,7 @@ public class Constants extends ConstantsBase {
     /* ROBOT PHYSICAL CONSTANTS */
     // encoder has 4096 /3 tics per revolution
     // Wheels  was 3.4149
-    public static double kDriveWheelDiameterInches = 15;  //divide by three because gear ratio on encoder is 3:1
+    public static double kDriveWheelDiameterInches = 8;  //encoder is mounted directly on output shaft
     public static double kTrackWidthInches = 22.00;
     public static double kTrackScrubFactor = 0.924;
 
@@ -313,6 +313,8 @@ public class Constants extends ConstantsBase {
     public static final int kBeakSwinger2 = 5; 
     public static final int kMustache1 = 7; 
     public static final int kMustache2 = 6; 
+    public static final int kDartLatch1 = 0;
+    public static final int kDartLatch2 = 1;
 
     //
     // PCM 1 SOLENOIDS

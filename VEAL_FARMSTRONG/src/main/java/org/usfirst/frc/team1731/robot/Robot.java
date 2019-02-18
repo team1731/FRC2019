@@ -161,6 +161,7 @@ public class Robot extends IterativeRobot {
 	
 	// Get subsystem instances
     private Drive mDrive = Drive.getInstance();
+    private Climber mClimber = Climber.getInstance();
     private Superstructure mSuperstructure = Superstructure.getInstance();
     //private LED mLED = LED.getInstance();
     private RobotState mRobotState = RobotState.getInstance();
@@ -211,11 +212,11 @@ public class Robot extends IterativeRobot {
 
     private InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> mTuningFlywheelMap = new InterpolatingTreeMap<>();
 
-    private static Solenoid _24vSolenoid = Constants.makeSolenoidForId(11, 2);
+    //private static Solenoid _24vSolenoid = Constants.makeSolenoidForId(11, 2);
     
     private DigitalInput tapeSensor;
  
-    private SerialPort visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
+    private SerialPort visionCam = new SerialPort(115200, SerialPort.Port.kMXP); // .kOnBoard .kUSB2
 
     public Robot() {
         CrashTracker.logRobotConstruction();
@@ -636,7 +637,6 @@ public class Robot extends IterativeRobot {
             boolean backCamera = mControlBoard.getBackCamera();           
             int climber = mControlBoard.getClimber();           
             boolean tracktorDrive = mControlBoard.getTractorDrive();          
-            
 
             double elevatorPOV = mControlBoard.getElevatorControl();
 
@@ -652,12 +652,8 @@ public class Robot extends IterativeRobot {
                 mSuperstructure.setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_SHIP);
             }
 
-            if (climber > 0) {
-                if (climber == 1) { // Superstructure.CLIMBER_EXTEND_RETRACT.EXTEND
-                    mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
-                } else { // Superstructure.CLIMBER_EXTEND_RETRACT.RETRACT
-                    mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGDOWN);
-                }
+            if (climber == 1) {
+                mSuperstructure.setWantedState(Superstructure.WantedState.CLIMBINGUP);
             } else if (grabCube) {
             	mSuperstructure.setWantedState(Superstructure.WantedState.INTAKING);
             } else if (spitting) {
@@ -718,7 +714,7 @@ public class Robot extends IterativeRobot {
                 toggleCamera(); 
             }
             videoSink.setSource(selectedCamera);
-
+            
             if(tracktorDrive) {
                 String[] visionTargetPosition = visionCam.readString().split(",");
                 if(visionTargetPosition.length > 0){
@@ -732,12 +728,14 @@ public class Robot extends IterativeRobot {
                 } 
             }
 
+            if(climber != 1){
+                mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
+                        !mControlBoard.getLowGear()));
+                boolean wantLowGear = mControlBoard.getLowGear();
+                mDrive.setHighGear(!wantLowGear);
+                mClimber.setWantedState(Climber.WantedState.IDLE);
+            }
 
-            mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
-                    !mControlBoard.getLowGear()));
-            boolean wantLowGear = mControlBoard.getLowGear();
-            mDrive.setHighGear(!wantLowGear);
-            
             if(mControlBoard.getTestWrist()){
                 Wrist.getInstance().setWantedPosition(WristPositions.STRAIGHTAHEAD);
                 //mSuperstructure.setWantedState(Superstructure.WantedState.WRIST_TRACKING);
@@ -778,12 +776,12 @@ public class Robot extends IterativeRobot {
 
     private void toggleCamera(){
         camerasAreReversed = !camerasAreReversed;
-        if(selectedCamera == cameraFront){
+        if (selectedCamera == cameraFront) {
             selectedCamera = cameraBack;
-        }
-
-        else{
+            arduinoLedOutput(Constants.kArduino_BLUEW);
+        } else {
             selectedCamera = cameraFront;
+            arduinoLedOutput(Constants.kArduino_BLUEW);
         } 
       }
 
