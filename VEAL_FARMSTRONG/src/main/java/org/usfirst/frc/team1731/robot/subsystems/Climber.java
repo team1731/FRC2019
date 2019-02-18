@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 //import com.ctre.phoenix.motorcontrol.VelocityMeasWindow;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -268,6 +269,8 @@ public class Climber extends Subsystem {
     }
     
     private SystemState handleIdle() {
+        // commented-out! we don't want to latch on idle! -----mDartLatch.set(Value.kReverse);
+
         if (mStateChanged) {
             mTalonL.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionLeft);
             mTalonR.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionRight);
@@ -284,9 +287,10 @@ public class Climber extends Subsystem {
     private SystemState handleBackingUp() {
         if (mStateChanged) {
             mDartLatch.set(DoubleSolenoid.Value.kForward); // unlock climber
-            mDrive.setWantClimbBackup(6.0); // drive backwards 6"
+            //commented-out! WE DON'T NEED TO BACK-UP -----mDrive.setWantClimbBackup(6.0); // drive backwards 6"
+            //***NOTE*** Backing up doesn't work anyway!!!
         }
-        if(mDrive.isBackupComplete()){
+        if( true /* go immediately to LIFTINGNOWHEELS */ ){ //mDrive.isBackupComplete()){
             return SystemState.LIFTINGNOWHEELS;
         }
         return defaultStateTransfer(mSystemState);

@@ -309,8 +309,12 @@ public class Drive extends Subsystem {
     public boolean isBackupComplete(){
         System.out.println(mLeftMaster.getClosedLoopError() + " ----------- " 
                          + mRightMaster.getClosedLoopError());
-        return mLeftMaster.getClosedLoopError() < 10 &&
-               mRightMaster.getClosedLoopError() < 10;
+        //
+        //*****CAUTION!! - the way things are currently set up, the closed loop error
+        //                 isn't working! But, the PID still seems to work! ????????? */
+        //
+        return mLeftMaster.getClosedLoopError() < 50 &&
+               mRightMaster.getClosedLoopError() < 50;
     }
 
     public synchronized void setBrakeMode(boolean on) {
@@ -742,7 +746,10 @@ public class Drive extends Subsystem {
         mDriveControlState = DriveControlState.CLIMB_BACKUP;
         mLeftMaster.setSelectedSensorPosition(0);
         mRightMaster.setSelectedSensorPosition(0);
-        updatePositionSetpoint(-inches, -inches);
+        double ticks = inchesToRotations(-inches)*4096;
+        System.out.println("ticks=" + ticks);
+        mLeftMaster.set(ControlMode.Position, ticks);
+        mRightMaster.set(ControlMode.Position, ticks);
     }
 
     /**
