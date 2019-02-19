@@ -278,7 +278,7 @@ public class Superstructure extends Subsystem {
         private SystemState handleStartingConfiguration(){
             mBeakSwinger.set(DoubleSolenoid.Value.kForward);
             mBeakLips.set(DoubleSolenoid.Value.kReverse);
-            mTopRoller.set(DoubleSolenoid.Value.kForward);
+            mTopRoller.set(DoubleSolenoid.Value.kReverse); //per Brent L.
             mMustache.set(DoubleSolenoid.Value.kReverse);
             mClimber.setWantedState(Climber.WantedState.IDLE);
         	

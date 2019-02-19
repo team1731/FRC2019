@@ -11,7 +11,7 @@ import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
 /**
- * @deprecated Program_J is split into {@link #Program_J_A()} and {@link #Program_J_B()}
+ * Program_J is split into {@link #Program_J_A()} and {@link #Program_J_B()}
  */
 public class Program_J implements PathContainer {
     
