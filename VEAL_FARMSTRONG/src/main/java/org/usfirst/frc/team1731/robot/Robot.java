@@ -88,42 +88,13 @@ import edu.wpi.first.wpilibj.SerialPort;
  */
 public class Robot extends IterativeRobot {
     private DigitalOutput leftRightCameraControl;
-    
-	public static enum AutoScheme { 
-		OLD_SCHEME, // Haymarket, Alexandria
-		NEW_SCHEME  // Maryland, Detroit
-	}
-	public static AutoScheme CHOSEN_AUTO_SCHEME = AutoScheme.NEW_SCHEME; // or, AutoScheme.OLD_SCHEME
 		
 	private static final String AUTO_CODES = "AutoCodes";
     private static Map<String, AutoModeBase> AUTO_MODES; // 35 modes defined in Mark's "BIBLE"
-    private static Map<String, String[]> ALLOWABLE_AUTO_MODES; //  as defined in Mark's "BIBLE"
     
 	static {
 		initAutoModes();
 	}
-	
-	public static String getGameDataFromField() {     // "LLR" for example
-        String gameData = DriverStation.getInstance().getGameSpecificMessage().trim();
-        int retries = 100;
-          	
-        while (gameData.length() < 2 && retries > 0) {
-            retries--;
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException ie) {
-                // Just ignore the interrupted exception
-            }
-            gameData = DriverStation.getInstance().getGameSpecificMessage().trim();
-        }
-        if(gameData.length() < 2) {
-        	gameData = "LR";
-        }
-        return gameData;
-        
-	}
-	
-
 	
 	// Get subsystem instances
     private Drive mDrive = Drive.getInstance();
