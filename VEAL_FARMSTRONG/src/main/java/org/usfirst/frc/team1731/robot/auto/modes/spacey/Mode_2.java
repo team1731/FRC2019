@@ -14,8 +14,8 @@ import org.usfirst.frc.team1731.robot.auto.actions.ResetPoseFromPathAction;
 import org.usfirst.frc.team1731.robot.auto.actions.RotateIntakeActionUp;
 import org.usfirst.frc.team1731.robot.auto.actions.SpitAction;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
-import org.usfirst.frc.team1731.robot.paths.spacey.Program_2_A;
-import org.usfirst.frc.team1731.robot.paths.spacey.Program_2_B;
+import org.usfirst.frc.team1731.robot.paths.spacey.Path_2_A;
+import org.usfirst.frc.team1731.robot.paths.spacey.Path_2_B;
 
 
 /**
@@ -32,7 +32,7 @@ public class Mode_2 extends AutoModeBase {
     protected void routine() throws AutoModeEndedException {
     	System.out.println("Executing Mode_2");
     	
-    	PathContainer Path = new Program_2_A();
+    	PathContainer Path = new Path_2_A();
     	runAction(new ResetPoseFromPathAction(Path));
         runAction(new ParallelAction(Arrays.asList(new Action[] {
         		new ElevatorUp(), 
@@ -42,7 +42,7 @@ public class Mode_2 extends AutoModeBase {
         
         runAction(new SpitAction());
         
-        Path = new Program_2_B();
+        Path = new Path_2_B();
         runAction(new ParallelAction(Arrays.asList(new Action[] {
         		new PickUpAction(), 
         		new DrivePathAction(Path)

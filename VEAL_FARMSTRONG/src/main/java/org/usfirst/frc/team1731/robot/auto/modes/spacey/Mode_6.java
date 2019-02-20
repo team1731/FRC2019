@@ -13,9 +13,9 @@ import org.usfirst.frc.team1731.robot.auto.actions.PickUpAction;
 import org.usfirst.frc.team1731.robot.auto.actions.ResetPoseFromPathAction;
 import org.usfirst.frc.team1731.robot.auto.actions.RotateIntakeActionUp;
 import org.usfirst.frc.team1731.robot.auto.actions.SpitAction;
-import org.usfirst.frc.team1731.robot.paths.spacey.Program_6_A;
+import org.usfirst.frc.team1731.robot.paths.spacey.Path_6_A;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
-import org.usfirst.frc.team1731.robot.paths.spacey.Program_6_B;
+import org.usfirst.frc.team1731.robot.paths.spacey.Path_6_B;
 
 /**
  * Scores the preload gear onto the boiler-side peg then deploys the hopper and shoots all 60 balls (10 preload + 50
@@ -31,7 +31,7 @@ public class Mode_6 extends AutoModeBase {
     protected void routine() throws AutoModeEndedException {
     	System.out.println("Executing Mode_6");
     	
-    	PathContainer Path = new Program_6_A();
+    	PathContainer Path = new Path_6_A();
     	runAction(new ResetPoseFromPathAction(Path));
         runAction(new ParallelAction(Arrays.asList(new Action[] {
         		new ElevatorUp(), 
@@ -41,7 +41,7 @@ public class Mode_6 extends AutoModeBase {
         
         runAction(new SpitAction());
         
-        Path = new Program_6_B();
+        Path = new Path_6_B();
         runAction(new ParallelAction(Arrays.asList(new Action[] {
         		new PickUpAction(), 
         		new DrivePathAction(Path)
