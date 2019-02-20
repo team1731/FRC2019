@@ -186,7 +186,7 @@ public class Constants extends ConstantsBase {
     public static int kElevatorHatchShip_EncoderValue= 1200;
     public static int kElevatorCargo3rd_EncoderValue = 9918;
     public static int kElevatorCargo2nd_EncoderValue = 6351;
-    public static int kElevatorCargoFloor_EncoderValue = 1479;
+    public static int kElevatorCargoFloor_EncoderValue = 1580;
     public static int kElevatorCargoShip_EncoderValue= 3000;
     public static int kElevatorBallPickup_EncoderValue= 0; //was 1044
     public static int kElevatorHomeEncoderValue = 0;
