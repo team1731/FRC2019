@@ -201,7 +201,7 @@ public class Robot extends IterativeRobot {
             selectedCamera = camera1;
             
             SmartDashboard.putString("Auto Selector", "1");
-
+            
             /*
             switch(CHOSEN_AUTO_SCHEME) {
             
