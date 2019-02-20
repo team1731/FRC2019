@@ -90,7 +90,7 @@ public class Robot extends IterativeRobot {
     private DigitalOutput leftRightCameraControl;
 		
 	private static final String AUTO_CODES = "AutoCodes";
-    private static Map<String, AutoModeBase> AUTO_MODES; // 35 modes defined in Mark's "BIBLE"
+    private static Map<String, AutoModeBase> AUTO_MODES; // modes defined in Mark's "BIBLE"
     
     
 	static {
@@ -170,7 +170,10 @@ public class Robot extends IterativeRobot {
             catch(Throwable t){
                 System.out.println(t.toString());
             }
-
+        
+            String autoCodes = SmartDashboard.getString("AutoCodes", "2A");
+            autoModesToExecute = determineAutoModesToExecute(autoCodes);
+    
             networkTable = NetworkTable.getTable("");
 
             leftRightCameraControl = new DigitalOutput(5);
@@ -195,7 +198,7 @@ public class Robot extends IterativeRobot {
             videoSink = CameraServer.getInstance().getServer();
             selectedCamera = cameraFront;
 
-           	SmartDashboard.putString(AUTO_CODES, "10B");
+           	SmartDashboard.putString(AUTO_CODES, "2A");
             
           //  mDelayedAimButton = new DelayedBoolean(Timer.getFPGATimestamp(), 0.1);
             // Force an true update now to prevent robot from running at start.
@@ -671,9 +674,6 @@ public class Robot extends IterativeRobot {
         mSubsystemManager.outputToSmartDashboard();
         mSubsystemManager.writeToLog();
         mEnabledLooper.outputToSmartDashboard();
-        
-        String autoCodes = SmartDashboard.getString("AutoCodes", "10B");// JUSTIN's numbers
-        autoModesToExecute = determineAutoModesToExecute(autoCodes);
 
         SmartDashboard.putString("AutoCodesReceived", autoCodes);
         SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));
