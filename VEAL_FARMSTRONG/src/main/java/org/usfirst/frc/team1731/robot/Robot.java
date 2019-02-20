@@ -121,6 +121,8 @@ public class Robot extends IterativeRobot {
     private NetworkTable networkTable;
     private VideoSink videoSink;
 
+    private String autoCodes;
+    
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                             Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
                                     Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
