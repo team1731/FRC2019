@@ -172,9 +172,6 @@ public class Robot extends IterativeRobot {
             catch(Throwable t){
                 System.out.println(t.toString());
             }
-        
-            String autoCodes = SmartDashboard.getString("AutoCodes", "2A");
-            autoModesToExecute = determineAutoModesToExecute(autoCodes);
     
             networkTable = NetworkTable.getTable("");
 
@@ -602,8 +599,6 @@ public class Robot extends IterativeRobot {
 
             mDrive.setOpenLoop(DriveSignal.NEUTRAL);
 
-            PathAdapter.calculatePaths();
-
             // If are tuning, dump map so far.
             if (Constants.kIsShooterTuning) {
                 for (Map.Entry<InterpolatingDouble, InterpolatingDouble> entry : mTuningFlywheelMap.entrySet()) {
@@ -644,6 +639,9 @@ public class Robot extends IterativeRobot {
             System.out.println(t.toString());
         }
 
+        autoCodes = SmartDashboard.getString("AutoCodes", "2A");
+        autoModesToExecute = determineAutoModesToExecute(autoCodes);
+
         zeroAllSensors();
         allPeriodic();
     }
@@ -683,7 +681,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putBoolean("Cal Up", mControlBoard.getCalibrateUp());
         SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
         ConnectionMonitor.getInstance().setLastPacketTime(Timer.getFPGATimestamp());
-        AutoSelectorSanityCheck();
-        UpdateAutoDriving();
+        //AutoSelectorSanityCheck();
+        //UpdateAutoDriving();
     }
 }
