@@ -92,6 +92,7 @@ public class Robot extends IterativeRobot {
 	private static final String AUTO_CODES = "AutoCodes";
     private static Map<String, AutoModeBase> AUTO_MODES; // 35 modes defined in Mark's "BIBLE"
     
+    
 	static {
 		initAutoModes();
 	}
@@ -512,6 +513,73 @@ public class Robot extends IterativeRobot {
         arduinoLed2.set((value & 0x04)==0 ? Boolean.FALSE: Boolean.TRUE);
     }
 
+    private void AutoSelectorSanityCheck(){
+        String received = SmartDashboard.getString("Auto Selector", "1").toUpperCase();
+        if(received != "1" && received != "2" && received != "3" && received != "4" && received != "5" && received != "6" && received != "7" && received != "8" && received != "9" && received != "10"
+        && received != "A" && received != "B" && received != "C" && received != "D" && received != "E" && received != "F" && received != "G" && received != "H" && received != "I" && received != "J"){
+            SmartDashboard.putString("Auto Selector", "1");
+        }
+    }
+
+    private AutoModeBase StringToAutoMode(String input){
+        switch(input){
+            case "1":
+                return new Mode_1();
+            case "2":
+                return new Mode_2();
+            case "3":
+                return new Mode_3();
+            case "4":
+                return new Mode_4();
+            case "5":
+                return new Mode_5();
+            case "6":
+                return new Mode_6();
+            case "7":
+                return new Mode_7();
+            case "8":
+                return new Mode_8();
+            case "9":
+                return new Mode_9();
+            case "10":
+                return new Mode_10();
+            case "A":
+                return new Mode_A();
+            case "B":
+                return new Mode_B();
+            case "C":
+                return new Mode_C();
+            case "D":
+                return new Mode_D();
+            case "E":
+                return new Mode_E();
+            case "F":
+                return new Mode_F();
+            case "G":
+                return new Mode_G();
+            case "H":
+                return new Mode_H();
+            case "I":
+                return new Mode_I();
+            case "J":
+                return new Mode_J();           
+            default:
+                return new StandStillMode();
+        }
+    }
+
+    private void UpdateAutoDriving(){
+        if(mControlBoard.getActivateAuto()){
+            mAutoModeExecuter = new AutoModeExecuter();
+            mAutoModeExecuter.setAutoMode(StringToAutoMode(SmartDashboard.getString("Auto Selector", "1")));
+            mAutoModeExecuter.start();
+        } else if(mControlBoard.getDeactivateAuto()){
+            if(mAutoModeExecuter != null){
+                mAutoModeExecuter.stop();
+            }
+        }
+    }
+
     @Override
     public void disabledInit() {
         try {
@@ -604,7 +672,7 @@ public class Robot extends IterativeRobot {
         mSubsystemManager.writeToLog();
         mEnabledLooper.outputToSmartDashboard();
         
-        String autoCodes = SmartDashboard.getString("AutoCodes", "3 7 2 15");// JUSTIN's numbers
+        String autoCodes = SmartDashboard.getString("AutoCodes", "10B");// JUSTIN's numbers
         autoModesToExecute = determineAutoModesToExecute(autoCodes);
 
         SmartDashboard.putString("AutoCodesReceived", autoCodes);
@@ -613,5 +681,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putBoolean("Cal Up", mControlBoard.getCalibrateUp());
         SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
         ConnectionMonitor.getInstance().setLastPacketTime(Timer.getFPGATimestamp());
+        AutoSelectorSanityCheck();
+        UpdateAutoDriving();
     }
 }
