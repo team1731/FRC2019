@@ -58,7 +58,7 @@ import org.usfirst.frc.team1731.robot.vision.VisionServer;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.CameraServer; //edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -111,8 +111,8 @@ public class Robot extends IterativeRobot {
     private boolean camerasAreReversed;
     
     private UsbCamera cameraFront;
-    private UsbCamera cameraBack;
-    private UsbCamera selectedCamera;
+    //private UsbCamera cameraBack;
+    //private UsbCamera selectedCamera;
     private DigitalOutput arduinoLed0;
     private DigitalOutput arduinoLed1;
     private DigitalOutput arduinoLed2;
@@ -167,7 +167,7 @@ public class Robot extends IterativeRobot {
             CrashTracker.logRobotInit();
 
             try{
-                visionCam = new SerialPort(115200, SerialPort.Port.kUSB2); // .kOnBoard .kUSB2
+                visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
             }
             catch(Throwable t){
                 System.out.println(t.toString());
@@ -193,9 +193,9 @@ public class Robot extends IterativeRobot {
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
             
             cameraFront = CameraServer.getInstance().startAutomaticCapture(0);
-            cameraBack = CameraServer.getInstance().startAutomaticCapture(1);
+            //cameraBack = CameraServer.getInstance().startAutomaticCapture(1);
             videoSink = CameraServer.getInstance().getServer();
-            selectedCamera = cameraFront;
+            //selectedCamera = cameraFront;
 
            	SmartDashboard.putString(AUTO_CODES, "2A");
             
@@ -414,7 +414,7 @@ public class Robot extends IterativeRobot {
             
             if(mControlBoard.getInvertDrive()){
                 joystickAxesAreReversed = !joystickAxesAreReversed;
-                toggleCamera(); 
+                //toggleCamera(); 
             }
 
             if(joystickAxesAreReversed){
@@ -426,10 +426,10 @@ public class Robot extends IterativeRobot {
                 leftRightCameraControl.set(false);
             }
         
-            if(getInvertCamera()){
-                toggleCamera(); 
-            }
-            videoSink.setSource(selectedCamera);
+            //if(getInvertCamera()){
+            //    toggleCamera(); 
+            //}
+            //videoSink.setSource(selectedCamera);
             
             if(tracktorDrive && visionCam != null) {
                 String[] visionTargetPositions = visionCam.readString().split(",");
@@ -484,7 +484,7 @@ public class Robot extends IterativeRobot {
             throw t;
         }
     }
-
+    /*
     public boolean getInvertCamera(){
         boolean invertCamera=false;
         synchronized(invertCameraPrevious){
@@ -497,7 +497,7 @@ public class Robot extends IterativeRobot {
         }
         return invertCamera;
     }
-
+    
     private void toggleCamera(){
         camerasAreReversed = !camerasAreReversed;
         if (selectedCamera == cameraFront) {
@@ -508,7 +508,7 @@ public class Robot extends IterativeRobot {
             arduinoLedOutput(Constants.kArduino_BLUEW);
         } 
       }
-
+      */
     private void arduinoLedOutput(int value) {
         arduinoLed0.set((value & 0x01)==0 ? Boolean.FALSE: Boolean.TRUE);
         arduinoLed1.set((value & 0x02)==0 ? Boolean.FALSE: Boolean.TRUE);
@@ -623,9 +623,10 @@ public class Robot extends IterativeRobot {
 
         try{
             if(visionCam == null){
-                visionCam = new SerialPort(115200, SerialPort.Port.kUSB);
+                visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
                 System.out.println("VISION CAM IS kUSB");
             }
+            /*
             if(visionCam == null){
                 visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
                 System.out.println("VISION CAM IS kUSB1");
@@ -634,6 +635,7 @@ public class Robot extends IterativeRobot {
                 visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
                 System.out.println("VISION CAM IS kUSB2");
             }
+            */
         }
         catch(Throwable t){
             System.out.println(t.toString());
@@ -676,7 +678,7 @@ public class Robot extends IterativeRobot {
         mEnabledLooper.outputToSmartDashboard();
 
         SmartDashboard.putString("AutoCodesReceived", autoCodes);
-        SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));
+        //SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));
         SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
         SmartDashboard.putBoolean("Cal Up", mControlBoard.getCalibrateUp());
         SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
