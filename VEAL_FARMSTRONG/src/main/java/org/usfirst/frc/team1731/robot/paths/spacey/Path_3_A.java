@@ -32,5 +32,5 @@ public class Path_3_A implements PathContainer {
     }
 	// WAYPOINT_DATA: [{"position":{"x":285,"y":197},"speed":60,"radius":0,"comment":""},{"position":{"x":285,"y":269},"speed":60,"radius":0,"comment":""}]
 	// IS_REVERSED: false
-	// FILE_NAME: Program_3_A
+	// FILE_NAME: Path_3_A
 }

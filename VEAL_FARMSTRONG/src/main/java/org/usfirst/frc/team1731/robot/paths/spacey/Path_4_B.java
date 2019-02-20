@@ -34,5 +34,5 @@ public class Path_4_B implements PathContainer {
     }
 	// WAYPOINT_DATA: [{"position":{"x":293,"y":239},"speed":60,"radius":0,"comment":""},{"position":{"x":150,"y":239},"speed":60,"radius":25,"comment":""},{"position":{"x":150,"y":295},"speed":60,"radius":25,"comment":""},{"position":{"x":19,"y":295},"speed":60,"radius":0,"comment":""}]
 	// IS_REVERSED: false
-	// FILE_NAME: Program_4_B
+	// FILE_NAME: Path_4_B
 }

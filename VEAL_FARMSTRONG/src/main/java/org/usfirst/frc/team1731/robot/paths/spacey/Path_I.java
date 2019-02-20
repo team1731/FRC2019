@@ -11,7 +11,7 @@ import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
 /**
- * Program_I is split into {@link #Program_I_A()} and {@link #Program_I_B()}
+ * Path_I is split into {@link #Path_I_A()} and {@link #Path_I_B()}
  */
 public class Path_I implements PathContainer {
     

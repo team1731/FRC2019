@@ -11,7 +11,7 @@ import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
 /**
- * Should be followed by {@link #Program_A_B()}
+ * Should be followed by {@link #Path_A_B()}
  */
 public class Path_A_A implements PathContainer {
     
@@ -36,5 +36,5 @@ public class Path_A_A implements PathContainer {
     }
 	// WAYPOINT_DATA: [{"position":{"x":31,"y":295},"speed":0,"radius":0,"comment":""},{"position":{"x":61,"y":295},"speed":60,"radius":15,"comment":""},{"position":{"x":61,"y":265},"speed":60,"radius":0,"comment":""}]
 	// IS_REVERSED: true
-	// FILE_NAME: Program_A_A
+	// FILE_NAME: Path_A_A
 }

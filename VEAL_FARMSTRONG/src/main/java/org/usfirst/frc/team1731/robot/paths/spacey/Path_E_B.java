@@ -35,5 +35,5 @@ public class Path_E_B implements PathContainer {
     }
 	// WAYPOINT_DATA: [{"position":{"x":61,"y":265},"speed":0,"radius":0,"comment":"Turn "},{"position":{"x":91,"y":295},"speed":60,"radius":20,"comment":""},{"position":{"x":150,"y":275},"speed":60,"radius":15,"comment":""},{"position":{"x":150,"y":150},"speed":60,"radius":20,"comment":""},{"position":{"x":200,"y":150},"speed":60,"radius":0,"comment":""}]
 	// IS_REVERSED: false
-	// FILE_NAME: Program_E_B
+	// FILE_NAME: Path_E_B
 }

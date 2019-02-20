@@ -12,7 +12,7 @@ import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
 /**
  * 
- * @deprecated Program_A is split into {@link #Program_A_A()} and {@link #Program_A_B()}
+ * @deprecated Path_A is split into {@link #Path_A_A()} and {@link #Path_A_B()}
  */
 @Deprecated
 public class Path_A implements PathContainer {
