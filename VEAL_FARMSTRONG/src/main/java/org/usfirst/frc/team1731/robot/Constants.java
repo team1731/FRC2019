@@ -45,7 +45,7 @@ public class Constants extends ConstantsBase {
     /* ROBOT PHYSICAL CONSTANTS */
     // encoder has 4096 /3 tics per revolution
     // Wheels  was 3.4149
-    public static double kDriveWheelDiameterInches = 8;  //encoder is mounted directly on output shaft
+    public static double kDriveWheelDiameterInches = 24;  //factor of 3 in
     public static double kTrackWidthInches = 22.00;
     public static double kTrackScrubFactor = 0.924;
 
@@ -79,13 +79,13 @@ public class Constants extends ConstantsBase {
 
     // PID gains for drive velocity loop (LOW GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveLowGearPositionKp = 1.0;
-    public static double kDriveLowGearPositionKi = 0;
-    public static double kDriveLowGearPositionKd = 100.0;
-    public static double kDriveLowGearPositionKf = 2.62; // 0.(9)7 * 2.7 gear ratio. Orig: 1.91
-    public static int kDriveLowGearPositionIZone = 0;
-    public static double kDriveLowGearPositionRampRate = 0.05; //240.0; // V/s
-    public static double kDriveLowGearNominalOutput = 0.05; // V
+    public static double kDriveLowGearPositionKp = 1;  // was 1.0
+    public static double kDriveLowGearPositionKi = 0;   // was 0
+    public static double kDriveLowGearPositionKd = 0; // was 100
+    public static double kDriveLowGearPositionKf = 2.62; // was 2.62 ---- 0.(9)7 * 2.7 gear ratio. Orig: 1.91
+    public static int kDriveLowGearPositionIZone = 0; // was 0
+    public static double kDriveLowGearPositionRampRate = 0.05; // was 0.05//240.0; // V/s
+    public static double kDriveLowGearNominalOutput = 0.05; // was 0.05// V
     
     //TODO need to set these velocities and accelerations  This is for the talon motion magic so I think you need to do the tics per 100ms thing
    // public static double kDriveLowGearMaxVelocity = 6.0 * 12.0 * 60.0 / (Math.PI * kDriveWheelDiameterInches); // 6 fps                                                                                                           // in RPM
@@ -186,7 +186,7 @@ public class Constants extends ConstantsBase {
     public static int kElevatorHatchShip_EncoderValue= 1200;
     public static int kElevatorCargo3rd_EncoderValue = 9918;
     public static int kElevatorCargo2nd_EncoderValue = 6351;
-    public static int kElevatorCargoFloor_EncoderValue = 1479;
+    public static int kElevatorCargoFloor_EncoderValue = 1580;
     public static int kElevatorCargoShip_EncoderValue= 3000;
     public static int kElevatorBallPickup_EncoderValue= 0; //was 1044
     public static int kElevatorHomeEncoderValue = 0;
@@ -213,9 +213,9 @@ public class Constants extends ConstantsBase {
     public static double kClimberRetractPercent = -1.0; //-0.6;
 
     public static int kClimberExtendedPositionLeft = 940;
-    public static int kClimberRetractedPositionLeft = 240;
+    public static int kClimberRetractedPositionLeft = 234;
     public static int kClimberExtendedPositionRight = 795;
-    public static int kClimberRetractedPositionRight = 95;
+    public static int kClimberRetractedPositionRight = 94;
 
     //Climber
 	//public static int kClimberMasterId = 12;
@@ -355,7 +355,7 @@ public class Constants extends ConstantsBase {
 	public static final int SlotIdx = 0;
 
 	public static  double kRotateTime = 500;
-
+    public static  double kUnlockClimberTime = 500;
 
     // Analog Inputs
     public static int kLEDOnId = 2;

@@ -232,12 +232,6 @@ public class PathAdapter {
         return sBlueHopperPath;
     }
 
-    public static void calculatePaths() {
-        getBlueHopperPath();
-        getRedHopperPath();
-        getBlueGearPath();
-        getRedGearPath();
-    }
 
     public static void main(String[] args) {
         System.out.println("Red:\n" + getRedStartPose().getTranslation());

@@ -1,0 +1,21 @@
+Path_1: Backside rocket to left feed station
+Path_2: Frontside rocket to left feed station
+Path_3: Left 2 Cargo Ship to left feed station
+Path_4: Left 1 Cargo Ship to left feed station
+Path_5: Left Front Cargo Ship to left feed station
+Path_6: Backside rocket to right feed station
+Path_7: Frontside rocket to right feed station
+Path_8: Right 2 Cargo Ship to right feed station
+Path_9: Right 1 Cargo Ship to right feed station
+Path_10: Right Front Cargo Ship to right feed station
+
+Path_A: left feed station to Backside rocket
+Path_B: left feed station to Frontside rocket
+Path_C: left feed station to Left 1 Cargo Ship
+Path_D: left feed station to Left Front Cargo Ship
+Path_E: left feed station to Right Front Cargo Ship
+Path_F: right feed station to Left Front Cargo Ship
+Path_G: right feed station to Right Front Cargo Ship
+Path_H: right feed station to Right 1 Cargo Ship
+Path_I: right feed station to Frontside rocket
+Path_J: right feed station to Backside rocket

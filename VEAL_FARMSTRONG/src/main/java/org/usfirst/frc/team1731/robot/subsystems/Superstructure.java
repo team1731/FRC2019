@@ -278,7 +278,7 @@ public class Superstructure extends Subsystem {
         private SystemState handleStartingConfiguration(){
             mBeakSwinger.set(DoubleSolenoid.Value.kForward);
             mBeakLips.set(DoubleSolenoid.Value.kReverse);
-            mTopRoller.set(DoubleSolenoid.Value.kForward);
+            mTopRoller.set(DoubleSolenoid.Value.kReverse); //per Brent L.
             mMustache.set(DoubleSolenoid.Value.kReverse);
             mClimber.setWantedState(Climber.WantedState.IDLE);
         	
@@ -451,11 +451,6 @@ public class Superstructure extends Subsystem {
             mMustache.set(DoubleSolenoid.Value.kReverse);
             //mIntake.setWantedState(Intake.WantedState.IDLE);
             
-            if(mElevator.atTop() && mIntake.hasCargo()){
-                //mWrist.setWantedPosition(WristPositions.SHOOTHIGH);
-                seWristtWantedPosition(WantedWristPosition.SHOOTHIGH);
-            }
-
             switch (mWantedState) {
             case CLIMBINGUP:
                 return SystemState.CLIMBING;
@@ -932,36 +927,45 @@ public class Superstructure extends Subsystem {
             switch (position) {
                 case ELEVATOR_FLOOR:
                     encoderValue = (double) Constants.kElevatorCargoFloor_EncoderValue;
+                    seWristtWantedPosition(WantedWristPosition.STRAIGHTAHEAD);
                     break;
                 case ELEVATOR_2ND:
                     encoderValue = (double) Constants.kElevatorCargo2nd_EncoderValue;
+                    seWristtWantedPosition(WantedWristPosition.STRAIGHTAHEAD);
                     break;
                 case ELEVATOR_3RD:
                     encoderValue = (double) Constants.kElevatorCargo3rd_EncoderValue;
+                    seWristtWantedPosition(WantedWristPosition.SHOOTHIGH);
                     break;
                 case ELEVATOR_SHIP:
                     encoderValue = (double) Constants.kElevatorCargoShip_EncoderValue;
                     break;
                 case ELEVATOR_CARGO_PICKUP:
                     encoderValue = (double) Constants.kElevatorBallPickup_EncoderValue;
-                    break;            }
+                    break;
+            }
         } else {
             switch (position) {
                 case ELEVATOR_FLOOR:
                     encoderValue = (double) Constants.kElevatorHatchFloor_EncoderValue;
+                    seWristtWantedPosition(WantedWristPosition.STRAIGHTAHEAD);
                     break;
                 case ELEVATOR_2ND:
                     encoderValue = (double) Constants.kElevatorHatch2nd_EncoderValue;
+                    seWristtWantedPosition(WantedWristPosition.STRAIGHTAHEAD);
                     break;
                 case ELEVATOR_3RD:
                     encoderValue = (double) Constants.kElevatorHatch3rd_EncoderValue;
+                    seWristtWantedPosition(WantedWristPosition.STRAIGHTAHEAD);
                     break;
                 case ELEVATOR_SHIP:
                     encoderValue = (double) Constants.kElevatorHatchShip_EncoderValue;
+                    seWristtWantedPosition(WantedWristPosition.STRAIGHTAHEAD);
                     break;
                 case ELEVATOR_CARGO_PICKUP:
                     encoderValue = (double) Constants.kElevatorBallPickup_EncoderValue;
-                    break;            }
+                    break;
+            }
         }
         mWantedElevatorPosition = encoderValue;
     }
