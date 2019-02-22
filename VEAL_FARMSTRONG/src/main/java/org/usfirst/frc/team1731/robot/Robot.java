@@ -55,7 +55,6 @@ import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -245,7 +244,7 @@ public class Robot extends IterativeRobot {
     }
                                                        // 10B for example
     private AutoModeBase[] determineAutoModesToExecute(String autoCodes) {
-        System.out.println("Got this string from the dashboard: " + autoCodes);
+        //System.out.println("Got this string from the dashboard: " + autoCodes);
         AutoModeBase[] autoModes = new AutoModeBase[2]; 
         if(autoCodes != null && autoCodes.length() >=2 && autoCodes.length() <= 3){
             AutoModeBase selectedAutoMode1 = null;
@@ -261,7 +260,7 @@ public class Robot extends IterativeRobot {
             autoModes[0] = selectedAutoMode1;
             autoModes[1] = selectedAutoMode2;
         }
-        System.out.println("running auto modes: " + Arrays.toString(autoModes));
+        //System.out.println("running auto modes: " + Arrays.toString(autoModes));
 		return autoModes;
 	}
 
@@ -418,23 +417,22 @@ public class Robot extends IterativeRobot {
             
             if(tracktorDrive && visionCam != null) {
                 String[] visionTargetPositions = visionCam.readString().split(",");
-                for(String visionTargetPosition : visionTargetPositions){
-                    if(visionTargetPosition.length() > 0){
-                        System.out.println(visionTargetPosition);                        
-                        try{
-                            turn = (Double.valueOf(visionTargetPosition)-160)/160;
-                            System.out.println("TURN: " + turn);
-                        }
-                        catch(NumberFormatException e){
-                            System.out.println(e.toString());
-                        }
-                        arduinoLedOutput(Constants.kArduino_GREEN);
+                if(visionTargetPositions.length > 0){
+                    try{
+                        String xPosStr = visionTargetPositions[0];
+                        double xPos = Double.parseDouble(xPosStr);
+                        turn = (xPos-160)/160;
+                        System.out.println("xPos ===== " + xPos + "  ------ TURN ==== " + turn);
+                        arduinoLedOutput(Constants.kArduino_GREEN);    
                     }
-                    else {
-                        System.out.println("No data received from vision camera");
+                    catch(Throwable t){
                         arduinoLedOutput(Constants.kArduino_RED);
                     }
-                } 
+                }
+                else {
+                    //System.out.println("No data received from vision camera");
+                    arduinoLedOutput(Constants.kArduino_RED);
+                }
             }
 
             if(climber != 1){
@@ -598,6 +596,32 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void disabledPeriodic() {
+        final double kVoltageThreshold = 0.15;
+        if (mCheckLightButton.getAverageVoltage() < kVoltageThreshold) {
+            //mLED.setLEDOn();
+        } else {
+            //mLED.setLEDOff();
+        }
+
+        try{
+            if(visionCam == null){
+                visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
+                System.out.println("VISION CAM IS kUSB");
+            }
+            /*
+            if(visionCam == null){
+                visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
+                System.out.println("VISION CAM IS kUSB1");
+            }
+            if(visionCam == null){
+                visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
+                System.out.println("VISION CAM IS kUSB2");
+            }
+            */
+        }
+        catch(Throwable t){
+            System.out.println(t.toString());
+        }
 
         zeroAllSensors();
     }
