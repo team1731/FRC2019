@@ -36,11 +36,6 @@ public class GamepadControlBoard implements ControlBoardInterface {
     }
     
     @Override
-    public boolean getOverTheTopButton() {
-        return false; // mOperator.getRawButton(5);
-    }
-
-    @Override
     public boolean getTractorDrive() {
         return mDriver.getRawButton(5);
     }

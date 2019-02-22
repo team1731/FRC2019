@@ -151,7 +151,6 @@ public class TalonSRXFactory {
         talon.configForwardSoftLimitThreshold(0, Constants.kTimeoutMs);
         talon.configReverseSoftLimitEnable(false, Constants.kTimeoutMs);
         talon.configReverseSoftLimitThreshold(0, Constants.kTimeoutMs);
-        
 
         talon.setSelectedSensorPosition(0, Constants.kPidIdx, Constants.kTimeoutMs);
         talon.selectProfileSlot(Constants.SlotIdx, Constants.kPidIdx);

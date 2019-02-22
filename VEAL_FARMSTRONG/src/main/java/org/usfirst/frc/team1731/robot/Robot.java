@@ -40,33 +40,23 @@ import org.usfirst.frc.team1731.robot.auto.modes.spacey.Mode_I;
 import org.usfirst.frc.team1731.robot.auto.modes.spacey.Mode_J;
 import org.usfirst.frc.team1731.robot.loops.Looper;
 import org.usfirst.frc.team1731.robot.loops.RobotStateEstimator;
-import org.usfirst.frc.team1731.robot.loops.VisionProcessor;
-import org.usfirst.frc.team1731.robot.paths.DriveForward;
-import org.usfirst.frc.team1731.robot.paths.profiles.PathAdapter;
 import org.usfirst.frc.team1731.robot.subsystems.ConnectionMonitor;
 import org.usfirst.frc.team1731.robot.subsystems.Drive;
 import org.usfirst.frc.team1731.robot.subsystems.Elevator;
 
 import org.usfirst.frc.team1731.robot.subsystems.Intake;
-//import org.usfirst.frc.team1731.robot.subsystems.LED;
 import org.usfirst.frc.team1731.robot.subsystems.Superstructure;
 import org.usfirst.frc.team1731.robot.subsystems.Wrist;
 import org.usfirst.frc.team1731.robot.subsystems.Wrist.WristPositions;
 import org.usfirst.frc.team1731.robot.subsystems.Climber;
-import org.usfirst.frc.team1731.robot.vision.VisionServer;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
@@ -101,7 +91,6 @@ public class Robot extends IterativeRobot {
     private Drive mDrive = Drive.getInstance();
     private Climber mClimber = Climber.getInstance();
     private Superstructure mSuperstructure = Superstructure.getInstance();
-    //private LED mLED = LED.getInstance();
     private RobotState mRobotState = RobotState.getInstance();
     private AutoModeExecuter mAutoModeExecuter = null;
 
@@ -118,15 +107,15 @@ public class Robot extends IterativeRobot {
     private DigitalOutput arduinoLed2;
 
     private Boolean invertCameraPrevious = Boolean.FALSE;
-    private NetworkTable networkTable;
     private VideoSink videoSink;
 
     private String autoCodes;
     
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
-                            Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
-                                    Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
-                                    ConnectionMonitor.getInstance()/*, LED.getInstance() , Wrist.getInstance()*/ ));
+                            Arrays.asList());
+                            // Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
+                            //         Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
+                            //         ConnectionMonitor.getInstance()/*, LED.getInstance() , Wrist.getInstance()*/ ));
 
     // Initialize other helper objects
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
@@ -134,16 +123,10 @@ public class Robot extends IterativeRobot {
 
     private Looper mEnabledLooper = new Looper();
 
-    //private VisionServer mVisionServer = VisionServer.getInstance();
-
     private AnalogInput mCheckLightButton = new AnalogInput(Constants.kLEDOnId);
-
-    //private DelayedBoolean mDelayedAimButton;
 
     private InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> mTuningFlywheelMap = new InterpolatingTreeMap<>();
 
-    //private static Solenoid _24vSolenoid = Constants.makeSolenoidForId(11, 2);
-    
     private DigitalInput tapeSensor;
  
     private SerialPort visionCam;
@@ -166,15 +149,36 @@ public class Robot extends IterativeRobot {
         try {
             CrashTracker.logRobotInit();
 
+            final double kVoltageThreshold = 0.15;
+            if (mCheckLightButton.getAverageVoltage() < kVoltageThreshold) {
+                //mLED.setLEDOn();
+            } else {
+                //mLED.setLEDOff();
+            }
+    
             try{
-                visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
+                if(visionCam == null){
+                    visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
+                    System.out.println("VISION CAM IS kUSB");
+                }
+                /*
+                if(visionCam == null){
+                    visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
+                    System.out.println("VISION CAM IS kUSB1");
+                }
+                if(visionCam == null){
+                    visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
+                    System.out.println("VISION CAM IS kUSB2");
+                }
+                */
             }
             catch(Throwable t){
                 System.out.println(t.toString());
             }
     
-            networkTable = NetworkTable.getTable("");
-
+            autoCodes = SmartDashboard.getString("AutoCodes", "2A");
+            autoModesToExecute = determineAutoModesToExecute(autoCodes);
+    
             leftRightCameraControl = new DigitalOutput(5);
 
             tapeSensor = new DigitalInput(0);
@@ -184,11 +188,9 @@ public class Robot extends IterativeRobot {
             SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
-          //  mEnabledLooper.register(VisionProcessor.getInstance());
+
             mEnabledLooper.register(RobotStateEstimator.getInstance());
 
-            //mVisionServer.addVisionUpdateReceiver(VisionProcessor.getInstance());
-            
             //http://roborio-1731-frc.local:1181/?action=stream
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
             
@@ -199,13 +201,6 @@ public class Robot extends IterativeRobot {
 
            	SmartDashboard.putString(AUTO_CODES, "2A");
             
-          //  mDelayedAimButton = new DelayedBoolean(Timer.getFPGATimestamp(), 0.1);
-            // Force an true update now to prevent robot from running at start.
-          //  mDelayedAimButton.update(Timer.getFPGATimestamp(), true);
-
-            // Pre calculate the paths we use for auto.
-            //PathAdapter.calculatePaths();
-
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
@@ -342,7 +337,6 @@ public class Robot extends IterativeRobot {
             
             double timestamp = Timer.getFPGATimestamp();
 
-            boolean overTheTop = mControlBoard.getOverTheTopButton();
             boolean flipUp = mControlBoard.getFlipUpButton();
             boolean flipDown = mControlBoard.getFlipDownButton();
             boolean grabCube = mControlBoard.getGrabCubeButton();
@@ -399,15 +393,6 @@ public class Robot extends IterativeRobot {
             	mSuperstructure.setWantedState(Superstructure.WantedState.ELEVATOR_TRACKING);
             }
             	
-            if (flipUp) {
-                mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_UP);
-            } else if (flipDown) {
-                mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_DOWN);
-            } else {
-                mSuperstructure.setOverTheTop(GRABBER_POSITION.FLIP_NONE);
-            }
-
-
             // Drive base
             double throttle = mControlBoard.getThrottle();
             double turn = mControlBoard.getTurn();
@@ -462,7 +447,6 @@ public class Robot extends IterativeRobot {
 
             if(mControlBoard.getTestWrist()){
                 Wrist.getInstance().setWantedPosition(WristPositions.STRAIGHTAHEAD);
-                //mSuperstructure.setWantedState(Superstructure.WantedState.WRIST_TRACKING);
                 Wrist.getInstance().setWantedState(Wrist.WantedState.WRISTTRACKING);
             }
             
@@ -614,38 +598,8 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void disabledPeriodic() {
-        final double kVoltageThreshold = 0.15;
-        if (mCheckLightButton.getAverageVoltage() < kVoltageThreshold) {
-            //mLED.setLEDOn();
-        } else {
-            //mLED.setLEDOff();
-        }
-
-        try{
-            if(visionCam == null){
-                visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
-                System.out.println("VISION CAM IS kUSB");
-            }
-            /*
-            if(visionCam == null){
-                visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
-                System.out.println("VISION CAM IS kUSB1");
-            }
-            if(visionCam == null){
-                visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
-                System.out.println("VISION CAM IS kUSB2");
-            }
-            */
-        }
-        catch(Throwable t){
-            System.out.println(t.toString());
-        }
-
-        autoCodes = SmartDashboard.getString("AutoCodes", "2A");
-        autoModesToExecute = determineAutoModesToExecute(autoCodes);
 
         zeroAllSensors();
-        allPeriodic();
     }
 
     @Override
@@ -672,16 +626,16 @@ public class Robot extends IterativeRobot {
      * Helper function that is called in all periodic functions
      */
     public void allPeriodic() {
-        mRobotState.outputToSmartDashboard();
-        mSubsystemManager.outputToSmartDashboard();
-        mSubsystemManager.writeToLog();
-        mEnabledLooper.outputToSmartDashboard();
+        // mRobotState.outputToSmartDashboard();
+        // mSubsystemManager.outputToSmartDashboard();
+        // mSubsystemManager.writeToLog();
+        // mEnabledLooper.outputToSmartDashboard();
 
-        SmartDashboard.putString("AutoCodesReceived", autoCodes);
-        //SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));
-        SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
-        SmartDashboard.putBoolean("Cal Up", mControlBoard.getCalibrateUp());
-        SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
+        // SmartDashboard.putString("AutoCodesReceived", autoCodes);
+        // //SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));
+        // SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
+        // SmartDashboard.putBoolean("Cal Up", mControlBoard.getCalibrateUp());
+        // SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
         ConnectionMonitor.getInstance().setLastPacketTime(Timer.getFPGATimestamp());
         //AutoSelectorSanityCheck();
         //UpdateAutoDriving();
