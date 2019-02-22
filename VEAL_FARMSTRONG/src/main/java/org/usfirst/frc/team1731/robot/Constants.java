@@ -217,16 +217,6 @@ public class Constants extends ConstantsBase {
     public static int kClimberExtendedPositionRight = 795;
     public static int kClimberRetractedPositionRight = 94;
 
-    //Climber
-	//public static int kClimberMasterId = 12;
-	//public static int kClimberSlaveId = 16;
-	//public static int kClimberContinuousCurrentLimitAmps = 30;
-	//public static int kClimberPeakCurrentDurationMs = 200; //Ms
-	//public static int kClimberPeakCurrentLimitAmps = 35;
-	
-
-    // Hopper gains
-    public static double kHopperRampRate = 48.0;
 
     // Do not change anything after this line unless you rewire the robot and
     // update the spreadsheet!
@@ -271,44 +261,17 @@ public class Constants extends ConstantsBase {
 
     /* VICTORS */
     // Feeder
-//    public static final int kFeederMasterId = 8;
-//    public static final int kFeederSlaveId = 7;
 	public static final int kFeederVictor = 1;
 
     // Intake
-
-//	  public static final int kIntakeMasterId = 5;
-//    public static final int kIntakeSlaveId = 10;
-	//public static final int kIntakeVictor1 = 8;
-	//public static final int kIntakeVictor2 = 9;
 	public static final int kIntakeTalon = 8;
 
-    // Hopper / Floor
-//    public static final int kHopperMasterId = 6;
-//    public static final int kHopperSlaveId = 9;
-	public static final int kHopperVictor = 3;
-	
     // Shooter
-//    public static final int kRightShooterMasterId = 2;
-//    public static final int kRightShooterSlaveId = 1;
-//    public static final int kLeftShooterSlave1Id = 13;
-//    public static final int kLeftShooterSlave2Id = 14;
 	public static final int kShooterVictor = 4;
 
-    // Gear Grabber
-//    public static final int kGearGrabberId = 15;
-
-    // Solenoids
-  //  public static final int kShifterSolenoidId1 = 1; //was 0 // PCM 0, Solenoid 0
- //   public static final int kShifterSolenoidId2 = 6;
-    
     //
     // PCM 0 SOLENOIDS
     //
-    // public static final int kRotateWristLong1 = 4; 
-    // public static final int kRotateWristLong2 = 5; 
-    // public static final int kRotateWristShort1 = 6; 
-    // public static final int kRotateWristShort2 = 7; 
     public static final int kBeakSwinger1 = 4; 
     public static final int kBeakSwinger2 = 5; 
     public static final int kMustache1 = 7; 
@@ -319,38 +282,17 @@ public class Constants extends ConstantsBase {
     //
     // PCM 1 SOLENOIDS
     //
-    // public static final int kTopRoller1 = 0;
-    // public static final int kTopRoller2 = 5;
     public static final int kBeakOpener1 = 0;
     public static final int kBeakOpener2 = 5;
     
-    // public static final int kBeakSwinger1 = 4;
-    // public static final int kBeakSwinger2 = 2;
     public static final int kRotateWristShort1 = 2;
     public static final int kRotateWristShort2 = 4;
     
-    // public static final int kBeakOpener1 = 1;
-    // public static final int kBeakOpener2 = 3;
     public static final int kRotateWristLong1 = 3;
     public static final int kRotateWristLong2 = 1;
     
-    // public static final int kMustache1 = 7;
-    // public static final int kMustache2 = 6;
     public static final int kTopRoller1 = 7;
     public static final int kTopRoller2 = 6;
-
-   // public static final int kPincherSolenoid1 = 2; 
-   // public static final int kPincherSolenoid2 = 5;
-    
-  //  public static final int kFishingPoleSolenoid1 = 3; 
-  //  public static final int kFishingPoleSolenoid2 = 7;  
-    
-    
-//    public static final int kIntakeDeploySolenoidId = 1; // PCM 0, Solenoid 1
-//    public static final int kHopperSolenoidId = 2; // PCM 0, Solenoid 2
-//    public static final int kGearWristSolenoid = 7; // PCM 0, Solenoid 7
-
-//	public static final int kEjectSolenoid = 3; //was 1
 
 	public static final int SlotIdx = 0;
 

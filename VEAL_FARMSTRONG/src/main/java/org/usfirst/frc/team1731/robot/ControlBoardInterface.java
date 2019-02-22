@@ -25,8 +25,6 @@ public interface ControlBoardInterface {
 
 		boolean getGrabCubeButton();
 
-		boolean getOverTheTopButton();
-
 		boolean getCalibrateUp();
 
 		boolean getCalibrateDown();

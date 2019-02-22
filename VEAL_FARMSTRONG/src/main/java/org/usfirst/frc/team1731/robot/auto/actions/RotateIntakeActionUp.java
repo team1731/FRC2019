@@ -25,14 +25,6 @@ public class RotateIntakeActionUp extends RunOnceAction implements Action {
 	
     @Override
     public void runOnce() {
-
-        //Superstructure.getInstance().setOverTheTop(up);
-        if (!up) {
-        	Superstructure.getInstance().setOverTheTop(GRABBER_POSITION.FLIP_DOWN);
-        } else {
-        	Superstructure.getInstance().setOverTheTop(GRABBER_POSITION.FLIP_UP);        	
-        }
-
     }
 
 }

@@ -26,9 +26,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 
 
-//import com.ctre.phoenix.motorcontrol.StatusFrameRate;
-//import com.ctre.phoenix.motorcontrol.VelocityMeasWindow;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,8 +36,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * 
  * @see Subsystem.java
  */
-
-//stemrobotics.cs.pdx.edu/sites/default/files/WPILib_programming.pdf
 
 @SuppressWarnings("unused")
 public class Wrist extends Subsystem {
@@ -60,8 +55,6 @@ public class Wrist extends Subsystem {
         mTalon = new TalonSRX(Constants.kWristTalon);
         mTalon.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
         mTalon.set(ControlMode.Position, 0);
-        //mTalon.configVelocityMeasurementWindow(10, 0);
-        //mTalon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
         mTalon.selectProfileSlot(Constants.SlotIdx, 0);
         mTalon.config_kP(Constants.SlotIdx, Constants.kWristTalonKP, Constants.kTimeoutMs );
         mTalon.config_kI(Constants.SlotIdx, Constants.kWristKI, Constants.kTimeoutMs );

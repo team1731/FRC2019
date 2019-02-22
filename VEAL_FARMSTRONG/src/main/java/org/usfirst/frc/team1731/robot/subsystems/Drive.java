@@ -24,13 +24,11 @@ import org.usfirst.frc.team1731.robot.loops.Looper;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -94,9 +92,9 @@ public class Drive extends Subsystem {
     private DriveControlState mDriveControlState;
 
     // Hardware
-    private final TalonSRX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
-   // private final Solenoid mShifter1;
-   // private final Solenoid mShifter2;
+    //private final TalonSRX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
+    private final TalonSRX mLeftMaster, mRightMaster;
+
     private final NavX mNavXBoard;
 
     // Controllers
@@ -175,13 +173,9 @@ public class Drive extends Subsystem {
     	  //DriverStation.reportError("Drive Constructor", false);
         // Start all Talons in open loop mode.
         mLeftMaster = TalonSRXFactory.createDefaultTalon(Constants.kLeftDriveMasterId);
-        //  mLeftMaster.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         mLeftMaster.set(ControlMode.PercentOutput, 0);
-        //mLeftMaster.setFeedbackDevice(TalonSRX.FeedbackDevice.CtreMagEncoder_Relative);
         mLeftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.kTimeoutMs);
-        //mLeftMaster.reverseSensor(true);
-        mLeftMaster.setInverted(false);                               //RDB 3/6/18
-        //mLeftMaster.reverseOutput(false);
+        mLeftMaster.setInverted(false);
         mLeftMaster.setSensorPhase(true);
 
         int leftSensorPresent = mLeftMaster.getSensorCollection().getPulseWidthRiseToRiseUs();
@@ -190,55 +184,38 @@ public class Drive extends Subsystem {
             DriverStation.reportError("Could not detect left encoder: " + leftSensorPresent, false);
         }
 
-        mLeftSlave = TalonSRXFactory.createPermanentSlaveTalon(Constants.kLeftDriveSlaveId,
-                Constants.kLeftDriveMasterId);
-        //mLeftSlave.reverseOutput(false);
-        mLeftSlave.setInverted(false);
-        //mLeftMaster.setStatusFrameRateMs(StatusFrameRate.Feedback, 5);
-        mLeftMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
-        mLeftMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
-        mLeftSlave.set(ControlMode.Follower,Constants.kLeftDriveMasterId);
+        // mLeftSlave = TalonSRXFactory.createPermanentSlaveTalon(Constants.kLeftDriveSlaveId,
+        //         Constants.kLeftDriveMasterId);
+        // mLeftSlave.setInverted(false);
+        // mLeftMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
+        // mLeftMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
+        // mLeftSlave.set(ControlMode.Follower,Constants.kLeftDriveMasterId);
 
  
  
         mRightMaster = TalonSRXFactory.createDefaultTalon(Constants.kRightDriveMasterId);
 
-       // mRightMaster.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         mRightMaster.set(ControlMode.PercentOutput, 0);
-        //mRightMaster.reverseSensor(false);
         mRightMaster.setInverted(true); // was true);
-       // mRightMaster.reverseOutput(true);
         mRightMaster.setSensorPhase(true);
-        //mRightMaster.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         mRightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.kTimeoutMs);
         
         int rightSensorPresent = mLeftMaster.getSensorCollection().getPulseWidthRiseToRiseUs();
-        //CANTalon.FeedbackDeviceStatus leftSensorPresent = mLeftMaster
-        //        .isSensorPresent(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         if (rightSensorPresent == 0) {
             DriverStation.reportError("Could not detect right encoder: " + rightSensorPresent, false);
         }
 
-        mRightSlave = TalonSRXFactory.createPermanentSlaveTalon(Constants.kRightDriverSlaveId,
-                Constants.kRightDriveMasterId);
-        //mRightSlave.reverseOutput(false);
-        mRightSlave.setInverted(true);                                //RDB 3-6-18
-        //mRightMaster.setStatusFrameRateMs(StatusFrameRate.Feedback, 5);
-        mRightMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
-        mRightMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
-        mRightSlave.set(ControlMode.Follower,Constants.kRightDriveMasterId);
+        // mRightSlave = TalonSRXFactory.createPermanentSlaveTalon(Constants.kRightDriverSlaveId,
+        //         Constants.kRightDriveMasterId);
+        // mRightSlave.setInverted(true);
+        // mRightMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
+        // mRightMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
+        // mRightSlave.set(ControlMode.Follower,Constants.kRightDriveMasterId);
 
-       // mLeftMaster.SetVelocityMeasurementPeriod(VelocityMeasurementPeriod.Period_10Ms);
         mLeftMaster.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, Constants.kTimeoutMs);
-       // mLeftMaster.SetVelocityMeasurementWindow(32);
         mLeftMaster.configVelocityMeasurementWindow(32, Constants.kTimeoutMs);   // chesyguys had 32
-        //mRightMaster.SetVelocityMeasurementPeriod(VelocityMeasurementPeriod.Period_10Ms);
         mRightMaster.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, Constants.kTimeoutMs);
-       // mRightMaster.SetVelocityMeasurementWindow(32);
         mRightMaster.configVelocityMeasurementWindow(32, Constants.kTimeoutMs);  // cheesygutys had 32
-
-     //   mShifter1 = Constants.makeSolenoidForId(Constants.kShifterSolenoidId1);
-      //  mShifter2 = Constants.makeSolenoidForId(Constants.kShifterSolenoidId2);
 
         reloadGains();
 
@@ -266,15 +243,9 @@ public class Drive extends Subsystem {
      * Configure talons for open loop control
      */
     public synchronized void setOpenLoop(DriveSignal signal) {
-    	//  DriverStation.reportError("setOpenLoop" + signal, false);
         if (mDriveControlState != DriveControlState.OPEN_LOOP) {
-      	  //DriverStation.reportError("setOpenLoop inside" + signal, false);
-           // mLeftMaster.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
             mLeftMaster.set(ControlMode.PercentOutput, signal.getLeft());
-            //mRightMaster.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
             mRightMaster.set(ControlMode.PercentOutput, signal.getRight());
-            //mLeftMaster.configNominalOutputVoltage(0.0, 0.0);
-            //mRightMaster.configNominalOutputVoltage(0.0, 0.0);
             mLeftMaster.configNominalOutputForward(0, 0);
             mLeftMaster.configNominalOutputReverse(0, 0);
             mRightMaster.configNominalOutputForward(0, 0);
@@ -297,8 +268,6 @@ public class Drive extends Subsystem {
     public synchronized void setHighGear(boolean wantsHighGear) {
         if (wantsHighGear != mIsHighGear) {
             mIsHighGear = wantsHighGear;
-          //  mShifter1.set(wantsHighGear);
-          //  mShifter2.set(!wantsHighGear);
         }
     }
 
@@ -320,20 +289,16 @@ public class Drive extends Subsystem {
     public synchronized void setBrakeMode(boolean on) {
         if (mIsBrakeMode != on) {
             mIsBrakeMode = on;
-           // mRightMaster.enableBrakeMode(on);
-            //mRightSlave.enableBrakeMode(on);
-           // mLeftMaster.enableBrakeMode(on);
-            //mLeftSlave.enableBrakeMode(on);
             if (mIsBrakeMode) {
 	            mRightMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-	            mRightSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+	            // mRightSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 	            mLeftMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-	            mLeftSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake); 
+	            // mLeftSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake); 
 	        } else {
 	            mRightMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
-	            mRightSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
+	            // mRightSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
 	            mLeftMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
-	            mLeftSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
+	            // mLeftSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
 	        }
         }
         	
@@ -348,27 +313,23 @@ public class Drive extends Subsystem {
     public void outputToSmartDashboard() {
         final double left_speed = getLeftVelocityInchesPerSec();
         final double right_speed = getRightVelocityInchesPerSec();
-      //  SmartDashboard.putNumber("left voltage (V)", mLeftMaster.getOutputVoltage());
-        //SmartDashboard.putNumber("right voltage (V)", mRightMaster.getOutputVoltage());
-       // SmartDashboard.putNumber("right signal", signal.getRight());
-      //  SmartDashboard.putNumber("left signal", signal.getLeft());
         SmartDashboard.putNumber("left voltage (V)", mLeftMaster.getMotorOutputVoltage());
         SmartDashboard.putNumber("right voltage (V)", mRightMaster.getMotorOutputVoltage());
         SmartDashboard.putNumber("left speed (ips)", left_speed);
         SmartDashboard.putNumber("right speed (ips)", right_speed);
-        if (usesTalonVelocityControl(mDriveControlState)) {
-            SmartDashboard.putNumber("left speed error (ips)",
-                //    rpmToInchesPerSecond(mLeftMaster.getSetpoint()) - left_speed);
+        // if (usesTalonVelocityControl(mDriveControlState)) {
+        //     SmartDashboard.putNumber("left speed error (ips)",
+        //         //    rpmToInchesPerSecond(mLeftMaster.getSetpoint()) - left_speed);
             		
-            rpmToInchesPerSecond(mLeftMaster.getClosedLoopTarget(0)) - left_speed);
-            SmartDashboard.putNumber("right speed error (ips)",
-                  //  rpmToInchesPerSecond(mRightMaster.getSetpoint()) - right_speed);
+        //     rpmToInchesPerSecond(mLeftMaster.getClosedLoopTarget(0)) - left_speed);
+        //     SmartDashboard.putNumber("right speed error (ips)",
+        //           //  rpmToInchesPerSecond(mRightMaster.getSetpoint()) - right_speed);
             
-            rpmToInchesPerSecond(mRightMaster.getClosedLoopTarget(0)) - right_speed);
-        } else {
-            SmartDashboard.putNumber("left speed error (ips)", 0.0);
-            SmartDashboard.putNumber("right speed error (ips)", 0.0);
-        }
+        //     rpmToInchesPerSecond(mRightMaster.getClosedLoopTarget(0)) - right_speed);
+        // } else {
+        //     SmartDashboard.putNumber("left speed error (ips)", 0.0);
+        //     SmartDashboard.putNumber("right speed error (ips)", 0.0);
+        // }
         synchronized (this) {
             if (mDriveControlState == DriveControlState.PATH_FOLLOWING && mPathFollower != null) {
                 SmartDashboard.putNumber("drive CTE", mPathFollower.getCrossTrackError());
@@ -378,10 +339,7 @@ public class Drive extends Subsystem {
                 SmartDashboard.putNumber("drive ATE", 0.0);
             }
         }
-        //SmartDashboard.putNumber("left position (rotations)", mLeftMaster.getPosition()); 
-        //TOO DO need to divide by sensor units per rotation
         SmartDashboard.putNumber("left position (inches)", getLeftDistanceInches());
-        //SmartDashboard.putNumber("right position (rotations)", mRightMaster.getPosition());
         SmartDashboard.putNumber("right position (inches)", getRightDistanceInches());
         SmartDashboard.putNumber("gyro vel", getGyroVelocityDegreesPerSec());
         SmartDashboard.putNumber("gyro pos", getGyroAngle().getDegrees());
@@ -389,18 +347,10 @@ public class Drive extends Subsystem {
     }
 
     public synchronized void resetEncoders() {
-        //mLeftMaster.setEncPosition(0);
-        //mLeftMaster.setPosition(0);
-        //mRightMaster.setPosition(0);
-        //mRightMaster.setEncPosition(0);
-        //mLeftSlave.setPosition(0);
-        //mRightSlave.setPosition(0);
-        
-
         mLeftMaster.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
         mRightMaster.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
-        mLeftSlave.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
-        mRightSlave.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
+        // mLeftSlave.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
+        // mRightSlave.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
     }
 
     @Override
@@ -426,24 +376,12 @@ public class Drive extends Subsystem {
      */
     private void configureTalonsForSpeedControl() {
         if (!usesTalonVelocityControl(mDriveControlState)) {
-            // We entered a velocity control state.
-           // mLeftMaster.changeControlMode(CANTalon.TalonControlMode.Speed);
-            //mLeftMaster.setNominalClosedLoopVoltage(12.0);
-           // mLeftMaster.setProfile(kHighGearVelocityControlSlot);
-            //mLeftMaster.configNominalOutputVoltage(Constants.kDriveHighGearNominalOutput,
-            //        -Constants.kDriveHighGearNominalOutput);
-            //mRightMaster.changeControlMode(CANTalon.TalonControlMode.Speed);
-            //mRightMaster.setNominalClosedLoopVoltage(12.0);
-           // mRightMaster.setProfile(kHighGearVelocityControlSlot);
-           // mRightMaster.configNominalOutputVoltage(Constants.kDriveHighGearNominalOutput,
-            //        -Constants.kDriveHighGearNominalOutput);
-        	// (ATTEMPT TO FIX DRIVING PROBLEM) mLeftMaster.set(ControlMode.Velocity, 0);
         	mLeftMaster.set(ControlMode.Velocity, 2);
         	mLeftMaster.configNominalOutputForward(Constants.kDriveHighGearNominalOutput,Constants.kTimeoutMs);
         	mLeftMaster.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, Constants.kTimeoutMs);
         	mLeftMaster.selectProfileSlot(kHighGearVelocityControlSlot, Constants.kPidIdx);
-        	// (SEE ABOVE LEFTMASTER) mRightMaster.set(ControlMode.Velocity, 0);
-        	mRightMaster.set(ControlMode.Velocity, 2);
+
+            mRightMaster.set(ControlMode.Velocity, 2);
         	mRightMaster.configNominalOutputForward(Constants.kDriveHighGearNominalOutput,Constants.kTimeoutMs);
         	mRightMaster.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, Constants.kTimeoutMs);
         	mRightMaster.selectProfileSlot(kHighGearVelocityControlSlot, Constants.kPidIdx);
@@ -456,19 +394,6 @@ public class Drive extends Subsystem {
      */
     private void configureTalonsForPositionControl() {
         if (!usesTalonPositionControl(mDriveControlState)) {
-            // We entered a position control state.
-        	/*
-            mLeftMaster.changeControlMode(CANTalon.TalonControlMode.MotionMagic);
-            mLeftMaster.setNominalClosedLoopVoltage(12.0);
-            mLeftMaster.setProfile(kLowGearPositionControlSlot);
-            mLeftMaster.configNominalOutputVoltage(Constants.kDriveLowGearNominalOutput,
-                    -Constants.kDriveLowGearNominalOutput);
-            mRightMaster.changeControlMode(CANTalon.TalonControlMode.MotionMagic);
-            mRightMaster.setNominalClosedLoopVoltage(12.0);
-            mRightMaster.setProfile(kLowGearPositionControlSlot);
-            mRightMaster.configNominalOutputVoltage(Constants.kDriveLowGearNominalOutput,
-                    -Constants.kDriveLowGearNominalOutput);
-            */
         	mLeftMaster.set(ControlMode.MotionMagic, 0);
         	mLeftMaster.configNominalOutputForward(Constants.kDriveLowGearNominalOutput,Constants.kTimeoutMs);
         	mLeftMaster.configNominalOutputReverse(-Constants.kDriveLowGearNominalOutput, Constants.kTimeoutMs);
@@ -492,14 +417,10 @@ public class Drive extends Subsystem {
             final double max_desired = Math.max(Math.abs(left_inches_per_sec), Math.abs(right_inches_per_sec));
             final double scale = max_desired > Constants.kDriveHighGearMaxSetpoint
                     ? Constants.kDriveHighGearMaxSetpoint / max_desired : 1.0;
- //           mLeftMaster.set(inchesPerSecondToRpm(left_inches_per_sec * scale));
- //           mRightMaster.set(inchesPerSecondToRpm(right_inches_per_sec * scale));
               mLeftMaster.set(ControlMode.Velocity, inchesPerSecondToUnitsPer100ms(left_inches_per_sec * scale));
               mRightMaster.set(ControlMode.Velocity, inchesPerSecondToUnitsPer100ms(right_inches_per_sec * scale));
         } else {
             System.out.println("Hit a bad velocity control state");
-            //mLeftMaster.set(0);
-            //mRightMaster.set(0);
             mLeftMaster.set(ControlMode.Velocity,0);
             mRightMaster.set(ControlMode.Velocity,0);
         }
@@ -514,27 +435,21 @@ public class Drive extends Subsystem {
      */
     private synchronized void updatePositionSetpoint(double left_position_inches, double right_position_inches) {
         if (usesTalonPositionControl(mDriveControlState)) {
-           // mLeftMaster.set(inchesToRotations(left_position_inches));
-           // mRightMaster.set(inchesToRotations(right_position_inches));
         	mLeftMaster.set(ControlMode.Position, inchesToRotations(left_position_inches));
         	mRightMaster.set(ControlMode.Position, inchesToRotations(right_position_inches));
         } else {
             System.out.println("Hit a bad position control state");
-           // mLeftMaster.set(0);
-           // mRightMaster.set(0);
             mLeftMaster.set(ControlMode.Position,0);
             mRightMaster.set(ControlMode.Position,0);
         }
     }
 
     private static double rotationsToInches(double rotations) {
-   //     System.out.println("rotations: " + rotations );
         return rotations * (Constants.kDriveWheelDiameterInches * Math.PI);
 
     }
 
     private static double rpmToInchesPerSecond(double rpm) {
-   //     System.out.println("rpm: " + rpm );
         return rotationsToInches(rpm) / 60;
     }
 
@@ -551,26 +466,18 @@ public class Drive extends Subsystem {
     }
 
     public double getLeftDistanceInches() {
-     //   return rotationsToInches(mLeftMaster.getPosition());
-    //	 System.out.println("sensorcollection" + mLeftMaster.getSensorCollection().getQuadraturePosition());
-    //	 System.out.println("sensorposition" + mLeftMaster.getSelectedSensorPosition(Constants.kPidIdx));
-
         return rotationsToInches(mLeftMaster.getSelectedSensorPosition(Constants.kPidIdx)/4096.0);
     }
 
     public double getRightDistanceInches() {
-     //   return rotationsToInches(mRightMaster.getPosition());
         return rotationsToInches(mRightMaster.getSelectedSensorPosition(Constants.kPidIdx)/4096.0);
     }
 
     public double getLeftVelocityInchesPerSec() {
-       // return rpmToInchesPerSecond(mLeftMaster.getSpeed());
     	return rpmToInchesPerSecond((mLeftMaster.getSelectedSensorVelocity(Constants.kPidIdx)*(600.0/4096.0)));
-       // return rpmToInchesPerSecond((mLeftMaster.getSelectedSensorVelocity(Constants.kPidIdx)*(0.1464)));
     }
 
     public double getRightVelocityInchesPerSec() {
-        //return rpmToInchesPerSecond(mRightMaster.getSpeed());
     	return rpmToInchesPerSecond((mRightMaster.getSelectedSensorVelocity(Constants.kPidIdx)*(600.0/4096.0)));
     }
 
@@ -609,11 +516,6 @@ public class Drive extends Subsystem {
      * Is called periodically when the robot is auto-aiming towards the boiler.
      */
     private void updateTurnToHeading(double timestamp) {
- //       if (Superstructure.getInstance().isShooting()) {
-            // Do not update heading while shooting - just base lock. By not updating the setpoint, we will fight to
-            // keep position.
- //           return;
- //       }
         final Rotation2d field_to_robot = mRobotState.getLatestFieldToVehicle().getValue().getRotation();
 
         // Figure out the rotation necessary to turn to face the goal.
@@ -850,32 +752,6 @@ public class Drive extends Subsystem {
     }
 
     public synchronized void reloadGains() {
-        /*mLeftMaster.setPID(Constants.kDriveLowGearPositionKp, Constants.kDriveLowGearPositionKi,
-                Constants.kDriveLowGearPositionKd, Constants.kDriveLowGearPositionKf,
-                Constants.kDriveLowGearPositionIZone, Constants.kDriveLowGearPositionRampRate,
-                kLowGearPositionControlSlot);
-        mLeftMaster.setMotionMagicCruiseVelocity(Constants.kDriveLowGearMaxVelocity);
-        mLeftMaster.setMotionMagicAcceleration(Constants.kDriveLowGearMaxAccel);
-        mRightMaster.setPID(Constants.kDriveLowGearPositionKp, Constants.kDriveLowGearPositionKi,
-                Constants.kDriveLowGearPositionKd, Constants.kDriveLowGearPositionKf,
-                Constants.kDriveLowGearPositionIZone, Constants.kDriveLowGearPositionRampRate,
-                kLowGearPositionControlSlot);
-        mRightMaster.setMotionMagicCruiseVelocity(Constants.kDriveLowGearMaxVelocity);
-        mRightMaster.setMotionMagicAcceleration(Constants.kDriveLowGearMaxAccel);
-        mLeftMaster.setVoltageCompensationRampRate(Constants.kDriveVoltageCompensationRampRate);
-        mRightMaster.setVoltageCompensationRampRate(Constants.kDriveVoltageCompensationRampRate);
-
-        mLeftMaster.setPID(Constants.kDriveHighGearVelocityKp, Constants.kDriveHighGearVelocityKi,
-                Constants.kDriveHighGearVelocityKd, Constants.kDriveHighGearVelocityKf,
-                Constants.kDriveHighGearVelocityIZone, Constants.kDriveHighGearVelocityRampRate,
-                kHighGearVelocityControlSlot);
-        mRightMaster.setPID(Constants.kDriveHighGearVelocityKp, Constants.kDriveHighGearVelocityKi,
-                Constants.kDriveHighGearVelocityKd, Constants.kDriveHighGearVelocityKf,
-                Constants.kDriveHighGearVelocityIZone, Constants.kDriveHighGearVelocityRampRate,
-                kHighGearVelocityControlSlot);
-        mLeftMaster.setVoltageCompensationRampRate(Constants.kDriveVoltageCompensationRampRate);
-        mRightMaster.setVoltageCompensationRampRate(Constants.kDriveVoltageCompensationRampRate);
-        */
     	mLeftMaster.config_kD(kLowGearPositionControlSlot, Constants.kDriveLowGearPositionKd, Constants.kTimeoutMs);
     	mLeftMaster.config_kP(kLowGearPositionControlSlot, Constants.kDriveLowGearPositionKp, Constants.kTimeoutMs);
     	mLeftMaster.config_kI(kLowGearPositionControlSlot, Constants.kDriveLowGearPositionKi, Constants.kTimeoutMs);
@@ -932,39 +808,25 @@ public class Drive extends Subsystem {
         final double kCurrentThres = 0.5;
         final double kRpmThres = 300;
 
-        /*mRightMaster.changeControlMode(CANTalon.TalonControlMode.Voltage);
-        mRightSlave.changeControlMode(CANTalon.TalonControlMode.Voltage);
-        mLeftMaster.changeControlMode(CANTalon.TalonControlMode.Voltage);
-        mLeftSlave.changeControlMode(CANTalon.TalonControlMode.Voltage);
-
-        mRightMaster.set(0.0);
-        mRightSlave.set(0.0);
-        mLeftMaster.set(0.0);
-        mLeftSlave.set(0.0);
-        */
         mRightMaster.set(ControlMode.PercentOutput, 0);
-        mRightSlave.set(ControlMode.PercentOutput, 0);
+        // mRightSlave.set(ControlMode.PercentOutput, 0);
         mLeftMaster.set(ControlMode.PercentOutput, 0);
-        mLeftSlave.set(ControlMode.PercentOutput, 0);
-        
-        
-        
-        
-        //mRightMaster.set(-6.0f);
+        // mLeftSlave.set(ControlMode.PercentOutput, 0);
+
         mRightMaster.set(ControlMode.PercentOutput,0.6f);
         Timer.delay(4.0);
         final double currentRightMaster = mRightMaster.getOutputCurrent();
-        //final double rpmRightMaster = mRightMaster.getSpeed();
+
         final double rpmRightMaster = mRightMaster.getSelectedSensorVelocity(Constants.kPidIdx);
-        //mRightMaster.set(0.0f);
+
         mRightMaster.set(ControlMode.PercentOutput,0);
         Timer.delay(2.0);
 
-        mRightSlave.set(ControlMode.PercentOutput,0.6f);
-        Timer.delay(4.0);
-        final double currentRightSlave = mRightSlave.getOutputCurrent();
-        final double rpmRightSlave = mRightSlave.getSelectedSensorVelocity(Constants.kPidIdx);
-        mRightSlave.set(ControlMode.PercentOutput,0.0f);
+        // mRightSlave.set(ControlMode.PercentOutput,0.6f);
+        // Timer.delay(4.0);
+        // final double currentRightSlave = mRightSlave.getOutputCurrent();
+        // final double rpmRightSlave = mRightSlave.getSelectedSensorVelocity(Constants.kPidIdx);
+        // mRightSlave.set(ControlMode.PercentOutput,0.0f);
 
         Timer.delay(2.0);
 
@@ -976,27 +838,27 @@ public class Drive extends Subsystem {
 
         Timer.delay(2.0);
 
-        mLeftSlave.set(ControlMode.PercentOutput,0.6f);
-        Timer.delay(4.0);
-        final double currentLeftSlave = mLeftSlave.getOutputCurrent();
-        final double rpmLeftSlave = mLeftSlave.getSelectedSensorVelocity(Constants.kPidIdx);
-        mLeftSlave.set(ControlMode.PercentOutput,0.0);
+        // mLeftSlave.set(ControlMode.PercentOutput,0.6f);
+        // Timer.delay(4.0);
+        // final double currentLeftSlave = mLeftSlave.getOutputCurrent();
+        // final double rpmLeftSlave = mLeftSlave.getSelectedSensorVelocity(Constants.kPidIdx);
+        // mLeftSlave.set(ControlMode.PercentOutput,0.0);
 
 
         mRightMaster.set(ControlMode.PercentOutput,0);
         mLeftMaster.set(ControlMode.PercentOutput,0);
 
-        mRightSlave.set(ControlMode.Follower,Constants.kRightDriveMasterId);
+        // mRightSlave.set(ControlMode.Follower,Constants.kRightDriveMasterId);
 
  
-        mLeftSlave.set(ControlMode.Follower,Constants.kLeftDriveMasterId);
+        // mLeftSlave.set(ControlMode.Follower,Constants.kLeftDriveMasterId);
 
-        System.out.println("Drive Right Master Current: " + currentRightMaster + " Drive Right Slave Current: "
-                + currentRightSlave);
-        System.out.println(
-                "Drive Left Master Current: " + currentLeftMaster + " Drive Left Slave Current: " + currentLeftSlave);
-        System.out.println("Drive RPM RMaster: " + rpmRightMaster + " RSlave: " + rpmRightSlave + " LMaster: "
-                + rpmLeftMaster + " LSlave: " + rpmLeftSlave);
+        // System.out.println("Drive Right Master Current: " + currentRightMaster + " Drive Right Slave Current: "
+        //         + currentRightSlave);
+        // System.out.println(
+        //         "Drive Left Master Current: " + currentLeftMaster + " Drive Left Slave Current: " + currentLeftSlave);
+        // System.out.println("Drive RPM RMaster: " + rpmRightMaster + " RSlave: " + rpmRightSlave + " LMaster: "
+        //         + rpmLeftMaster + " LSlave: " + rpmLeftSlave);
 
         boolean failure = false;
 
@@ -1005,58 +867,58 @@ public class Drive extends Subsystem {
             System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Master Current Low !!!!!!!!!!");
         }
 
-        if (currentRightSlave < kCurrentThres) {
-            failure = true;
-            System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Slave Current Low !!!!!!!!!!");
-        }
+        // if (currentRightSlave < kCurrentThres) {
+        //     failure = true;
+        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Slave Current Low !!!!!!!!!!");
+        // }
 
         if (currentLeftMaster < kCurrentThres) {
             failure = true;
             System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Master Current Low !!!!!!!!!!");
         }
 
-        if (currentLeftSlave < kCurrentThres) {
-            failure = true;
-            System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Slave Current Low !!!!!!!!!!");
-        }
+        // if (currentLeftSlave < kCurrentThres) {
+        //     failure = true;
+        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Slave Current Low !!!!!!!!!!");
+        // }
 
-        if (!Util.allCloseTo(Arrays.asList(currentRightMaster, currentRightSlave), currentRightMaster,
-                5.0)) {
-            failure = true;
-            System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Currents Different !!!!!!!!!!");
-        }
+        // if (!Util.allCloseTo(Arrays.asList(currentRightMaster, currentRightSlave), currentRightMaster,
+        //         5.0)) {
+        //     failure = true;
+        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Currents Different !!!!!!!!!!");
+        // }
 
-        if (!Util.allCloseTo(Arrays.asList(currentLeftMaster, currentLeftSlave), currentLeftSlave,
-                5.0)) {
-            failure = true;
-            System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Currents Different !!!!!!!!!!!!!");
-        }
+        // if (!Util.allCloseTo(Arrays.asList(currentLeftMaster, currentLeftSlave), currentLeftSlave,
+        //         5.0)) {
+        //     failure = true;
+        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Currents Different !!!!!!!!!!!!!");
+        // }
 
         if (rpmRightMaster < kRpmThres) {
             failure = true;
             System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Master RPM Low !!!!!!!!!!!!!!!!!!!");
         }
 
-        if (rpmRightSlave < kRpmThres) {
-            failure = true;
-            System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Slave RPM Low !!!!!!!!!!!!!!!!!!!");
-        }
+        // if (rpmRightSlave < kRpmThres) {
+        //     failure = true;
+        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Slave RPM Low !!!!!!!!!!!!!!!!!!!");
+        // }
 
         if (rpmLeftMaster < kRpmThres) {
             failure = true;
             System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Master RPM Low !!!!!!!!!!!!!!!!!!!");
         }
 
-        if (rpmLeftSlave < kRpmThres) {
-            failure = true;
-            System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Slave RPM Low !!!!!!!!!!!!!!!!!!!");
-        }
+        // if (rpmLeftSlave < kRpmThres) {
+        //     failure = true;
+        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Slave RPM Low !!!!!!!!!!!!!!!!!!!");
+        // }
 
-        if (!Util.allCloseTo(Arrays.asList(rpmRightMaster, rpmRightSlave, rpmLeftMaster, rpmLeftSlave),
-                rpmRightMaster, 250)) {
-            failure = true;
-            System.out.println("!!!!!!!!!!!!!!!!!!! Drive RPMs different !!!!!!!!!!!!!!!!!!!");
-        }
+        // if (!Util.allCloseTo(Arrays.asList(rpmRightMaster, rpmRightSlave, rpmLeftMaster, rpmLeftSlave),
+        //         rpmRightMaster, 250)) {
+        //     failure = true;
+        //     System.out.println("!!!!!!!!!!!!!!!!!!! Drive RPMs different !!!!!!!!!!!!!!!!!!!");
+        // }
 
         return !failure;
     }

@@ -27,9 +27,7 @@ public class PickUpAction implements Action {
 
     @Override
     public boolean isFinished() {
-    //	System.out.println("in isFinished:" + mIntake.gotCube() + ", " + mElevator.getCurrentPosition(true));
         return (Math.abs(mElevator.getCurrentPosition())  < 0.1);
-
     }
 
     @Override
@@ -46,8 +44,6 @@ public class PickUpAction implements Action {
     	gotCube = false;
         startTime = Timer.getFPGATimestamp();
         mSuperstructure.setWantedState(Superstructure.WantedState.AUTOINTAKING);
-        //Superstructure.getInstance().setOverTheTop(false);
-        Superstructure.getInstance().setOverTheTop(GRABBER_POSITION.FLIP_DOWN);
     	System.out.println("started pickup action"); 	
     }
 }

@@ -27,9 +27,6 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 
-//import com.ctre.phoenix.motorcontrol.StatusFrameRate;
-//import com.ctre.phoenix.motorcontrol.VelocityMeasWindow;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,8 +37,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * 
  * @see Subsystem.java
  */
-
-//stemrobotics.cs.pdx.edu/sites/default/files/WPILib_programming.pdf
 
 @SuppressWarnings("unused")
 public class Elevator extends Subsystem {
@@ -56,8 +51,6 @@ public class Elevator extends Subsystem {
     }
 
     private final TalonSRX mTalon;
-    //private final Solenoid mOverTop1;
-    //private final Solenoid mOverTop2;
     
     public Elevator() {
         mTalon = new TalonSRX(Constants.kElevatorTalon);
