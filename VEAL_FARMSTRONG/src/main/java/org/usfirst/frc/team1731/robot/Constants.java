@@ -207,15 +207,24 @@ public class Constants extends ConstantsBase {
     public static double kClimberTalonKD = 0.0;
     public static double kClimberTalonKF = 0.2; //0.0;
 
-    public static int kClimberCruiseVelocity = 15000; //15000
+    public static int kClimberSlowCruiseVelocity = 15; //15000
+    public static int kClimberMediumCruiseVelocity = 30; //15000
+    public static int kClimberFastCruiseVelocity = 90; //15000
     public static int kClimberAcceleration = 6000; //6000
     public static double kClimberExtendPercent = 1.0; //0.8;
     public static double kClimberRetractPercent = -1.0; //-0.6;
 
     public static int kClimberExtendedPositionLeft = 940;
     public static int kClimberRetractedPositionLeft = 234;
+    public static int kClimberDartsHaveDetachedLeft = 500;
     public static int kClimberExtendedPositionRight = 795;
-    public static int kClimberRetractedPositionRight = 94;
+    public static int kClimberRetractedPositionRight = 100; //right is 225
+    public static int kClimberDartsHaveDetachedRight = 500;
+    public static int kClimberDartsHaveHittheFloorRight = 400;
+    public static int kClimberDartsHaveHitTheFloorLeft = 300;
+    public static int kClimberStartWheelsLeft = 600;
+    public static int kClimberStartWheelsRight = 600;
+
 
 
     // Do not change anything after this line unless you rewire the robot and

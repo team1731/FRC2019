@@ -61,10 +61,13 @@ public class Climber extends Subsystem {
 
     private final TalonSRX mTalonL;
     private final TalonSRX mTalonR;
+    private DigitalInput latchSensor = new DigitalInput(6);
 
     //private final DoubleSolenoid mDartLatch = Constants.makeDoubleSolenoidForIds(0, Constants.kDartLatch1, Constants.kDartLatch2);
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
     private Drive mDrive = Drive.getInstance();
+    private boolean mDartsHaveDetached = false;
+
 
     public Climber() {
         // Left Talon
@@ -101,7 +104,7 @@ public class Climber extends Subsystem {
 		mTalonL.config_kD(Constants.kSlotIdx, Constants.kClimberTalonKD, Constants.kTimeoutMs);
 
 		/* Set acceleration and vcruise velocity - see documentation */
-		mTalonL.configMotionCruiseVelocity(Constants.kClimberCruiseVelocity, Constants.kTimeoutMs);
+		mTalonL.configMotionCruiseVelocity(Constants.kClimberSlowCruiseVelocity, Constants.kTimeoutMs);
 		mTalonL.configMotionAcceleration(Constants.kClimberAcceleration, Constants.kTimeoutMs);
 
 		/* Zero the sensor */
@@ -155,7 +158,7 @@ public class Climber extends Subsystem {
 		mTalonR.config_kD(Constants.kSlotIdx, Constants.kClimberTalonKD, Constants.kTimeoutMs);
 
 		/* Set acceleration and vcruise velocity - see documentation */
-		mTalonR.configMotionCruiseVelocity(Constants.kClimberCruiseVelocity, Constants.kTimeoutMs);
+		mTalonR.configMotionCruiseVelocity(Constants.kClimberSlowCruiseVelocity, Constants.kTimeoutMs);
 		mTalonR.configMotionAcceleration(Constants.kClimberAcceleration, Constants.kTimeoutMs);
 
 		/* Zero the sensor */
@@ -270,11 +273,12 @@ public class Climber extends Subsystem {
     
     private SystemState handleIdle() {
         // commented-out! we don't want to latch on idle! -----mDartLatch.set(Value.kReverse);
-
+       //System.out.println("Climber is running");
         if (mStateChanged) {
             mTalonL.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionLeft);
             mTalonR.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionRight);
         }
+       // SmartDashboard.putBoolean("Latch",latchSensor.get());
         switch (mWantedState) {
             case IDLE:
                 return SystemState.IDLE;
@@ -290,36 +294,57 @@ public class Climber extends Subsystem {
             //commented-out! WE DON'T NEED TO BACK-UP -----mDrive.setWantClimbBackup(6.0); // drive backwards 6"
             //***NOTE*** Backing up doesn't work anyway!!!
         }
-        if ((timestamp - mCurrentStateStartTime < Constants.kUnlockClimberTime)) {//mDrive.isBackupComplete()){
+
+        if (!latchSensor.get()) {
             return SystemState.LIFTINGNOWHEELS;
         }
-        return defaultStateTransfer(mSystemState);
+ //        if ((timestamp - mCurrentStateStartTime < Constants.kUnlockClimberTime)) {//mDrive.isBackupComplete()){
+//return SystemState.LIFTINGNOWHEELS;
+   //     }
+      return defaultStateTransfer(mSystemState);
     }
 
     private SystemState handleLiftingNoWheels() {
-        if (mStateChanged) {
-            mTalonL.set(ControlMode.MotionMagic, Constants.kClimberExtendedPositionLeft);
-            mTalonR.set(ControlMode.MotionMagic, Constants.kClimberExtendedPositionRight);
-        }
-        if(mTalonL.getSelectedSensorPosition() > 0.50*Constants.kClimberExtendedPositionLeft  &&
-           mTalonR.getSelectedSensorPosition() > 0.50*Constants.kClimberExtendedPositionRight ){
+        if (mDartsHaveDetached) {
             return SystemState.LIFTINGWITHWHEELS;
         }
-        return defaultStateTransfer(mSystemState);
-    }
+        else {
+            if (mStateChanged) {
+                mTalonL.set(ControlMode.MotionMagic, Constants.kClimberExtendedPositionLeft);
+                mTalonR.set(ControlMode.MotionMagic, Constants.kClimberExtendedPositionRight);
+            }
+            if (mTalonR.getSelectedSensorPosition() < Constants.kClimberDartsHaveHitTheFloorLeft) {
+                 mTalonL.configMotionCruiseVelocity(Constants.kClimberSlowCruiseVelocity, Constants.kTimeoutMs);
+                 mTalonR.configMotionCruiseVelocity(Constants.kClimberSlowCruiseVelocity, Constants.kTimeoutMs);
+            } else {
+                mTalonL.configMotionCruiseVelocity(Constants.kClimberMediumCruiseVelocity, Constants.kTimeoutMs);
+                mTalonR.configMotionCruiseVelocity(Constants.kClimberMediumCruiseVelocity, Constants.kTimeoutMs);
+            }
+            System.out.println("in liftingnowheels");
+            if(mTalonR.getSelectedSensorPosition() > Constants.kClimberStartWheelsLeft) { 
+                return SystemState.LIFTINGWITHWHEELS;
+            }
+            return defaultStateTransfer(mSystemState);
+         }
+}
 
     private SystemState handleLiftingWithWheels() {
-        mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(0.5, 0.0, false, true));
-        if(mTalonL.getSelectedSensorPosition() > 0.95*Constants.kClimberExtendedPositionLeft  &&
-           mTalonR.getSelectedSensorPosition() > 0.95*Constants.kClimberExtendedPositionRight ){
+        mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(1.0, 0.0, false, true));
+        if(mTalonR.getSelectedSensorPosition() > Constants.kClimberDartsHaveDetachedRight  ){
+         mDartsHaveDetached = true;
+        }
+        System.out.println("------------------in lifting with wheels");
+        if(mTalonR.getSelectedSensorPosition() > 0.95*Constants.kClimberExtendedPositionRight ){
             return SystemState.RETRACTING;
         }
         return defaultStateTransfer(mSystemState);
     }
 
     private SystemState handleRetracting() {
-        // TODO FIXME once we get here, additional climb attempts need to be disabled
+        System.out.println("RETRACTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         if (mStateChanged) {
+            mTalonL.configMotionCruiseVelocity(Constants.kClimberFastCruiseVelocity, Constants.kTimeoutMs);
+            mTalonR.configMotionCruiseVelocity(Constants.kClimberFastCruiseVelocity, Constants.kTimeoutMs);
             mTalonL.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionLeft);
             mTalonR.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionRight);
         }
@@ -338,6 +363,10 @@ public class Climber extends Subsystem {
         SmartDashboard.putString("ClimbWantState", mWantedState.name());
         SmartDashboard.putNumber("ClimbCurPosLeft", mTalonL.getSelectedSensorPosition(0));
         SmartDashboard.putNumber("ClimbCurPosRight", mTalonR.getSelectedSensorPosition(0));
+    }
+
+    public void resetLift() {
+        mDartsHaveDetached = false;
     }
 
     @Override

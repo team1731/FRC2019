@@ -66,6 +66,7 @@ public class Intake extends Subsystem {
         IDLE,   // stop all motors
         SPITTING,
         INTAKING,
+        HOLDING
     }
 
     public enum WantedState {
@@ -74,12 +75,7 @@ public class Intake extends Subsystem {
         INTAKING,
     }
 
-    public enum WantedRotateWrist {
-    	IDLE,   
-        SPITTING, // moving
-        INTAKING,
-    }
-
+ 
     private SystemState mSystemState = SystemState.IDLE;
     private WantedState mWantedState = WantedState.IDLE;
     
@@ -115,6 +111,9 @@ public class Intake extends Subsystem {
                     case INTAKING:
                         newState = handleIntaking();
                         break;
+                    case HOLDING:
+                        newState = handleHolding();
+                        break;
                     default:
                         newState = SystemState.IDLE;                    
                 }
@@ -141,6 +140,16 @@ public class Intake extends Subsystem {
 		private SystemState handleIntaking() {
             if (mStateChanged) {
                 mTalon.set(ControlMode.PercentOutput, 1);
+            }
+            if (hasCargo()) {
+                return SystemState.HOLDING;
+            }
+    		return defaultStateTransfer();
+        }
+        
+        private SystemState handleHolding() {
+            if (!hasCargo()) {
+                mTalon.set(ControlMode.PercentOutput, 1); 
             }
     		return defaultStateTransfer();
 		}
@@ -177,7 +186,9 @@ public class Intake extends Subsystem {
 		return defaultStateTransfer();
     }
 
-
+    public synchronized SystemState getSystemState() {
+        return mSystemState;
+    }
 
 
     public synchronized void setWantedState(WantedState state) {

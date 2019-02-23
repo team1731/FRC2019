@@ -412,8 +412,10 @@ public class Superstructure extends Subsystem {
 
         private SystemState handleElevatorTracking() {
         	mElevator.setWantedPosition(mWantedElevatorPosition);
-        	mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
-            mIntake.setWantedState(Intake.WantedState.IDLE);
+            mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
+            if (mIntake.getSystemState() != Intake.SystemState.HOLDING) {
+                mIntake.setWantedState(Intake.WantedState.IDLE);
+            }
             mClimber.setWantedState(Climber.WantedState.IDLE);
 
             //mMustache.set(DoubleSolenoid.Value.kReverse);
@@ -756,7 +758,7 @@ public class Superstructure extends Subsystem {
 
         private SystemState handleClimberExtending() {
             mClimber.setWantedState(Climber.WantedState.CLIMBING);
-        	
+
             switch (mWantedState) {
             case CLIMBINGUP:
                 return SystemState.CLIMBING;

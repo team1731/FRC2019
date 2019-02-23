@@ -111,10 +111,10 @@ public class Robot extends IterativeRobot {
     private String autoCodes;
     
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
-                            Arrays.asList());
-                            // Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
-                            //         Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
-                            //         ConnectionMonitor.getInstance()/*, LED.getInstance() , Wrist.getInstance()*/ ));
+                           // Arrays.asList());
+                            Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
+                                     Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
+                                    ConnectionMonitor.getInstance()/*, LED.getInstance() , Wrist.getInstance()*/ ));
 
     // Initialize other helper objects
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
@@ -123,6 +123,8 @@ public class Robot extends IterativeRobot {
     private Looper mEnabledLooper = new Looper();
 
     private AnalogInput mCheckLightButton = new AnalogInput(Constants.kLEDOnId);
+
+    private Double mTractorBeamGain = 1.0;
 
     private InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> mTuningFlywheelMap = new InterpolatingTreeMap<>();
 
@@ -157,8 +159,8 @@ public class Robot extends IterativeRobot {
     
             try{
                 if(visionCam == null){
-                    visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
-                    System.out.println("VISION CAM IS kUSB");
+                  //  visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
+                  //  System.out.println("VISION CAM IS kUSB");
                 }
                 /*
                 if(visionCam == null){
@@ -294,7 +296,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        allPeriodic();
+        periodic();
     }
 
     /**
@@ -304,7 +306,7 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
         try {
             CrashTracker.logTeleopInit();
-
+            mClimber.resetLift();
             // Start loopers
             mEnabledLooper.start();
             mDrive.setOpenLoop(DriveSignal.NEUTRAL);
@@ -332,6 +334,10 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void teleopPeriodic() {
+        periodic();
+    }
+
+    public void periodic() {
         try {
             
             double timestamp = Timer.getFPGATimestamp();
@@ -414,15 +420,21 @@ public class Robot extends IterativeRobot {
             //    toggleCamera(); 
             //}
             //videoSink.setSource(selectedCamera);
-            
-            if(tracktorDrive && visionCam != null) {
+
+
+
+            if (visionCam != null) {
                 String[] visionTargetPositions = visionCam.readString().split(",");
                 if(visionTargetPositions.length > 0){
                     try{
                         String xPosStr = visionTargetPositions[0];
                         double xPos = Double.parseDouble(xPosStr);
-                        turn = (xPos-160)/160;
-                        System.out.println("xPos ===== " + xPos + "  ------ TURN ==== " + turn);
+                        if (tracktorDrive) {
+                           mTractorBeamGain = Double.parseDouble(SmartDashboard.getString("TractorGain", "1"));
+                           turn = mTractorBeamGain*(xPos-160)/160; 
+                           System.out.println("xPos ===== " + xPos + "  ------ TURN ==== " + turn);
+                        }
+
                         arduinoLedOutput(Constants.kArduino_GREEN);    
                     }
                     catch(Throwable t){
@@ -603,26 +615,7 @@ public class Robot extends IterativeRobot {
             //mLED.setLEDOff();
         }
 
-        try{
-            if(visionCam == null){
-                visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
-                System.out.println("VISION CAM IS kUSB");
-            }
-            /*
-            if(visionCam == null){
-                visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
-                System.out.println("VISION CAM IS kUSB1");
-            }
-            if(visionCam == null){
-                visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
-                System.out.println("VISION CAM IS kUSB2");
-            }
-            */
-        }
-        catch(Throwable t){
-            System.out.println(t.toString());
-        }
-
+       
         zeroAllSensors();
     }
 
@@ -650,10 +643,10 @@ public class Robot extends IterativeRobot {
      * Helper function that is called in all periodic functions
      */
     public void allPeriodic() {
-        // mRobotState.outputToSmartDashboard();
-        // mSubsystemManager.outputToSmartDashboard();
-        // mSubsystemManager.writeToLog();
-        // mEnabledLooper.outputToSmartDashboard();
+         mRobotState.outputToSmartDashboard();
+         mSubsystemManager.outputToSmartDashboard();
+         mSubsystemManager.writeToLog();
+         mEnabledLooper.outputToSmartDashboard();
 
         // SmartDashboard.putString("AutoCodesReceived", autoCodes);
         // //SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));
