@@ -179,6 +179,7 @@ public class Robot extends IterativeRobot {
             }
     
             autoCodes = SmartDashboard.getString("AutoCodes", "2A");
+            String tractorGain = SmartDashboard.getString("TractorGain", "1.1");
             autoModesToExecute = determineAutoModesToExecute(autoCodes);
     
             leftRightCameraControl = new DigitalOutput(5);
@@ -201,7 +202,8 @@ public class Robot extends IterativeRobot {
             videoSink = CameraServer.getInstance().getServer();
             //selectedCamera = cameraFront;
 
-           	SmartDashboard.putString(AUTO_CODES, "2A");
+            SmartDashboard.putString(AUTO_CODES, "2A");
+            SmartDashboard.putString("TractorGain", "1.2");   
             
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
@@ -431,7 +433,8 @@ public class Robot extends IterativeRobot {
                         String xPosStr = visionTargetPositions[0];
                         double xPos = Double.parseDouble(xPosStr);
                         if (tractorDrive) {
-                           mTractorBeamGain = Double.parseDouble(SmartDashboard.getString("TractorGain", "1"));
+                           String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
+                           mTractorBeamGain = Double.parseDouble(tractorGain);
                            turn = mTractorBeamGain*(xPos-160)/160; 
                            System.out.println("xPos ===== " + xPos + "  ------ TURN ==== " + turn);
                         }
@@ -653,7 +656,6 @@ public class Robot extends IterativeRobot {
          mEnabledLooper.outputToSmartDashboard();
 
          SmartDashboard.putBoolean("Tractor Beam", tractorIndicator);
-         SmartDashboard.putNumber("Tractor Gain", mTractorBeamGain);
         // SmartDashboard.putString("AutoCodesReceived", autoCodes);
         // //SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));
         // SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
