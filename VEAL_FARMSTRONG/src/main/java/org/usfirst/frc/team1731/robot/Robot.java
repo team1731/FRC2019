@@ -111,10 +111,12 @@ public class Robot extends IterativeRobot {
     private String autoCodes;
     
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
-                           // Arrays.asList());
-                            Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
-                                     Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
-                                    ConnectionMonitor.getInstance()/*, LED.getInstance() , Wrist.getInstance()*/ ));
+                           Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
+                                         Elevator.getInstance(), Intake.getInstance(),
+                                         Climber.getInstance()));
+                            // Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
+                            //          Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
+                            //         ConnectionMonitor.getInstance()/*, LED.getInstance() , Wrist.getInstance()*/ ));
 
     // Initialize other helper objects
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
@@ -131,6 +133,8 @@ public class Robot extends IterativeRobot {
     private DigitalInput tapeSensor;
  
     private SerialPort visionCam;
+
+    private double disabledTimestampSave;
 
     public Robot() {
         CrashTracker.logRobotConstruction();
@@ -342,8 +346,6 @@ public class Robot extends IterativeRobot {
             
             double timestamp = Timer.getFPGATimestamp();
 
-            boolean flipUp = mControlBoard.getFlipUpButton();
-            boolean flipDown = mControlBoard.getFlipDownButton();
             boolean grabCube = mControlBoard.getGrabCubeButton();
             boolean calibrateDown = mControlBoard.getCalibrateDown();
             boolean calibrateUp = mControlBoard.getCalibrateUp();
@@ -421,8 +423,6 @@ public class Robot extends IterativeRobot {
             //}
             //videoSink.setSource(selectedCamera);
 
-
-
             if (visionCam != null) {
                 String[] visionTargetPositions = visionCam.readString().split(",");
                 if(visionTargetPositions.length > 0){
@@ -435,7 +435,7 @@ public class Robot extends IterativeRobot {
                            System.out.println("xPos ===== " + xPos + "  ------ TURN ==== " + turn);
                         }
 
-                        arduinoLedOutput(Constants.kArduino_GREEN);    
+                        arduinoLedOutput(Constants.kArduino_BLUE);    
                     }
                     catch(Throwable t){
                         arduinoLedOutput(Constants.kArduino_RED);
@@ -460,18 +460,6 @@ public class Robot extends IterativeRobot {
                 Wrist.getInstance().setWantedState(Wrist.WantedState.WRISTTRACKING);
             }
             
-             // Handle ball pickup and shooting
-             if(mControlBoard.getPickupBall() && !mControlBoard.getShootBall()){
-
-            }
-            else if(mControlBoard.getShootBall() && !mControlBoard.getPickupBall()){
-                if(Elevator.getInstance().atDesired()){
-                    
-                }
-             }
-
-
-
             allPeriodic();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
@@ -615,8 +603,11 @@ public class Robot extends IterativeRobot {
             //mLED.setLEDOff();
         }
 
-       
-        zeroAllSensors();
+        double disabledTimestamp = Timer.getFPGATimestamp();
+        if((disabledTimestamp - disabledTimestampSave) > 2){
+            zeroAllSensors();
+            disabledTimestampSave = disabledTimestamp;
+        }
     }
 
     @Override

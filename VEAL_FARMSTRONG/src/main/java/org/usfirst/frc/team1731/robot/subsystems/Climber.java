@@ -40,7 +40,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * 
- * 1731 this system controls the elevator
+ * 1731 this system controls the climber
  * 
  * @see Subsystem.java
  */
@@ -63,7 +63,7 @@ public class Climber extends Subsystem {
     private final TalonSRX mTalonR;
     private DigitalInput latchSensor = new DigitalInput(6);
 
-    //private final DoubleSolenoid mDartLatch = Constants.makeDoubleSolenoidForIds(0, Constants.kDartLatch1, Constants.kDartLatch2);
+    private final DoubleSolenoid mDartLatch = Constants.makeDoubleSolenoidForIds(0, Constants.kDartLatch1, Constants.kDartLatch2);
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
     private Drive mDrive = Drive.getInstance();
     private boolean mDartsHaveDetached = false;
@@ -290,7 +290,7 @@ public class Climber extends Subsystem {
 
     private SystemState handleBackingUp(double timestamp) {
         if (mStateChanged) {
-            //mDartLatch.set(DoubleSolenoid.Value.kForward); // unlock climber
+            mDartLatch.set(DoubleSolenoid.Value.kForward); // unlock climber
             //commented-out! WE DON'T NEED TO BACK-UP -----mDrive.setWantClimbBackup(6.0); // drive backwards 6"
             //***NOTE*** Backing up doesn't work anyway!!!
         }
