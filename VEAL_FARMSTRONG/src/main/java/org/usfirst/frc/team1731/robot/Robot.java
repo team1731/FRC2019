@@ -432,6 +432,7 @@ public class Robot extends IterativeRobot {
                         if (tracktorDrive) {
                            mTractorBeamGain = Double.parseDouble(SmartDashboard.getString("TractorGain", "1"));
                            turn = mTractorBeamGain*(xPos-160)/160; 
+                           
                            System.out.println("xPos ===== " + xPos + "  ------ TURN ==== " + turn);
                         }
 
