@@ -62,10 +62,18 @@ public class Superstructure extends Subsystem {
 
     private final Intake mIntake = Intake.getInstance();
 
+    private final DoubleSolenoid mTopRoller = Constants.makeDoubleSolenoidForIds(1, Constants.kTopRoller1, Constants.kTopRoller2);
+    private final DoubleSolenoid mBeakSwinger = Constants.makeDoubleSolenoidForIds(0, Constants.kBeakSwinger1, Constants.kBeakSwinger2);
+    private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakOpener1, Constants.kBeakOpener2);
+    private final DoubleSolenoid mMustache = Constants.makeDoubleSolenoidForIds(0, Constants.kMustache1, Constants.kMustache2);
+    private final DoubleSolenoid mRotateWristShort = Constants.makeDoubleSolenoidForIds(1, Constants.kRotateWristShort1, Constants.kRotateWristShort2);
+    private final DoubleSolenoid mRotateWristLong = Constants.makeDoubleSolenoidForIds(1, Constants.kRotateWristLong1, Constants.kRotateWristLong2); 
+
     //private final Compressor mCompressor = new Compressor(0);
     //private final RevRoboticsAirPressureSensor mAirPressureSensor = new RevRoboticsAirPressureSensor(3);
     private final Climber mClimber = Climber.getInstance();
     
+    private final Wrist mWrist = Wrist.getInstance();
 
     // Superstructure doesn't own the drive, but needs to access it
     private final Drive mDrive = Drive.getInstance();
@@ -210,11 +218,11 @@ public class Superstructure extends Subsystem {
         }
 
         private SystemState handleEjectingCargo() {
-            // mBeakSwinger.set(DoubleSolenoid.Value.kReverse);
-            // mBeakLips.set(DoubleSolenoid.Value.kReverse);
-            // mTopRoller.set(DoubleSolenoid.Value.kReverse);
-            // mMustache.set(DoubleSolenoid.Value.kReverse);
-            // mIntake.setWantedState(Intake.WantedState.SPITTING);
+            mBeakSwinger.set(DoubleSolenoid.Value.kReverse);
+            mBeakLips.set(DoubleSolenoid.Value.kReverse);
+            mTopRoller.set(DoubleSolenoid.Value.kReverse);
+            mMustache.set(DoubleSolenoid.Value.kReverse);
+            mIntake.setWantedState(Intake.WantedState.SPITTING);
         	
             switch (mWantedState) {
             case CLIMBINGUP:
@@ -249,12 +257,12 @@ public class Superstructure extends Subsystem {
         }
 
         private SystemState handleStartingConfiguration(){
-            // mBeakSwinger.set(DoubleSolenoid.Value.kForward);
-            // mBeakLips.set(DoubleSolenoid.Value.kReverse);
-            // mTopRoller.set(DoubleSolenoid.Value.kReverse); //per Brent L.
-            // mMustache.set(DoubleSolenoid.Value.kReverse);
-            // mClimber.setWantedState(Climber.WantedState.IDLE);
-            //mWrist.setWantedPosition(WristPositions.STARTINGPOSITION);
+            mBeakSwinger.set(DoubleSolenoid.Value.kForward);
+            mBeakLips.set(DoubleSolenoid.Value.kReverse);
+            mTopRoller.set(DoubleSolenoid.Value.kReverse); //per Brent L.
+            mMustache.set(DoubleSolenoid.Value.kReverse);
+            mClimber.setWantedState(Climber.WantedState.IDLE);
+            mWrist.setWantedPosition(WristPositions.STARTINGPOSITION);
             seWristtWantedPosition(WantedWristPosition.STARTINGPOSITION);
 
             switch (mWantedState) {
@@ -290,11 +298,11 @@ public class Superstructure extends Subsystem {
         }
 
         private SystemState handleCargoCapture() {
-            // mBeakSwinger.set(DoubleSolenoid.Value.kReverse);
-            // mBeakLips.set(DoubleSolenoid.Value.kReverse);
-            // mTopRoller.set(DoubleSolenoid.Value.kForward);
-            // mMustache.set(DoubleSolenoid.Value.kReverse);
-            // mIntake.setWantedState(Intake.WantedState.INTAKING);
+            mBeakSwinger.set(DoubleSolenoid.Value.kReverse);
+            mBeakLips.set(DoubleSolenoid.Value.kReverse);
+            mTopRoller.set(DoubleSolenoid.Value.kForward);
+            mMustache.set(DoubleSolenoid.Value.kReverse);
+            mIntake.setWantedState(Intake.WantedState.INTAKING);
             seWristtWantedPosition(WantedWristPosition.CARGOPICKUP);
             setWantedElevatorPosition(ELEVATOR_POSITION.ELEVATOR_CARGO_PICKUP);
             mElevator.setWantedPosition(Constants.kElevatorBallPickup_EncoderValue);
@@ -317,7 +325,7 @@ public class Superstructure extends Subsystem {
             case OVERTHETOP:
                 return SystemState.WAITING_FOR_HIGH_POSITION;
             case ELEVATOR_TRACKING:
-                //mTopRoller.set(DoubleSolenoid.Value.kReverse);
+                mTopRoller.set(DoubleSolenoid.Value.kReverse);
                 seWristtWantedPosition(WantedWristPosition.STRAIGHTAHEAD);
                 return SystemState.ELEVATOR_TRACKING;
             case HATCH_CAPTURED:
@@ -334,10 +342,10 @@ public class Superstructure extends Subsystem {
         }
 
         private SystemState handleEjectingHatch() {
-            // mBeakSwinger.set(DoubleSolenoid.Value.kForward);
-            // mBeakLips.set(DoubleSolenoid.Value.kReverse);
-            // mTopRoller.set(DoubleSolenoid.Value.kReverse);
-            // mMustache.set(DoubleSolenoid.Value.kForward);
+            mBeakSwinger.set(DoubleSolenoid.Value.kForward);
+            mBeakLips.set(DoubleSolenoid.Value.kReverse);
+            mTopRoller.set(DoubleSolenoid.Value.kReverse);
+            mMustache.set(DoubleSolenoid.Value.kForward);
 
             switch (mWantedState) {
             case CLIMBINGUP:
@@ -372,10 +380,10 @@ public class Superstructure extends Subsystem {
         }
 
         private SystemState handleHatchCapture() {            
-            // mBeakSwinger.set(DoubleSolenoid.Value.kForward);
-            // mBeakLips.set(DoubleSolenoid.Value.kReverse);
-            // mTopRoller.set(DoubleSolenoid.Value.kReverse);
-            // mMustache.set(DoubleSolenoid.Value.kReverse);
+            mBeakSwinger.set(DoubleSolenoid.Value.kForward);
+            mBeakLips.set(DoubleSolenoid.Value.kReverse);
+            mTopRoller.set(DoubleSolenoid.Value.kReverse);
+            mMustache.set(DoubleSolenoid.Value.kReverse);
         	
             switch (mWantedState) {
             case CLIMBINGUP:
@@ -399,7 +407,7 @@ public class Superstructure extends Subsystem {
             case EJECTING_HATCH:
                 return SystemState.EJECTING_HATCH;
             case ELEVATOR_TRACKING:
-                //mBeakLips.set(DoubleSolenoid.Value.kForward);
+                mBeakLips.set(DoubleSolenoid.Value.kForward);
                 return SystemState.ELEVATOR_TRACKING;
             case CARGO_CAPTURED:
                 return SystemState.CARGO_CAPTURED;
@@ -418,7 +426,7 @@ public class Superstructure extends Subsystem {
             }
             mClimber.setWantedState(Climber.WantedState.IDLE);
 
-            //mMustache.set(DoubleSolenoid.Value.kReverse);
+            mMustache.set(DoubleSolenoid.Value.kReverse);
             
             switch (mWantedState) {
             case CLIMBINGUP:
@@ -791,7 +799,7 @@ public class Superstructure extends Subsystem {
     private SystemState handleIdle(boolean stateChanged) {
         if (stateChanged) {
             stop();
-            //mMustache.set(DoubleSolenoid.Value.kReverse);
+            mMustache.set(DoubleSolenoid.Value.kReverse);
             mElevator.setWantedState(Elevator.WantedState.IDLE);
             mIntake.setWantedState(Intake.WantedState.IDLE);
             mClimber.setWantedState(Climber.WantedState.IDLE);
@@ -907,24 +915,24 @@ public class Superstructure extends Subsystem {
 
         switch (position) {
             case CARGOPICKUP:
-                //mRotateWristShort.set(DoubleSolenoid.Value.kReverse);
-                //mRotateWristLong.set(DoubleSolenoid.Value.kReverse);
+                mRotateWristShort.set(DoubleSolenoid.Value.kReverse);
+                mRotateWristLong.set(DoubleSolenoid.Value.kReverse);
                 break;
             case STRAIGHTAHEAD:
-                //mRotateWristShort.set(DoubleSolenoid.Value.kForward);
-                //mRotateWristLong.set(DoubleSolenoid.Value.kReverse);
+                mRotateWristShort.set(DoubleSolenoid.Value.kForward);
+                mRotateWristLong.set(DoubleSolenoid.Value.kReverse);
                 break;
              case SHOOTHIGH:
-                //mRotateWristShort.set(DoubleSolenoid.Value.kReverse);
-                //mRotateWristLong.set(DoubleSolenoid.Value.kForward);
+                mRotateWristShort.set(DoubleSolenoid.Value.kReverse);
+                mRotateWristLong.set(DoubleSolenoid.Value.kForward);
                 break;
              case STARTINGPOSITION:
-                //mRotateWristShort.set(DoubleSolenoid.Value.kForward);
-                //mRotateWristLong.set(DoubleSolenoid.Value.kForward);
+                mRotateWristShort.set(DoubleSolenoid.Value.kForward);
+                mRotateWristLong.set(DoubleSolenoid.Value.kForward);
                 break;
             default:
-                //mRotateWristShort.set(DoubleSolenoid.Value.kForward);
-                //mRotateWristLong.set(DoubleSolenoid.Value.kForward);
+                mRotateWristShort.set(DoubleSolenoid.Value.kForward);
+                mRotateWristLong.set(DoubleSolenoid.Value.kForward);
         }
 
     }

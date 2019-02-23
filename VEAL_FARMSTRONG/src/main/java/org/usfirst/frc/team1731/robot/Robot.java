@@ -97,6 +97,7 @@ public class Robot extends IterativeRobot {
 
     private boolean joystickAxesAreReversed;
     private boolean camerasAreReversed;
+    private boolean tractorIndicator = Boolean.FALSE;         
     
     private UsbCamera cameraFront;
     //private UsbCamera cameraBack;
@@ -111,10 +112,12 @@ public class Robot extends IterativeRobot {
     private String autoCodes;
     
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
-                           // Arrays.asList());
-                            Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
-                                     Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
-                                    ConnectionMonitor.getInstance()/*, LED.getInstance() , Wrist.getInstance()*/ ));
+                           Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
+                                         Elevator.getInstance(), Intake.getInstance(),
+                                         Climber.getInstance()));
+                            // Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
+                            //          Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
+                            //         ConnectionMonitor.getInstance()/*, LED.getInstance() , Wrist.getInstance()*/ ));
 
     // Initialize other helper objects
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
@@ -131,6 +134,8 @@ public class Robot extends IterativeRobot {
     private DigitalInput tapeSensor;
  
     private SerialPort visionCam;
+
+    private double disabledTimestampSave;
 
     public Robot() {
         CrashTracker.logRobotConstruction();
@@ -178,6 +183,7 @@ public class Robot extends IterativeRobot {
             }
     
             autoCodes = SmartDashboard.getString("AutoCodes", "2A");
+            String tractorGain = SmartDashboard.getString("TractorGain", "1.1");
             autoModesToExecute = determineAutoModesToExecute(autoCodes);
     
             leftRightCameraControl = new DigitalOutput(5);
@@ -200,7 +206,8 @@ public class Robot extends IterativeRobot {
             videoSink = CameraServer.getInstance().getServer();
             //selectedCamera = cameraFront;
 
-           	SmartDashboard.putString(AUTO_CODES, "2A");
+            SmartDashboard.putString(AUTO_CODES, "2A");
+            SmartDashboard.putString("TractorGain", "1.2");   
             
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
@@ -342,8 +349,6 @@ public class Robot extends IterativeRobot {
             
             double timestamp = Timer.getFPGATimestamp();
 
-            boolean flipUp = mControlBoard.getFlipUpButton();
-            boolean flipDown = mControlBoard.getFlipDownButton();
             boolean grabCube = mControlBoard.getGrabCubeButton();
             boolean calibrateDown = mControlBoard.getCalibrateDown();
             boolean calibrateUp = mControlBoard.getCalibrateUp();
@@ -356,7 +361,7 @@ public class Robot extends IterativeRobot {
             boolean elevCargoShipPos = mControlBoard.getCargoShipBall();
             boolean startingConfiguration = mControlBoard.getStartingConfiguration();       
             int climber = mControlBoard.getClimber();           
-            boolean tracktorDrive = mControlBoard.getTractorDrive();          
+            boolean tractorDrive = mControlBoard.getTractorDrive();
 
             double elevatorPOV = mControlBoard.getElevatorControl();
 
@@ -421,30 +426,32 @@ public class Robot extends IterativeRobot {
             //}
             //videoSink.setSource(selectedCamera);
 
-
-
             if (visionCam != null) {
                 String[] visionTargetPositions = visionCam.readString().split(",");
                 if(visionTargetPositions.length > 0){
                     try{
                         String xPosStr = visionTargetPositions[0];
                         double xPos = Double.parseDouble(xPosStr);
-                        if (tracktorDrive) {
-                           mTractorBeamGain = Double.parseDouble(SmartDashboard.getString("TractorGain", "1"));
+                        if (tractorDrive) {
+                           String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
+                           mTractorBeamGain = Double.parseDouble(tractorGain);
                            turn = mTractorBeamGain*(xPos-160)/160; 
                            
                            System.out.println("xPos ===== " + xPos + "  ------ TURN ==== " + turn);
                         }
 
-                        arduinoLedOutput(Constants.kArduino_GREEN);    
+                        arduinoLedOutput(Constants.kArduino_BLUE);    
+                        tractorIndicator = Boolean.TRUE;  
                     }
                     catch(Throwable t){
                         arduinoLedOutput(Constants.kArduino_RED);
+                        tractorIndicator = Boolean.FALSE;
                     }
                 }
                 else {
                     //System.out.println("No data received from vision camera");
                     arduinoLedOutput(Constants.kArduino_RED);
+                    tractorIndicator = Boolean.FALSE;
                 }
             }
 
@@ -461,18 +468,6 @@ public class Robot extends IterativeRobot {
                 Wrist.getInstance().setWantedState(Wrist.WantedState.WRISTTRACKING);
             }
             
-             // Handle ball pickup and shooting
-             if(mControlBoard.getPickupBall() && !mControlBoard.getShootBall()){
-
-            }
-            else if(mControlBoard.getShootBall() && !mControlBoard.getPickupBall()){
-                if(Elevator.getInstance().atDesired()){
-                    
-                }
-             }
-
-
-
             allPeriodic();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
@@ -616,8 +611,11 @@ public class Robot extends IterativeRobot {
             //mLED.setLEDOff();
         }
 
-       
-        zeroAllSensors();
+        double disabledTimestamp = Timer.getFPGATimestamp();
+        if((disabledTimestamp - disabledTimestampSave) > 2){
+            zeroAllSensors();
+            disabledTimestampSave = disabledTimestamp;
+        }
     }
 
     @Override
@@ -649,6 +647,7 @@ public class Robot extends IterativeRobot {
          mSubsystemManager.writeToLog();
          mEnabledLooper.outputToSmartDashboard();
 
+         SmartDashboard.putBoolean("Tractor Beam", tractorIndicator);
         // SmartDashboard.putString("AutoCodesReceived", autoCodes);
         // //SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));
         // SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());

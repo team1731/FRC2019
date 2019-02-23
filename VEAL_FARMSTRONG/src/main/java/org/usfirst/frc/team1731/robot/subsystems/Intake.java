@@ -164,10 +164,11 @@ public class Intake extends Subsystem {
         switch (mWantedState) {
         	case SPITTING:
         		return SystemState.SPITTING;       
-        	case INTAKING:
+            case INTAKING:
+                if(mSystemState == SystemState.HOLDING){
+                    return SystemState.HOLDING;
+                }
                 return SystemState.INTAKING;
-
- 
             default:
                 return SystemState.IDLE;
         }

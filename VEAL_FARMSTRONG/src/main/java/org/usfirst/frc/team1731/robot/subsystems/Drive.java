@@ -92,8 +92,8 @@ public class Drive extends Subsystem {
     private DriveControlState mDriveControlState;
 
     // Hardware
-    //private final TalonSRX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
-    private final TalonSRX mLeftMaster, mRightMaster;
+    private final TalonSRX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
+    // *FOR RUNNING ON ESTHER* ---> private final TalonSRX mLeftMaster, mRightMaster;
 
     private final NavX mNavXBoard;
 
@@ -184,12 +184,12 @@ public class Drive extends Subsystem {
             DriverStation.reportError("Could not detect left encoder: " + leftSensorPresent, false);
         }
 
-        // mLeftSlave = TalonSRXFactory.createPermanentSlaveTalon(Constants.kLeftDriveSlaveId,
-        //         Constants.kLeftDriveMasterId);
-        // mLeftSlave.setInverted(false);
-        // mLeftMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
-        // mLeftMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
-        // mLeftSlave.set(ControlMode.Follower,Constants.kLeftDriveMasterId);
+        mLeftSlave = TalonSRXFactory.createPermanentSlaveTalon(Constants.kLeftDriveSlaveId,
+                Constants.kLeftDriveMasterId);
+        mLeftSlave.setInverted(false);
+        mLeftMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
+        mLeftMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
+        mLeftSlave.set(ControlMode.Follower,Constants.kLeftDriveMasterId);
 
  
  
@@ -205,12 +205,12 @@ public class Drive extends Subsystem {
             DriverStation.reportError("Could not detect right encoder: " + rightSensorPresent, false);
         }
 
-        // mRightSlave = TalonSRXFactory.createPermanentSlaveTalon(Constants.kRightDriverSlaveId,
-        //         Constants.kRightDriveMasterId);
-        // mRightSlave.setInverted(true);
-        // mRightMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
-        // mRightMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
-        // mRightSlave.set(ControlMode.Follower,Constants.kRightDriveMasterId);
+        mRightSlave = TalonSRXFactory.createPermanentSlaveTalon(Constants.kRightDriverSlaveId,
+                Constants.kRightDriveMasterId);
+        mRightSlave.setInverted(true);
+        mRightMaster.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, Constants.kTimeoutMs); 
+        mRightMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 5, Constants.kTimeoutMs);
+        mRightSlave.set(ControlMode.Follower,Constants.kRightDriveMasterId);
 
         mLeftMaster.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, Constants.kTimeoutMs);
         mLeftMaster.configVelocityMeasurementWindow(32, Constants.kTimeoutMs);   // chesyguys had 32
@@ -291,14 +291,14 @@ public class Drive extends Subsystem {
             mIsBrakeMode = on;
             if (mIsBrakeMode) {
 	            mRightMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-	            // mRightSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+	            mRightSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 	            mLeftMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-	            // mLeftSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake); 
+	            mLeftSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake); 
 	        } else {
 	            mRightMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
-	            // mRightSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
+	            mRightSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
 	            mLeftMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
-	            // mLeftSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
+	            mLeftSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
 	        }
         }
         	
@@ -349,8 +349,8 @@ public class Drive extends Subsystem {
     public synchronized void resetEncoders() {
         mLeftMaster.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
         mRightMaster.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
-        // mLeftSlave.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
-        // mRightSlave.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
+        mLeftSlave.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
+        mRightSlave.setSelectedSensorPosition(0,Constants.kPidIdx,Constants.kTimeoutMs);
     }
 
     @Override
@@ -809,9 +809,9 @@ public class Drive extends Subsystem {
         final double kRpmThres = 300;
 
         mRightMaster.set(ControlMode.PercentOutput, 0);
-        // mRightSlave.set(ControlMode.PercentOutput, 0);
+        mRightSlave.set(ControlMode.PercentOutput, 0);
         mLeftMaster.set(ControlMode.PercentOutput, 0);
-        // mLeftSlave.set(ControlMode.PercentOutput, 0);
+        mLeftSlave.set(ControlMode.PercentOutput, 0);
 
         mRightMaster.set(ControlMode.PercentOutput,0.6f);
         Timer.delay(4.0);
@@ -822,11 +822,11 @@ public class Drive extends Subsystem {
         mRightMaster.set(ControlMode.PercentOutput,0);
         Timer.delay(2.0);
 
-        // mRightSlave.set(ControlMode.PercentOutput,0.6f);
-        // Timer.delay(4.0);
-        // final double currentRightSlave = mRightSlave.getOutputCurrent();
-        // final double rpmRightSlave = mRightSlave.getSelectedSensorVelocity(Constants.kPidIdx);
-        // mRightSlave.set(ControlMode.PercentOutput,0.0f);
+        mRightSlave.set(ControlMode.PercentOutput,0.6f);
+        Timer.delay(4.0);
+        final double currentRightSlave = mRightSlave.getOutputCurrent();
+        final double rpmRightSlave = mRightSlave.getSelectedSensorVelocity(Constants.kPidIdx);
+        mRightSlave.set(ControlMode.PercentOutput,0.0f);
 
         Timer.delay(2.0);
 
@@ -838,27 +838,27 @@ public class Drive extends Subsystem {
 
         Timer.delay(2.0);
 
-        // mLeftSlave.set(ControlMode.PercentOutput,0.6f);
-        // Timer.delay(4.0);
-        // final double currentLeftSlave = mLeftSlave.getOutputCurrent();
-        // final double rpmLeftSlave = mLeftSlave.getSelectedSensorVelocity(Constants.kPidIdx);
-        // mLeftSlave.set(ControlMode.PercentOutput,0.0);
+        mLeftSlave.set(ControlMode.PercentOutput,0.6f);
+        Timer.delay(4.0);
+        final double currentLeftSlave = mLeftSlave.getOutputCurrent();
+        final double rpmLeftSlave = mLeftSlave.getSelectedSensorVelocity(Constants.kPidIdx);
+        mLeftSlave.set(ControlMode.PercentOutput,0.0);
 
 
         mRightMaster.set(ControlMode.PercentOutput,0);
         mLeftMaster.set(ControlMode.PercentOutput,0);
 
-        // mRightSlave.set(ControlMode.Follower,Constants.kRightDriveMasterId);
+        mRightSlave.set(ControlMode.Follower,Constants.kRightDriveMasterId);
 
  
-        // mLeftSlave.set(ControlMode.Follower,Constants.kLeftDriveMasterId);
+        mLeftSlave.set(ControlMode.Follower,Constants.kLeftDriveMasterId);
 
-        // System.out.println("Drive Right Master Current: " + currentRightMaster + " Drive Right Slave Current: "
-        //         + currentRightSlave);
-        // System.out.println(
-        //         "Drive Left Master Current: " + currentLeftMaster + " Drive Left Slave Current: " + currentLeftSlave);
-        // System.out.println("Drive RPM RMaster: " + rpmRightMaster + " RSlave: " + rpmRightSlave + " LMaster: "
-        //         + rpmLeftMaster + " LSlave: " + rpmLeftSlave);
+        System.out.println("Drive Right Master Current: " + currentRightMaster + " Drive Right Slave Current: "
+                + currentRightSlave);
+        System.out.println(
+                "Drive Left Master Current: " + currentLeftMaster + " Drive Left Slave Current: " + currentLeftSlave);
+        System.out.println("Drive RPM RMaster: " + rpmRightMaster + " RSlave: " + rpmRightSlave + " LMaster: "
+                + rpmLeftMaster + " LSlave: " + rpmLeftSlave);
 
         boolean failure = false;
 
@@ -867,58 +867,58 @@ public class Drive extends Subsystem {
             System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Master Current Low !!!!!!!!!!");
         }
 
-        // if (currentRightSlave < kCurrentThres) {
-        //     failure = true;
-        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Slave Current Low !!!!!!!!!!");
-        // }
+        if (currentRightSlave < kCurrentThres) {
+            failure = true;
+            System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Slave Current Low !!!!!!!!!!");
+        }
 
         if (currentLeftMaster < kCurrentThres) {
             failure = true;
             System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Master Current Low !!!!!!!!!!");
         }
 
-        // if (currentLeftSlave < kCurrentThres) {
-        //     failure = true;
-        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Slave Current Low !!!!!!!!!!");
-        // }
+        if (currentLeftSlave < kCurrentThres) {
+            failure = true;
+            System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Slave Current Low !!!!!!!!!!");
+        }
 
-        // if (!Util.allCloseTo(Arrays.asList(currentRightMaster, currentRightSlave), currentRightMaster,
-        //         5.0)) {
-        //     failure = true;
-        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Currents Different !!!!!!!!!!");
-        // }
+        if (!Util.allCloseTo(Arrays.asList(currentRightMaster, currentRightSlave), currentRightMaster,
+                5.0)) {
+            failure = true;
+            System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Currents Different !!!!!!!!!!");
+        }
 
-        // if (!Util.allCloseTo(Arrays.asList(currentLeftMaster, currentLeftSlave), currentLeftSlave,
-        //         5.0)) {
-        //     failure = true;
-        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Currents Different !!!!!!!!!!!!!");
-        // }
+        if (!Util.allCloseTo(Arrays.asList(currentLeftMaster, currentLeftSlave), currentLeftSlave,
+                5.0)) {
+            failure = true;
+            System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Currents Different !!!!!!!!!!!!!");
+        }
 
         if (rpmRightMaster < kRpmThres) {
             failure = true;
             System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Master RPM Low !!!!!!!!!!!!!!!!!!!");
         }
 
-        // if (rpmRightSlave < kRpmThres) {
-        //     failure = true;
-        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Slave RPM Low !!!!!!!!!!!!!!!!!!!");
-        // }
+        if (rpmRightSlave < kRpmThres) {
+            failure = true;
+            System.out.println("!!!!!!!!!!!!!!!!!! Drive Right Slave RPM Low !!!!!!!!!!!!!!!!!!!");
+        }
 
         if (rpmLeftMaster < kRpmThres) {
             failure = true;
             System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Master RPM Low !!!!!!!!!!!!!!!!!!!");
         }
 
-        // if (rpmLeftSlave < kRpmThres) {
-        //     failure = true;
-        //     System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Slave RPM Low !!!!!!!!!!!!!!!!!!!");
-        // }
+        if (rpmLeftSlave < kRpmThres) {
+            failure = true;
+            System.out.println("!!!!!!!!!!!!!!!!!! Drive Left Slave RPM Low !!!!!!!!!!!!!!!!!!!");
+        }
 
-        // if (!Util.allCloseTo(Arrays.asList(rpmRightMaster, rpmRightSlave, rpmLeftMaster, rpmLeftSlave),
-        //         rpmRightMaster, 250)) {
-        //     failure = true;
-        //     System.out.println("!!!!!!!!!!!!!!!!!!! Drive RPMs different !!!!!!!!!!!!!!!!!!!");
-        // }
+        if (!Util.allCloseTo(Arrays.asList(rpmRightMaster, rpmRightSlave, rpmLeftMaster, rpmLeftSlave),
+                rpmRightMaster, 250)) {
+            failure = true;
+            System.out.println("!!!!!!!!!!!!!!!!!!! Drive RPMs different !!!!!!!!!!!!!!!!!!!");
+        }
 
         return !failure;
     }
