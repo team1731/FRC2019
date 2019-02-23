@@ -97,6 +97,7 @@ public class Robot extends IterativeRobot {
 
     private boolean joystickAxesAreReversed;
     private boolean camerasAreReversed;
+    private boolean tractorIndicator = Boolean.FALSE;         
     
     private UsbCamera cameraFront;
     //private UsbCamera cameraBack;
@@ -356,7 +357,7 @@ public class Robot extends IterativeRobot {
             boolean elevCargoShipPos = mControlBoard.getCargoShipBall();
             boolean startingConfiguration = mControlBoard.getStartingConfiguration();       
             int climber = mControlBoard.getClimber();           
-            boolean tracktorDrive = mControlBoard.getTractorDrive();          
+            boolean tractorDrive = mControlBoard.getTractorDrive();
 
             double elevatorPOV = mControlBoard.getElevatorControl();
 
@@ -429,21 +430,24 @@ public class Robot extends IterativeRobot {
                     try{
                         String xPosStr = visionTargetPositions[0];
                         double xPos = Double.parseDouble(xPosStr);
-                        if (tracktorDrive) {
+                        if (tractorDrive) {
                            mTractorBeamGain = Double.parseDouble(SmartDashboard.getString("TractorGain", "1"));
                            turn = mTractorBeamGain*(xPos-160)/160; 
                            System.out.println("xPos ===== " + xPos + "  ------ TURN ==== " + turn);
                         }
 
-                        arduinoLedOutput(Constants.kArduino_GREEN);    
+                        arduinoLedOutput(Constants.kArduino_GREEN);
+                        tractorIndicator = Boolean.TRUE;  
                     }
                     catch(Throwable t){
                         arduinoLedOutput(Constants.kArduino_RED);
+                        tractorIndicator = Boolean.FALSE;
                     }
                 }
                 else {
                     //System.out.println("No data received from vision camera");
                     arduinoLedOutput(Constants.kArduino_RED);
+                    tractorIndicator = Boolean.FALSE;
                 }
             }
 
@@ -648,6 +652,8 @@ public class Robot extends IterativeRobot {
          mSubsystemManager.writeToLog();
          mEnabledLooper.outputToSmartDashboard();
 
+         SmartDashboard.putBoolean("Tractor Beam", tractorIndicator);
+         SmartDashboard.putNumber("Tractor Gain", mTractorBeamGain);
         // SmartDashboard.putString("AutoCodesReceived", autoCodes);
         // //SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));
         // SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
