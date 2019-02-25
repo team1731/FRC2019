@@ -15,15 +15,15 @@ public class RightFeedStationToRocketRearPath implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(19,295,0,10));
-        sWaypoints.add(new Waypoint(55,295,0,0));
+        sWaypoints.add(new Waypoint(19,94,0,10));
+        sWaypoints.add(new Waypoint(55,94,0,0));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(19, 295), Rotation2d.fromDegrees(0.0)); 
+        return new RigidTransform2d(new Translation2d(19, 94), Rotation2d.fromDegrees(0.0)); 
     }
 
     @Override
