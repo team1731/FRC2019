@@ -183,19 +183,9 @@ public class Robot extends IterativeRobot {
     
             try{
                 if(visionCam == null){
-                  //  visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
-                  //  System.out.println("VISION CAM IS kUSB");
-                }
-                /*
-                if(visionCam == null){
                     visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
                     System.out.println("VISION CAM IS kUSB1");
                 }
-                if(visionCam == null){
-                    visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
-                    System.out.println("VISION CAM IS kUSB2");
-                }
-                */
             }
             catch(Throwable t){
                 System.out.println(t.toString());
@@ -483,42 +473,51 @@ public class Robot extends IterativeRobot {
                     mAutoModeExecuter.start();
                 }
             }
-            else if (visionCam != null) {
+            else if(climber != 1){
                 stopAuto();
-                String[] visionTargetPositions = visionCam.readString().split(",");
-                if(visionTargetPositions.length > 0){
-                    try{
-                        String xPosStr = visionTargetPositions[0];
-                        double xPos = Double.parseDouble(xPosStr);
-                        if (tractorDrive) {
-                           String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
-                           mTractorBeamGain = Double.parseDouble(tractorGain);
-                           turn = mTractorBeamGain*(xPos-160)/160; 
-                           
-                           System.out.println("xPos ===== " + xPos + "  ------ TURN ==== " + turn);
-                        }
 
-                        arduinoLedOutput(Constants.kArduino_BLUE);    
-                        tractorIndicator = Boolean.TRUE;  
+                boolean tractorBeam = false;
+                if (visionCam != null) {
+                    stopAuto();
+                    String[] visionTargetPositions = visionCam.readString().split(",");
+                    if(visionTargetPositions.length > 0){
+                        try{
+                            String xPosStr = visionTargetPositions[0];
+                            double xPos = Double.parseDouble(xPosStr);
+                            if (tractorDrive) {
+                                tractorBeam = true;
+                                String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
+                                mTractorBeamGain = Double.parseDouble(tractorGain);
+                                turn = mTractorBeamGain*(xPos-160)/160; 
+                               
+                                System.out.println("xPos ===== " + xPos + "  ------ TURN ==== " + turn);
+                            }
+    
+                            arduinoLedOutput(Constants.kArduino_BLUE);    
+                            tractorIndicator = Boolean.TRUE;  
+                        }
+                        catch(Throwable t){
+                            arduinoLedOutput(Constants.kArduino_RED);
+                            tractorIndicator = Boolean.FALSE;
+                        }
                     }
-                    catch(Throwable t){
+                    else {
+                        System.out.println("No data received from vision camera");
                         arduinoLedOutput(Constants.kArduino_RED);
                         tractorIndicator = Boolean.FALSE;
                     }
                 }
-                else {
-                    //System.out.println("No data received from vision camera");
-                    arduinoLedOutput(Constants.kArduino_RED);
-                    tractorIndicator = Boolean.FALSE;
+                
+                //regular cheesy drive
+                //regular cheesy drive
+                //regular cheesy drive
+                if(!tractorBeam){
+                    mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
+                    !mControlBoard.getLowGear()));
+                    boolean wantLowGear = mControlBoard.getLowGear();
+                    mDrive.setHighGear(!wantLowGear);
+                    mClimber.setWantedState(Climber.WantedState.IDLE);
                 }
-            }
-            else if(climber != 1){
-                stopAuto();
-                mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
-                        !mControlBoard.getLowGear()));
-                boolean wantLowGear = mControlBoard.getLowGear();
-                mDrive.setHighGear(!wantLowGear);
-                mClimber.setWantedState(Climber.WantedState.IDLE);
             }
             else{
                 stopAuto();
@@ -606,6 +605,12 @@ public class Robot extends IterativeRobot {
         } else {
             //mLED.setLEDOff();
         }
+
+        if(visionCam == null){
+            visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
+            //System.out.println("VISION CAM IS kUSB1");
+        }
+
 
         double disabledTimestamp = Timer.getFPGATimestamp();
         if((disabledTimestamp - disabledTimestampSave) > 2){

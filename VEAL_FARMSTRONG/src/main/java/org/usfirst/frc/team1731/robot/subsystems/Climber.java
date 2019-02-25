@@ -272,7 +272,7 @@ public class Climber extends Subsystem {
     }
     
     private SystemState handleIdle() {
-        // commented-out! we don't want to latch on idle! -----mDartLatch.set(Value.kReverse);
+        mDartLatch.set(Value.kReverse);
        //System.out.println("Climber is running");
         if (mStateChanged) {
             mTalonL.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionLeft);
