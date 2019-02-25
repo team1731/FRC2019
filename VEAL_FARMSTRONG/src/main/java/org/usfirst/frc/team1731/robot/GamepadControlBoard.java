@@ -183,12 +183,16 @@ public class GamepadControlBoard implements ControlBoardInterface {
     }
 
 	@Override
-    public boolean getActivateAuto(){
+    public boolean getAutoRearToFeederStation(){
+        return mDriver.getRawButton(3);
+    }
+    public boolean getAutoFeederStationToRear(){
+        return mDriver.getRawButton(4);
+    }
+    public boolean getAutoFrontToFeederStation(){
         return mDriver.getRawButton(1);
     }
-
-	@Override
-    public boolean getDeactivateAuto(){
+    public boolean getAutoFeederStationToFront(){
         return mDriver.getRawButton(2);
     }
 

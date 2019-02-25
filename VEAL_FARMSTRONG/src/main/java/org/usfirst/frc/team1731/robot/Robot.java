@@ -16,6 +16,7 @@ import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POSITION;
 import org.usfirst.frc.team1731.robot.Constants.GRABBER_POSITION;
 import org.usfirst.frc.team1731.robot.auto.AutoModeBase;
 import org.usfirst.frc.team1731.robot.auto.AutoModeExecuter;
+import org.usfirst.frc.team1731.robot.auto.modes.LeftRocketRearToFeedStationMode;
 import org.usfirst.frc.team1731.robot.auto.modes.StandStillMode;
 import org.usfirst.frc.team1731.robot.auto.modes.TestAuto;
 import org.usfirst.frc.team1731.robot.auto.modes.spacey.Mode_1;
@@ -78,7 +79,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 public class Robot extends IterativeRobot {
     private DigitalOutput leftRightCameraControl;
 		
-	private static final String AUTO_CODES = "AutoCodes";
+	private static final String AUTO_CODE = "AutoCode";
     private static Map<String, AutoModeBase> AUTO_MODES; // modes defined in Mark's "BIBLE"
     
     
@@ -109,15 +110,16 @@ public class Robot extends IterativeRobot {
     private Boolean invertCameraPrevious = Boolean.FALSE;
     private VideoSink videoSink;
 
-    private String autoCodes;
+    private String autoCode;
     
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
-                           Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
-                                         Elevator.getInstance(), Intake.getInstance(),
-                                         Climber.getInstance()));
-                            // Arrays.asList(Drive.getInstance(), Superstructure.getInstance(),
-                            //          Elevator.getInstance(), Intake.getInstance(), Climber.getInstance(),
-                            //         ConnectionMonitor.getInstance()/*, LED.getInstance() , Wrist.getInstance()*/ ));
+                           Arrays.asList(
+                                         Drive.getInstance(),
+                                         Superstructure.getInstance(),
+                                         Elevator.getInstance(),
+                                         Intake.getInstance(),
+                                         Climber.getInstance()
+                                         ));
 
     // Initialize other helper objects
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
@@ -136,6 +138,23 @@ public class Robot extends IterativeRobot {
     private SerialPort visionCam;
 
     private double disabledTimestampSave;
+
+    private enum AUTO_MODE_SEL {
+        ROCKET_REAR_TO_FEED_STATION(0),
+        FEED_STATION_TO_ROCKET_REAR(1),
+        ROCKET_FRONT_TO_FEED_STATION(2),
+        FEED_STATION_TO_ROCKET_FRONT(3);
+
+        private final int arrayPosition;
+
+        private AUTO_MODE_SEL(int arrayPosition){
+            this.arrayPosition = arrayPosition;
+        }
+
+        private int getArrayPosition(){
+            return arrayPosition;
+        }
+    }
 
     public Robot() {
         CrashTracker.logRobotConstruction();
@@ -182,9 +201,10 @@ public class Robot extends IterativeRobot {
                 System.out.println(t.toString());
             }
     
-            autoCodes = SmartDashboard.getString("AutoCodes", "2A");
             String tractorGain = SmartDashboard.getString("TractorGain", "1.1");
-            autoModesToExecute = determineAutoModesToExecute(autoCodes);
+
+            autoCode = SmartDashboard.getString("AutoCode", "L"); // or R
+            autoModesToExecute = determineAutoModesToExecute(autoCode);
     
             leftRightCameraControl = new DigitalOutput(5);
 
@@ -206,7 +226,8 @@ public class Robot extends IterativeRobot {
             videoSink = CameraServer.getInstance().getServer();
             //selectedCamera = cameraFront;
 
-            SmartDashboard.putString(AUTO_CODES, "2A");
+            SmartDashboard.putString(AUTO_CODE, "L");
+
             SmartDashboard.putString("TractorGain", "1.2");   
             
         } catch (Throwable t) {
@@ -251,30 +272,38 @@ public class Robot extends IterativeRobot {
             throw t;
         }
     }
-                                                       // 10B for example
-    private AutoModeBase[] determineAutoModesToExecute(String autoCodes) {
-        //System.out.println("Got this string from the dashboard: " + autoCodes);
-        AutoModeBase[] autoModes = new AutoModeBase[2]; 
-        if(autoCodes != null && autoCodes.length() >=2 && autoCodes.length() <= 3){
-            AutoModeBase selectedAutoMode1 = null;
-            AutoModeBase selectedAutoMode2 = null;
-            if(autoCodes.length() == 2){
-                selectedAutoMode1 = AUTO_MODES.get(autoCodes.substring(0, 1));
-                selectedAutoMode2 = AUTO_MODES.get(autoCodes.substring(1, 1));
+                                                       // L or R
+    private AutoModeBase[] determineAutoModesToExecute(String autoCode) {
+        //System.out.println("Got this string from the dashboard: " + autoCode);
+        AutoModeBase[] autoModes = new AutoModeBase[4];
+        //default is LEFT side rocket:
+        //default is LEFT side rocket:
+        //default is LEFT side rocket:
+        autoModes[AUTO_MODE_SEL.ROCKET_REAR_TO_FEED_STATION.getArrayPosition()] = AUTO_MODES.get("1"); // ROCKET REAR TO FEED STATION
+        autoModes[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_REAR.getArrayPosition()] = AUTO_MODES.get("J"); // FEED STATION TO ROCKET REAR
+        autoModes[AUTO_MODE_SEL.ROCKET_FRONT_TO_FEED_STATION.getArrayPosition()] = AUTO_MODES.get("5"); // ROCKET FRONT TO FEED STATION
+        autoModes[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()] = AUTO_MODES.get("C"); // FEED STATION TO ROCKET FRONT
+        if(autoCode != null && autoCode.length() > 0){
+            String autoCodeChar = autoCode.toUpperCase().substring(0,1);
+            if("R".equals(autoCodeChar)){
+                //RIGHT side rocket:
+                //RIGHT side rocket:
+                //RIGHT side rocket:
+                autoModes[AUTO_MODE_SEL.ROCKET_REAR_TO_FEED_STATION.getArrayPosition()] = AUTO_MODES.get("1"); // ROCKET REAR TO FEED STATION
+                autoModes[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_REAR.getArrayPosition()] = AUTO_MODES.get("J"); // FEED STATION TO ROCKET REAR
+                autoModes[AUTO_MODE_SEL.ROCKET_FRONT_TO_FEED_STATION.getArrayPosition()] = AUTO_MODES.get("5"); // ROCKET FRONT TO FEED STATION
+                autoModes[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()] = AUTO_MODES.get("C"); // FEED STATION TO ROCKET FRONT
             }
-            else{
-                selectedAutoMode1 = AUTO_MODES.get(autoCodes.substring(0, 2));
-                selectedAutoMode2 = AUTO_MODES.get(autoCodes.substring(2, 3));
-            }
-            autoModes[0] = selectedAutoMode1;
-            autoModes[1] = selectedAutoMode2;
         }
         //System.out.println("running auto modes: " + Arrays.toString(autoModes));
 		return autoModes;
 	}
 
 	private static void initAutoModes() {
-    	AUTO_MODES = new HashMap<String, AutoModeBase>(); //THESE ARE FROM MARK'S "BIBLE"
+        AUTO_MODES = new HashMap<String, AutoModeBase>(); //THESE ARE FROM MARK'S "BIBLE"
+        
+        AUTO_MODES.put("LeftRocketRearToFeedStationMode",  new LeftRocketRearToFeedStationMode());
+
         AUTO_MODES.put("1",  new Mode_1());
         AUTO_MODES.put("2",  new Mode_2());
         AUTO_MODES.put("3",  new Mode_3());
@@ -426,7 +455,36 @@ public class Robot extends IterativeRobot {
             //}
             //videoSink.setSource(selectedCamera);
 
-            if (visionCam != null) {
+            if(mControlBoard.getAutoRearToFeederStation()){
+                if(mAutoModeExecuter == null){
+                    mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.ROCKET_REAR_TO_FEED_STATION.getArrayPosition()]);
+                    mAutoModeExecuter.start();    
+                }
+            }
+            else if(mControlBoard.getAutoFeederStationToRear()){
+                if(mAutoModeExecuter == null){
+                    mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_REAR.getArrayPosition()]);
+                    mAutoModeExecuter.start();
+                }
+            }
+            else if(mControlBoard.getAutoFrontToFeederStation()){
+                if(mAutoModeExecuter == null){
+                    mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.ROCKET_FRONT_TO_FEED_STATION.getArrayPosition()]);
+                    mAutoModeExecuter.start();
+                }
+            }
+            else if(mControlBoard.getAutoFeederStationToFront()){
+                if(mAutoModeExecuter == null){
+                    mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
+                    mAutoModeExecuter.start();
+                }
+            }
+            else if (visionCam != null) {
+                stopAuto();
                 String[] visionTargetPositions = visionCam.readString().split(",");
                 if(visionTargetPositions.length > 0){
                     try{
@@ -454,20 +512,18 @@ public class Robot extends IterativeRobot {
                     tractorIndicator = Boolean.FALSE;
                 }
             }
-
-            if(climber != 1){
+            else if(climber != 1){
+                stopAuto();
                 mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
                         !mControlBoard.getLowGear()));
                 boolean wantLowGear = mControlBoard.getLowGear();
                 mDrive.setHighGear(!wantLowGear);
                 mClimber.setWantedState(Climber.WantedState.IDLE);
             }
-
-            if(mControlBoard.getTestWrist()){
-                Wrist.getInstance().setWantedPosition(WristPositions.STRAIGHTAHEAD);
-                Wrist.getInstance().setWantedState(Wrist.WantedState.WRISTTRACKING);
+            else{
+                stopAuto();
             }
-            
+
             allPeriodic();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
@@ -505,70 +561,10 @@ public class Robot extends IterativeRobot {
         arduinoLed2.set((value & 0x04)==0 ? Boolean.FALSE: Boolean.TRUE);
     }
 
-    private void AutoSelectorSanityCheck(){
-        String received = SmartDashboard.getString("Auto Selector", "1").toUpperCase();
-        if(received != "1" && received != "2" && received != "3" && received != "4" && received != "5" && received != "6" && received != "7" && received != "8" && received != "9" && received != "10"
-        && received != "A" && received != "B" && received != "C" && received != "D" && received != "E" && received != "F" && received != "G" && received != "H" && received != "I" && received != "J"){
-            SmartDashboard.putString("Auto Selector", "1");
-        }
-    }
-
-    private AutoModeBase StringToAutoMode(String input){
-        switch(input){
-            case "1":
-                return new Mode_1();
-            case "2":
-                return new Mode_2();
-            case "3":
-                return new Mode_3();
-            case "4":
-                return new Mode_4();
-            case "5":
-                return new Mode_5();
-            case "6":
-                return new Mode_6();
-            case "7":
-                return new Mode_7();
-            case "8":
-                return new Mode_8();
-            case "9":
-                return new Mode_9();
-            case "10":
-                return new Mode_10();
-            case "A":
-                return new Mode_A();
-            case "B":
-                return new Mode_B();
-            case "C":
-                return new Mode_C();
-            case "D":
-                return new Mode_D();
-            case "E":
-                return new Mode_E();
-            case "F":
-                return new Mode_F();
-            case "G":
-                return new Mode_G();
-            case "H":
-                return new Mode_H();
-            case "I":
-                return new Mode_I();
-            case "J":
-                return new Mode_J();           
-            default:
-                return new StandStillMode();
-        }
-    }
-
-    private void UpdateAutoDriving(){
-        if(mControlBoard.getActivateAuto()){
-            mAutoModeExecuter = new AutoModeExecuter();
-            mAutoModeExecuter.setAutoMode(StringToAutoMode(SmartDashboard.getString("Auto Selector", "1")));
-            mAutoModeExecuter.start();
-        } else if(mControlBoard.getDeactivateAuto()){
-            if(mAutoModeExecuter != null){
-                mAutoModeExecuter.stop();
-            }
+    private void stopAuto(){
+        if(mAutoModeExecuter != null){
+            mAutoModeExecuter.stop();
+            mAutoModeExecuter = null;
         }
     }
 

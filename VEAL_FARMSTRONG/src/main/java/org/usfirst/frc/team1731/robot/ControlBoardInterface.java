@@ -38,8 +38,13 @@ public interface ControlBoardInterface {
 		//DRIVER
 		boolean getFrontCamera();
 		boolean getBackCamera();
-		boolean getActivateAuto();
-		boolean getDeactivateAuto();
+
+		//these all assume LEFT HAND SIDE ROCKET:
+		boolean getAutoRearToFeederStation();
+		boolean getAutoFeederStationToRear();
+		boolean getAutoFrontToFeederStation();
+		boolean getAutoFeederStationToFront();
+		
 		boolean getInvertDrive();
 		boolean getTestWrist();
 
