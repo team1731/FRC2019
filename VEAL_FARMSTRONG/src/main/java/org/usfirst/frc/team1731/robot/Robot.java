@@ -474,7 +474,7 @@ public class Robot extends IterativeRobot {
                 }
             }
             else if(climber != 1){
-                stopAuto();
+                stopAuto(); // if none of the above 4 auto buttons is being held down and we're not climbing
 
                 boolean tractorBeam = false;
                 if (visionCam != null) {
@@ -520,7 +520,8 @@ public class Robot extends IterativeRobot {
                 }
             }
             else{
-                stopAuto();
+                stopAuto(); // if none of the above 4 auto buttons is being held down and we're climbing
+                            // NOTE: the superstructure controls the drive wheels during a climb
             }
 
             allPeriodic();
