@@ -180,11 +180,11 @@ public class Constants extends ConstantsBase {
     public static int kElevatorLevel_2nd = 1;
     public static int kElevatorLevel_3rd = 2;
     public static int kElevatorTopEncoderValue = 10000;
-    public static int kElevatorHatch3rd_EncoderValue= 9918;
+    public static int kElevatorHatch3rd_EncoderValue= 9500; //was 9918
     public static int kElevatorHatch2nd_EncoderValue= 4872;
     public static int kElevatorHatchFloor_EncoderValue= 0; 
     public static int kElevatorHatchShip_EncoderValue= 1200;
-    public static int kElevatorCargo3rd_EncoderValue = 9918;
+    public static int kElevatorCargo3rd_EncoderValue = 9500; // was 9918
     public static int kElevatorCargo2nd_EncoderValue = 6351;
     public static int kElevatorCargoFloor_EncoderValue = 1580;
     public static int kElevatorCargoShip_EncoderValue= 3000;
@@ -221,7 +221,7 @@ public class Constants extends ConstantsBase {
     public static int kClimberExtendedPositionLeft = 670;
     
 
-    public static int kClimberRetractedPositionRight = 200; //right is 225
+    public static int kClimberRetractedPositionRight = 225; //right is 225
     public static int kClimberDartsHaveHittheFloorRight = 400;
     public static int kClimberDartsHaveDetachedRight = 800;
     public static int kClimberExtendedPositionRight = 850;

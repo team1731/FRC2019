@@ -164,19 +164,9 @@ public class Robot extends IterativeRobot {
     
             try{
                 if(visionCam == null){
-                  //  visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
-                  //  System.out.println("VISION CAM IS kUSB");
-                }
-                /*
-                if(visionCam == null){
                     visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
                     System.out.println("VISION CAM IS kUSB1");
                 }
-                if(visionCam == null){
-                    visionCam = new SerialPort(115200, SerialPort.Port.kUSB2);
-                    System.out.println("VISION CAM IS kUSB2");
-                }
-                */
             }
             catch(Throwable t){
                 System.out.println(t.toString());
@@ -449,10 +439,13 @@ public class Robot extends IterativeRobot {
                     }
                 }
                 else {
-                    //System.out.println("No data received from vision camera");
+                    System.out.println("No data received from vision camera");
                     arduinoLedOutput(Constants.kArduino_RED);
                     tractorIndicator = Boolean.FALSE;
                 }
+            }
+            else{
+                System.out.println("visionCam is NULLLLLLLLLLLLLLL");
             }
 
             if(climber != 1){
@@ -610,6 +603,12 @@ public class Robot extends IterativeRobot {
         } else {
             //mLED.setLEDOff();
         }
+
+        if(visionCam == null){
+            visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
+            //System.out.println("VISION CAM IS kUSB1");
+        }
+
 
         double disabledTimestamp = Timer.getFPGATimestamp();
         if((disabledTimestamp - disabledTimestampSave) > 2){
