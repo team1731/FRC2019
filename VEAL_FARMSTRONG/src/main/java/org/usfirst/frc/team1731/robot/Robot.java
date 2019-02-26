@@ -78,6 +78,7 @@ import edu.wpi.first.wpilibj.SerialPort;
  */
 public class Robot extends IterativeRobot {
     private DigitalOutput leftRightCameraControl;
+    private DigitalOutput greenLEDRingLight;
 		
 	private static final String AUTO_CODE = "AutoCode";
     private static Map<String, AutoModeBase> AUTO_MODES; // modes defined in Mark's "BIBLE"
@@ -196,6 +197,9 @@ public class Robot extends IterativeRobot {
             autoCode = SmartDashboard.getString("AutoCode", "L"); // or R
             autoModesToExecute = determineAutoModesToExecute(autoCode);
     
+            greenLEDRingLight = new DigitalOutput(0);
+            greenLEDRingLight.set(true); // turn off the light until teleop
+
             leftRightCameraControl = new DigitalOutput(5);
 
             tapeSensor = new DigitalInput(0);
@@ -365,7 +369,8 @@ public class Robot extends IterativeRobot {
 
     public void periodic() {
         try {
-            
+            greenLEDRingLight.set(false); // turn on the light during teleop
+
             double timestamp = Timer.getFPGATimestamp();
 
             boolean grabCube = mControlBoard.getGrabCubeButton();
@@ -606,6 +611,8 @@ public class Robot extends IterativeRobot {
         } else {
             //mLED.setLEDOff();
         }
+        
+        greenLEDRingLight.set(true); // turn off the light until teleop
 
         if(visionCam == null){
             visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
