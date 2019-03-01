@@ -61,6 +61,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.SerialPort;
 
+
 /**
  * The main robot class, which instantiates all robot parts and helper classes and initializes all loops. Some classes
  * are already instantiated upon robot startup; for those classes, the robot gets the instance as opposed to creating a
@@ -138,6 +139,7 @@ public class Robot extends IterativeRobot {
     private double disabledTimestampSave;
 
     public Robot() {
+        super(0.2);
         CrashTracker.logRobotConstruction();
     }
 
@@ -165,7 +167,7 @@ public class Robot extends IterativeRobot {
             try{
                 if(visionCam == null){
                     visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
-                    System.out.println("VISION CAM IS kUSB1");
+                    System.out.println("RobotInit - VISION CAM IS kUSB1");
                 }
             }
             catch(Throwable t){
@@ -186,7 +188,7 @@ public class Robot extends IterativeRobot {
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
 
-            mEnabledLooper.register(RobotStateEstimator.getInstance());
+          mEnabledLooper.register(RobotStateEstimator.getInstance()); // THIS IS NEEDED FOR AUTO TO WORK  Commented out to get CPU down!!!!!!!!
 
             //http://roborio-1731-frc.local:1181/?action=stream
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
@@ -336,7 +338,7 @@ public class Robot extends IterativeRobot {
 
     public void periodic() {
         try {
-            
+           
             double timestamp = Timer.getFPGATimestamp();
 
             boolean grabCube = mControlBoard.getGrabCubeButton();
@@ -445,7 +447,7 @@ public class Robot extends IterativeRobot {
                 }
             }
             else{
-                System.out.println("visionCam is NULLLLLLLLLLLLLLL");
+               // System.out.println("visionCam is NULLLLLLLLLLLLLLL");
             }
 
             if(climber != 1){
@@ -456,11 +458,11 @@ public class Robot extends IterativeRobot {
                 mClimber.setWantedState(Climber.WantedState.IDLE);
             }
 
-            if(mControlBoard.getTestWrist()){
+        /*    if(mControlBoard.getTestWrist()){
                 Wrist.getInstance().setWantedPosition(WristPositions.STRAIGHTAHEAD);
                 Wrist.getInstance().setWantedState(Wrist.WantedState.WRISTTRACKING);
             }
-            
+         */   
             allPeriodic();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
@@ -605,7 +607,7 @@ public class Robot extends IterativeRobot {
         }
 
         if(visionCam == null){
-            visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
+            //visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
             //System.out.println("VISION CAM IS kUSB1");
         }
 

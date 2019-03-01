@@ -320,7 +320,7 @@ public class Climber extends Subsystem {
                 mTalonL.configMotionCruiseVelocity(Constants.kClimberMediumCruiseVelocity, Constants.kTimeoutMs);
                 mTalonR.configMotionCruiseVelocity(Constants.kClimberMediumCruiseVelocity, Constants.kTimeoutMs);
             }
-            System.out.println("in liftingnowheels");
+        //    System.out.println("in liftingnowheels");
             if(mTalonR.getSelectedSensorPosition() > Constants.kClimberStartWheelsLeft) { 
                 return SystemState.LIFTINGWITHWHEELS;
             }
@@ -333,7 +333,7 @@ public class Climber extends Subsystem {
         if(mTalonR.getSelectedSensorPosition() > Constants.kClimberDartsHaveDetachedRight  ){
          mDartsHaveDetached = true;
         }
-        System.out.println("------------------in lifting with wheels");
+      //  System.out.println("------------------in lifting with wheels");
         if(mTalonR.getSelectedSensorPosition() > 0.95*Constants.kClimberExtendedPositionRight ){
             return SystemState.RETRACTING;
         }
@@ -341,7 +341,7 @@ public class Climber extends Subsystem {
     }
 
     private SystemState handleRetracting() {
-        System.out.println("RETRACTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+       // System.out.println("RETRACTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         if (mStateChanged) {
             mTalonL.configMotionCruiseVelocity(Constants.kClimberFastCruiseVelocity, Constants.kTimeoutMs);
             mTalonR.configMotionCruiseVelocity(Constants.kClimberFastCruiseVelocity, Constants.kTimeoutMs);

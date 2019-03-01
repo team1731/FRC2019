@@ -862,6 +862,7 @@ public class Superstructure extends Subsystem {
     }
 
     public void setWantedElevatorPosition(ELEVATOR_POSITION position) {
+     //   System.out.println("INELEVATORSETWANTEDPOSITION******************************************************");
         boolean cargo = mIntake.hasCargo();
         double encoderValue = Constants.kElevatorHomeEncoderValue;
         if (cargo) {

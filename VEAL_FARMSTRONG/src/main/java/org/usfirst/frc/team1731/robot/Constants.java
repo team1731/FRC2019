@@ -164,10 +164,10 @@ public class Constants extends ConstantsBase {
 
     //Elevator
     public static final int kElevatorTalon = 7;
-    public static double kElevatorTalonKP = 4.0; //2.0;
+    public static double kElevatorTalonKP = 5; //2.0;
     public static double kElevatorTalonKI = 0.0;
     public static double kElevatorTalonKD = 0.0;
-    public static double kElevatorTalonKF = 0.2; //0.0;
+    public static double kElevatorTalonKF = 0.0512; //0.0;
 
     public static enum ELEVATOR_POSITION {
     	ELEVATOR_FLOOR,
@@ -179,38 +179,38 @@ public class Constants extends ConstantsBase {
     public static int kElevatorLevel_Floor = 0;
     public static int kElevatorLevel_2nd = 1;
     public static int kElevatorLevel_3rd = 2;
-    public static int kElevatorTopEncoderValue = 10000;
-    public static int kElevatorHatch3rd_EncoderValue= 9500; //was 9918
-    public static int kElevatorHatch2nd_EncoderValue= 4872;
+    public static int kElevatorTopEncoderValue = 600000;
+    public static int kElevatorHatch3rd_EncoderValue=462264;// 9500; //was 9918
+    public static int kElevatorHatch2nd_EncoderValue= 233632;//4872;
     public static int kElevatorHatchFloor_EncoderValue= 0; 
-    public static int kElevatorHatchShip_EncoderValue= 1200;
-    public static int kElevatorCargo3rd_EncoderValue = 9500; // was 9918
-    public static int kElevatorCargo2nd_EncoderValue = 6351;
-    public static int kElevatorCargoFloor_EncoderValue = 1580;
-    public static int kElevatorCargoShip_EncoderValue= 3000;
+    public static int kElevatorHatchShip_EncoderValue=233632; //1200;
+    public static int kElevatorCargo3rd_EncoderValue =462264;  //9500; // was 9918
+    public static int kElevatorCargo2nd_EncoderValue =254496; //6351;
+    public static int kElevatorCargoFloor_EncoderValue =70912; //1580;
+    public static int kElevatorCargoShip_EncoderValue= 233632;
     public static int kElevatorBallPickup_EncoderValue= 0; //was 1044
     public static int kElevatorHomeEncoderValue = 0;
     public static int kElevatorEncoderRange = 20;
-    public static int kElevatorCruiseVelocity = 8000; //15000
-    public static int kElevatorAcceleration = 8000; //6000
+    public static int kElevatorCruiseVelocity = 20000;//15000
+    public static int kElevatorAcceleration = 30000; //6000
 
     //public static double kElevatorPeakForward = 0.6;
     //public static double kElevatorPeakReverse = -0.3;
     public static double kElevatorCalibrateUp = 0.8;
-    public static double kElevatorCalibrateDown = -0.3;
+    public static double kElevatorCalibrateDown = -0.5;
     
     //Elevator
     public static final int kClimberTalonL = 9;
     public static final int kClimberTalonR = 4;
-    public static double kClimberTalonKP = 6.0; //2.0;
+    public static double kClimberTalonKP = 20; //was 6 working
     public static double kClimberTalonKI = 0.0;
     public static double kClimberTalonKD = 0.0;
-    public static double kClimberTalonKF = 0.2; //0.0;
+    public static double kClimberTalonKF = 11; //was .2 working
 
-    public static int kClimberSlowCruiseVelocity = 30; //15000
-    public static int kClimberMediumCruiseVelocity = 60; //15000
-    public static int kClimberFastCruiseVelocity = 90; //15000
-    public static int kClimberAcceleration = 6000; //6000
+    public static int kClimberSlowCruiseVelocity = 20; //15000
+    public static int kClimberMediumCruiseVelocity = 20; //15000
+    public static int kClimberFastCruiseVelocity = 20; //15000
+    public static int kClimberAcceleration = 60; //6000
     public static double kClimberExtendPercent = 1.0; //0.8;
     public static double kClimberRetractPercent = -1.0; //-0.6;
 
@@ -221,10 +221,10 @@ public class Constants extends ConstantsBase {
     public static int kClimberExtendedPositionLeft = 670;
     
 
-    public static int kClimberRetractedPositionRight = 225; //right is 225
+    public static int kClimberRetractedPositionRight = 220; //right is 225
     public static int kClimberDartsHaveHittheFloorRight = 400;
     public static int kClimberDartsHaveDetachedRight = 800;
-    public static int kClimberExtendedPositionRight = 850;
+    public static int kClimberExtendedPositionRight = 875;
 
 
     public static int kClimberStartWheelsLeft = 600;

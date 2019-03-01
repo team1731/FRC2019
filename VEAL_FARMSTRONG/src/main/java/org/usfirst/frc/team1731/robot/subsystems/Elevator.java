@@ -58,7 +58,8 @@ public class Elevator extends Subsystem {
 		mTalon.configFactoryDefault();
 
 		/* Configure Sensor Source for Pirmary PID */
-		mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+     //   mTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+        mTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
 
 		/**
 		 * Configure Talon SRX Output and Sesnor direction accordingly
@@ -88,7 +89,7 @@ public class Elevator extends Subsystem {
 		/* Set acceleration and vcruise velocity - see documentation */
 		mTalon.configMotionCruiseVelocity(Constants.kElevatorCruiseVelocity, Constants.kTimeoutMs);
 		mTalon.configMotionAcceleration(Constants.kElevatorAcceleration, Constants.kTimeoutMs);
-
+        mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 4000, Constants.kTimeoutMs);
 		/* Zero the sensor */
         mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
         //mTalon.set(ControlMode.PercentOutput, 0);
@@ -221,6 +222,7 @@ public class Elevator extends Subsystem {
     
     private SystemState handleIdle() {
         if (mStateChanged) {
+  //          System.out.println("ININDLE@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             mTalon.set(ControlMode.PercentOutput, 0);
         }
         return defaultStateTransfer();
