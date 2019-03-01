@@ -61,6 +61,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.TimedRobot;
 
 
 /**
@@ -77,7 +78,7 @@ import edu.wpi.first.wpilibj.SerialPort;
  * described in the IterativeRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the manifest file in the resource directory.
  */
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
     private DigitalOutput leftRightCameraControl;
     private DigitalOutput greenLEDRingLight;
 		
@@ -159,7 +160,7 @@ public class Robot extends IterativeRobot {
     }
 
     public Robot() {
-        //super(0.2);
+        super(0.2);
         CrashTracker.logRobotConstruction();
     }
 
