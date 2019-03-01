@@ -205,11 +205,11 @@ public class Robot extends TimedRobot {
 
             leftRightCameraControl = new DigitalOutput(5);
 
-            tapeSensor = new DigitalInput(0);
+
             arduinoLed0 = new DigitalOutput(Constants.kArduinoLed0);
             arduinoLed1 = new DigitalOutput(Constants.kArduinoLed1);
             arduinoLed2 = new DigitalOutput(Constants.kArduinoLed2);
-            SmartDashboard.putBoolean("TapeSensor", tapeSensor.get());
+
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
 
@@ -217,12 +217,15 @@ public class Robot extends TimedRobot {
 
             //http://roborio-1731-frc.local:1181/?action=stream
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
-            
-            cameraFront = CameraServer.getInstance().startAutomaticCapture(0);
-            //cameraBack = CameraServer.getInstance().startAutomaticCapture(1);
-            videoSink = CameraServer.getInstance().getServer();
-            //selectedCamera = cameraFront;
+            try {
+                cameraFront = CameraServer.getInstance().startAutomaticCapture(0);
+                //cameraBack = CameraServer.getInstance().startAutomaticCapture(1);
+                videoSink = CameraServer.getInstance().getServer();
+                //selectedCamera = cameraFront;
+            }
+            catch (Throwable t) {
 
+            }
             SmartDashboard.putString(AUTO_CODE, "L");
 
             SmartDashboard.putString("TractorGain", "1.2");   
