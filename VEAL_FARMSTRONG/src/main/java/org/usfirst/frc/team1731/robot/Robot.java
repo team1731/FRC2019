@@ -481,16 +481,13 @@ public class Robot extends IterativeRobot {
             else if(climber != 1){
                 stopAuto(); // if none of the above 4 auto buttons is being held down and we're not climbing
 
-                boolean tractorBeam = false;
                 if (visionCam != null) {
-                    stopAuto();
                     String[] visionTargetPositions = visionCam.readString().split(",");
                     if(visionTargetPositions.length > 0){
                         try{
                             String xPosStr = visionTargetPositions[0];
                             double xPos = Double.parseDouble(xPosStr);
                             if (tractorDrive) {
-                                tractorBeam = true;
                                 String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
                                 mTractorBeamGain = Double.parseDouble(tractorGain);
                                 turn = mTractorBeamGain*(xPos-160)/160; 
@@ -516,13 +513,11 @@ public class Robot extends IterativeRobot {
                 //regular cheesy drive
                 //regular cheesy drive
                 //regular cheesy drive
-                if(!tractorBeam){
-                    mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
-                    !mControlBoard.getLowGear()));
-                    boolean wantLowGear = mControlBoard.getLowGear();
-                    mDrive.setHighGear(!wantLowGear);
-                    mClimber.setWantedState(Climber.WantedState.IDLE);
-                }
+                mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
+                !mControlBoard.getLowGear()));
+                boolean wantLowGear = mControlBoard.getLowGear();
+                mDrive.setHighGear(!wantLowGear);
+                mClimber.setWantedState(Climber.WantedState.IDLE);
             }
             else{
                 stopAuto(); // if none of the above 4 auto buttons is being held down and we're climbing
