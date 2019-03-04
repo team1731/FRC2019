@@ -200,8 +200,8 @@ public class Constants extends ConstantsBase {
     public static double kElevatorCalibrateDown = -0.5;
     
     //Elevator
-    public static final int kClimberTalonL = 9;
-    public static final int kClimberTalonR = 4;
+    public static final int kClimberTalonLeft = 9;
+    public static final int kClimberTalonRight = 4;
     public static double kClimberTalonKP = 20; //was 6 working
     public static double kClimberTalonKI = 0.0;
     public static double kClimberTalonKD = 0.0;
