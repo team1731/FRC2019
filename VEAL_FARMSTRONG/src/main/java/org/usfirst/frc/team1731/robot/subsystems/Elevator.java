@@ -89,7 +89,7 @@ public class Elevator extends Subsystem {
 		/* Set acceleration and vcruise velocity - see documentation */
 		mTalon.configMotionCruiseVelocity(Constants.kElevatorCruiseVelocity, Constants.kTimeoutMs);
 		mTalon.configMotionAcceleration(Constants.kElevatorAcceleration, Constants.kTimeoutMs);
-        mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 4000, Constants.kTimeoutMs);
+        mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 1000, Constants.kTimeoutMs);
 		/* Zero the sensor */
         mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
         //mTalon.set(ControlMode.PercentOutput, 0);
@@ -256,6 +256,7 @@ public class Elevator extends Subsystem {
         }
         mPositionChanged = true;
         mWantedPosition = Constants.kElevatorHomeEncoderValue;
+        mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
         wasCalibrated = true;
         return defaultStateTransfer();
     }
@@ -266,7 +267,7 @@ public class Elevator extends Subsystem {
         }
         mPositionChanged = true;
         mWantedPosition = Constants.kElevatorHomeEncoderValue;
-        //mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
+        mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
         wasCalibrated = true;
         return defaultStateTransfer();
     }
@@ -278,6 +279,7 @@ public class Elevator extends Subsystem {
                     (mWantedPosition < Constants.kElevatorTopEncoderValue)) {
                 mWantedPosition = position;
                 mPositionChanged = true;
+//                System.out.println("Elevator wanted position changed to: " + position);
             }
         }
     }
@@ -334,7 +336,7 @@ public class Elevator extends Subsystem {
     
     @Override
     public void zeroSensors() {
-        mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
+       mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
     }
 
     @Override

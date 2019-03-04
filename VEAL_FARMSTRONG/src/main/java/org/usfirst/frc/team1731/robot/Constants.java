@@ -199,17 +199,18 @@ public class Constants extends ConstantsBase {
     public static double kElevatorCalibrateUp = 0.8;
     public static double kElevatorCalibrateDown = -0.5;
     
-    //Elevator
+    //Climber
     public static final int kClimberTalonLeft = 9;
     public static final int kClimberTalonRight = 4;
-    public static double kClimberTalonKP = 20; //was 6 working
+
+    public static double kClimberTalonKP = 80; //was 6 working
     public static double kClimberTalonKI = 0.0;
     public static double kClimberTalonKD = 0.0;
     public static double kClimberTalonKF = 11; //was .2 working
 
-    public static int kClimberSlowCruiseVelocity = 20; //15000
-    public static int kClimberMediumCruiseVelocity = 20; //15000
-    public static int kClimberFastCruiseVelocity = 20; //15000
+    public static int kClimberSlowCruiseVelocity = 35; //15000
+    public static int kClimberMediumCruiseVelocity = 35; //15000
+    public static int kClimberFastCruiseVelocity = 35; //15000
     public static int kClimberAcceleration = 60; //6000
     public static double kClimberExtendPercent = 1.0; //0.8;
     public static double kClimberRetractPercent = -1.0; //-0.6;

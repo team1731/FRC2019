@@ -47,8 +47,6 @@ import org.usfirst.frc.team1731.robot.subsystems.Elevator;
 
 import org.usfirst.frc.team1731.robot.subsystems.Intake;
 import org.usfirst.frc.team1731.robot.subsystems.Superstructure;
-import org.usfirst.frc.team1731.robot.subsystems.Wrist;
-import org.usfirst.frc.team1731.robot.subsystems.Wrist.WristPositions;
 import org.usfirst.frc.team1731.robot.subsystems.Climber;
 
 import edu.wpi.cscore.UsbCamera;
@@ -100,6 +98,7 @@ public class Robot extends TimedRobot {
     private AutoModeBase[] autoModesToExecute;
 
     private boolean joystickAxesAreReversed;
+    private boolean driveSpeedIsToggled;
     private boolean camerasAreReversed;
     private boolean tractorIndicator = Boolean.FALSE;         
     
@@ -185,7 +184,7 @@ public class Robot extends TimedRobot {
                 //mLED.setLEDOff();
             }
     
-            try{
+       /*     try{
                 if(visionCam == null){
                     visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
                     System.out.println("RobotInit - VISION CAM IS kUSB1");
@@ -194,16 +193,16 @@ public class Robot extends TimedRobot {
             catch(Throwable t){
                 System.out.println(t.toString());
             }
-    
+    */
             String tractorGain = SmartDashboard.getString("TractorGain", "1.1");
 
-            autoCode = SmartDashboard.getString("AutoCode", "L"); // or R
-            autoModesToExecute = determineAutoModesToExecute(autoCode);
+      //      autoCode = SmartDashboard.getString("AutoCode", "L"); // or R
+     //       autoModesToExecute = determineAutoModesToExecute(autoCode);
     
             greenLEDRingLight = new DigitalOutput(0);
             greenLEDRingLight.set(true); // turn off the light until teleop
 
-            leftRightCameraControl = new DigitalOutput(5);
+            //leftRightCameraControl = new DigitalOutput(5);
 
 
             arduinoLed0 = new DigitalOutput(Constants.kArduinoLed0);
@@ -224,11 +223,11 @@ public class Robot extends TimedRobot {
                 //selectedCamera = cameraFront;
             }
             catch (Throwable t) {
-
+                System.out.println("Exception while connecting driver camera: " + t.toString());
             }
-            SmartDashboard.putString(AUTO_CODE, "L");
+      //      SmartDashboard.putString(AUTO_CODE, "L");
 
-            SmartDashboard.putString("TractorGain", "1.2");   
+      //      SmartDashboard.putString("TractorGain", "1.2");   
             
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
@@ -266,6 +265,8 @@ public class Robot extends TimedRobot {
 
             mEnabledLooper.start();
             mSuperstructure.reloadConstants();
+            mSuperstructure.closeBeak();
+            mSuperstructure.uproller();
             
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
@@ -349,7 +350,7 @@ public class Robot extends TimedRobot {
             mDrive.setBrakeMode(false);
             // Shift to high
             mDrive.setHighGear(true);
-            zeroAllSensors();
+            //zeroAllSensors();
             mSuperstructure.reloadConstants();
             mSuperstructure.setOverrideCompressor(false);
             arduinoLedOutput(Constants.kArduino_TEAM);
@@ -442,13 +443,18 @@ public class Robot extends TimedRobot {
                 //toggleCamera(); 
             }
 
+            if(mControlBoard.getToggleDriveSpeed()){
+                driveSpeedIsToggled = !driveSpeedIsToggled;
+                //toggleCamera(); 
+            }
+
             if(joystickAxesAreReversed){
                 throttle=-throttle;
-                leftRightCameraControl.set(true);
+                //leftRightCameraControl.set(true);
             }
 
             else{     
-                leftRightCameraControl.set(false);
+                //leftRightCameraControl.set(false);
             }
         
             //if(getInvertCamera()){
@@ -458,30 +464,30 @@ public class Robot extends TimedRobot {
 
             if(mControlBoard.getAutoRearToFeederStation()){
                 if(mAutoModeExecuter == null){
-                    mAutoModeExecuter = new AutoModeExecuter();
-                    mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.ROCKET_REAR_TO_FEED_STATION.getArrayPosition()]);
-                    mAutoModeExecuter.start();    
+                    //mAutoModeExecuter = new AutoModeExecuter();
+                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.ROCKET_REAR_TO_FEED_STATION.getArrayPosition()]);
+                    //mAutoModeExecuter.start();    
                 }
             }
             else if(mControlBoard.getAutoFeederStationToRear()){
                 if(mAutoModeExecuter == null){
-                    mAutoModeExecuter = new AutoModeExecuter();
-                    mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_REAR.getArrayPosition()]);
-                    mAutoModeExecuter.start();
+                    //mAutoModeExecuter = new AutoModeExecuter();
+                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_REAR.getArrayPosition()]);
+                    //mAutoModeExecuter.start();
                 }
             }
             else if(mControlBoard.getAutoFrontToFeederStation()){
                 if(mAutoModeExecuter == null){
-                    mAutoModeExecuter = new AutoModeExecuter();
-                    mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.ROCKET_FRONT_TO_FEED_STATION.getArrayPosition()]);
-                    mAutoModeExecuter.start();
+                    //mAutoModeExecuter = new AutoModeExecuter();
+                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.ROCKET_FRONT_TO_FEED_STATION.getArrayPosition()]);
+                    //mAutoModeExecuter.start();
                 }
             }
             else if(mControlBoard.getAutoFeederStationToFront()){
                 if(mAutoModeExecuter == null){
-                    mAutoModeExecuter = new AutoModeExecuter();
-                    mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
-                    mAutoModeExecuter.start();
+                    //mAutoModeExecuter = new AutoModeExecuter();
+                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
+                    //mAutoModeExecuter.start();
                 }
             }
             else if(climber != 1){
@@ -519,6 +525,16 @@ public class Robot extends TimedRobot {
                 //regular cheesy drive
                 //regular cheesy drive
                 //regular cheesy drive
+                if(driveSpeedIsToggled){
+                    throttle *= 0.5;//'slow' driver controller speed
+                    turn *= 0.5;
+                    arduinoLedOutput(Constants.kArduino_YELLW);
+                }
+                else{
+                    throttle *= 0.8;//'normal' driver controller speed
+                    turn *= 0.8;
+                    arduinoLedOutput(Constants.kArduino_BLUEW);
+                }
                 mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
                 !mControlBoard.getLowGear()));
                 boolean wantLowGear = mControlBoard.getLowGear();
@@ -623,7 +639,7 @@ public class Robot extends TimedRobot {
 
         double disabledTimestamp = Timer.getFPGATimestamp();
         if((disabledTimestamp - disabledTimestampSave) > 2){
-            zeroAllSensors();
+            //zeroAllSensors();
             disabledTimestampSave = disabledTimestamp;
         }
     }
@@ -652,12 +668,12 @@ public class Robot extends TimedRobot {
      * Helper function that is called in all periodic functions
      */
     public void allPeriodic() {
-         mRobotState.outputToSmartDashboard();
-         mSubsystemManager.outputToSmartDashboard();
-         mSubsystemManager.writeToLog();
-         mEnabledLooper.outputToSmartDashboard();
+       //bdl  mRobotState.outputToSmartDashboard();
+       //bdl  mSubsystemManager.outputToSmartDashboard();
+       //bdl  mSubsystemManager.writeToLog();
+       //bdl  mEnabledLooper.outputToSmartDashboard();
 
-         SmartDashboard.putBoolean("Tractor Beam", tractorIndicator);
+     //    SmartDashboard.putBoolean("Tractor Beam", tractorIndicator);
         // SmartDashboard.putString("AutoCodesReceived", autoCodes);
         // //SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));
         // SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
