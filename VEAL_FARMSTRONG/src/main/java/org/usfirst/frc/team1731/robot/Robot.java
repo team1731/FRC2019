@@ -94,6 +94,7 @@ public class Robot extends TimedRobot {
     private Superstructure mSuperstructure = Superstructure.getInstance();
     private RobotState mRobotState = RobotState.getInstance();
     private AutoModeExecuter mAutoModeExecuter = null;
+    private RobotStateEstimator mRobotStateEstimator = RobotStateEstimator.getInstance();
 
     private AutoModeBase[] autoModesToExecute;
 
@@ -137,7 +138,7 @@ public class Robot extends TimedRobot {
 
     private DigitalInput tapeSensor;
  
-    private SerialPort visionCam;
+    //private SerialPort visionCam;
 
     private double disabledTimestampSave;
 
@@ -212,7 +213,7 @@ public class Robot extends TimedRobot {
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
 
-          mEnabledLooper.register(RobotStateEstimator.getInstance()); // THIS IS NEEDED FOR AUTO TO WORK  Commented out to get CPU down!!!!!!!!
+          mEnabledLooper.register(mRobotStateEstimator); // THIS IS NEEDED FOR AUTO TO WORK  Commented out to get CPU down!!!!!!!!
 
             //http://roborio-1731-frc.local:1181/?action=stream
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
@@ -493,6 +494,17 @@ public class Robot extends TimedRobot {
             else if(climber != 1){
                 stopAuto(); // if none of the above 4 auto buttons is being held down and we're not climbing
 
+                if(mControlBoard.getTractorDrive() && mRobotStateEstimator.GetVisionCamAvailable()){
+                    try {
+                        turn = (mRobotStateEstimator.GetVisionCamXPosition()-160)/160;
+                        SmartDashboard.putNumber("VisionTurnValue", turn);
+                    } catch(NumberFormatException e){
+                        System.out.println(e.toString());
+                    }
+                    arduinoLedOutput(Constants.kArduino_GREEN);
+                }
+
+                /*
                 if (visionCam != null) {
                     String[] visionTargetPositions = visionCam.readString().split(",");
                     if(visionTargetPositions.length > 0){
@@ -521,7 +533,8 @@ public class Robot extends TimedRobot {
                         tractorIndicator = Boolean.FALSE;
                     }
                 }
-                
+                */
+
                 //regular cheesy drive
                 //regular cheesy drive
                 //regular cheesy drive
@@ -631,10 +644,12 @@ public class Robot extends TimedRobot {
         
         greenLEDRingLight.set(true); // turn off the light until teleop
 
+        /*
         if(visionCam == null){
             //visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
             //System.out.println("VISION CAM IS kUSB1");
         }
+        */
 
 
         double disabledTimestamp = Timer.getFPGATimestamp();
