@@ -46,8 +46,8 @@ public interface ControlBoardInterface {
 		boolean getAutoFeederStationToFront();
 		
 		boolean getInvertDrive();
-		boolean getTestWrist();
-
+		boolean getToggleDriveSpeed();
+		
 		//OPERATOR
 		//boolean getFloorLevel();
 		//boolean getSecondLevel();

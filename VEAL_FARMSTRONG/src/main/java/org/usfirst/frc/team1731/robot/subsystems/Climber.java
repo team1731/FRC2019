@@ -274,10 +274,10 @@ public class Climber extends Subsystem {
     private SystemState handleIdle() {
         mDartLatch.set(Value.kReverse);
        //System.out.println("Climber is running");
-        if (mStateChanged) {
+        //if (mStateChanged) {
             mTalonL.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionLeft);
             mTalonR.set(ControlMode.MotionMagic, Constants.kClimberRetractedPositionRight);
-        }
+        //}
        // SmartDashboard.putBoolean("Latch",latchSensor.get());
         switch (mWantedState) {
             case IDLE:
@@ -359,10 +359,10 @@ public class Climber extends Subsystem {
 
     @Override
     public void outputToSmartDashboard() {
-        SmartDashboard.putString("ClimbSysState", mSystemState.name());
-        SmartDashboard.putString("ClimbWantState", mWantedState.name());
-        SmartDashboard.putNumber("ClimbCurPosLeft", mTalonL.getSelectedSensorPosition(0));
-        SmartDashboard.putNumber("ClimbCurPosRight", mTalonR.getSelectedSensorPosition(0));
+   //     SmartDashboard.putString("ClimbSysState", mSystemState.name());
+   //     SmartDashboard.putString("ClimbWantState", mWantedState.name());
+   //     SmartDashboard.putNumber("ClimbCurPosLeft", mTalonL.getSelectedSensorPosition(0));
+   //     SmartDashboard.putNumber("ClimbCurPosRight", mTalonR.getSelectedSensorPosition(0));
     }
 
     public void resetLift() {

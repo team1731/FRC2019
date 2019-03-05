@@ -28,7 +28,7 @@ public class Constants extends ConstantsBase {
     public static double kBoilerRadius = 7.5;
 
     // Wrist parameters
-    public static int kWristTalon = 4;
+   // public static int kWristTalon = 4;
     public static int kWristKI = 0;
     public static int kWristKD = 0;
     public static int kWristTalonKF = 0;
@@ -176,6 +176,7 @@ public class Constants extends ConstantsBase {
         ELEVATOR_SHIP,
         ELEVATOR_CARGO_PICKUP
     }
+    public static int kElevatorTicsPerInch = 7420;
     public static int kElevatorLevel_Floor = 0;
     public static int kElevatorLevel_2nd = 1;
     public static int kElevatorLevel_3rd = 2;
@@ -187,7 +188,7 @@ public class Constants extends ConstantsBase {
     public static int kElevatorCargo3rd_EncoderValue =462264;  //9500; // was 9918
     public static int kElevatorCargo2nd_EncoderValue =254496; //6351;
     public static int kElevatorCargoFloor_EncoderValue =70912; //1580;
-    public static int kElevatorCargoShip_EncoderValue= 233632;
+    public static int kElevatorCargoShip_EncoderValue= 233632 - 6*kElevatorTicsPerInch; //make it 6" lower (Haymarket playoffs)
     public static int kElevatorBallPickup_EncoderValue= 0; //was 1044
     public static int kElevatorHomeEncoderValue = 0;
     public static int kElevatorEncoderRange = 20;
@@ -199,18 +200,19 @@ public class Constants extends ConstantsBase {
     public static double kElevatorCalibrateUp = 0.8;
     public static double kElevatorCalibrateDown = -0.5;
     
-    //Elevator
+    //Climber
     public static final int kClimberTalonL = 9;
     public static final int kClimberTalonR = 4;
-    public static double kClimberTalonKP = 20; //was 6 working
+
+    public static double kClimberTalonKP = 80; //was 6 working
     public static double kClimberTalonKI = 0.0;
     public static double kClimberTalonKD = 0.0;
     public static double kClimberTalonKF = 11; //was .2 working
 
-    public static int kClimberSlowCruiseVelocity = 20; //15000
-    public static int kClimberMediumCruiseVelocity = 20; //15000
-    public static int kClimberFastCruiseVelocity = 20; //15000
-    public static int kClimberAcceleration = 60; //6000
+    public static int kClimberSlowCruiseVelocity = 15; //15000
+    public static int kClimberMediumCruiseVelocity = 15; //15000
+    public static int kClimberFastCruiseVelocity = 35; //15000
+    public static int kClimberAcceleration = 30; //6000
     public static double kClimberExtendPercent = 1.0; //0.8;
     public static double kClimberRetractPercent = -1.0; //-0.6;
 
@@ -218,13 +220,13 @@ public class Constants extends ConstantsBase {
     public static int kClimberRetractedPositionLeft = 20; //left is 25
     public static int kClimberDartsHaveHitTheFloorLeft = 220;
     public static int kClimberDartsHaveDetachedLeft = 620;
-    public static int kClimberExtendedPositionLeft = 670;
+    public static int kClimberExtendedPositionLeft =  kClimberRetractedPositionLeft + 810; // +9.5 inches ( was 670; )
     
 
-    public static int kClimberRetractedPositionRight = 220; //right is 225
+    public static int kClimberRetractedPositionRight = 204; //right is 225
     public static int kClimberDartsHaveHittheFloorRight = 400;
     public static int kClimberDartsHaveDetachedRight = 800;
-    public static int kClimberExtendedPositionRight = 875;
+    public static int kClimberExtendedPositionRight = kClimberRetractedPositionRight + 810; // +9.5 inches (was 875;)
 
 
     public static int kClimberStartWheelsLeft = 600;
@@ -281,7 +283,7 @@ public class Constants extends ConstantsBase {
 	public static final int kIntakeTalon = 8;
 
     // Shooter
-	public static final int kShooterVictor = 4;
+//	public static final int kShooterVictor = 4;
 
     //
     // PCM 0 SOLENOIDS

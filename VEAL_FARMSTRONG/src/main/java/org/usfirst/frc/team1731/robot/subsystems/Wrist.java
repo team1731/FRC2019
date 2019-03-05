@@ -49,41 +49,41 @@ public class Wrist extends Subsystem {
         return sInstance;
     }
 
-    private final TalonSRX mTalon;
+    //private final TalonSRX mTalon;
     
     public Wrist() {
-        mTalon = new TalonSRX(Constants.kWristTalon);
-        mTalon.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
-        mTalon.set(ControlMode.Position, 0);
-        mTalon.selectProfileSlot(Constants.SlotIdx, 0);
-        mTalon.config_kP(Constants.SlotIdx, Constants.kWristTalonKP, Constants.kTimeoutMs );
-        mTalon.config_kI(Constants.SlotIdx, Constants.kWristKI, Constants.kTimeoutMs );
-        mTalon.config_kD(Constants.SlotIdx, Constants.kWristKD, Constants.kTimeoutMs);
-        mTalon.config_kF(Constants.SlotIdx, Constants.kWristTalonKF, Constants.kTimeoutMs );
-        mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
-        mTalon.configClosedloopRamp(0, Constants.kTimeoutMs);
-        mTalon.overrideLimitSwitchesEnable(false);
+        // mTalon = new TalonSRX(Constants.kWristTalon);
+        // mTalon.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
+        // mTalon.set(ControlMode.Position, 0);
+        // mTalon.selectProfileSlot(Constants.SlotIdx, 0);
+        // mTalon.config_kP(Constants.SlotIdx, Constants.kWristTalonKP, Constants.kTimeoutMs );
+        // mTalon.config_kI(Constants.SlotIdx, Constants.kWristKI, Constants.kTimeoutMs );
+        // mTalon.config_kD(Constants.SlotIdx, Constants.kWristKD, Constants.kTimeoutMs);
+        // mTalon.config_kF(Constants.SlotIdx, Constants.kWristTalonKF, Constants.kTimeoutMs );
+        // mTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000, 1000);
+        // mTalon.configClosedloopRamp(0, Constants.kTimeoutMs);
+        // mTalon.overrideLimitSwitchesEnable(false);
         
-        mTalon.setNeutralMode(NeutralMode.Brake);
+        // mTalon.setNeutralMode(NeutralMode.Brake);
 
-        /* choose to ensure sensor is positive when output is positive */
-        mTalon.setSensorPhase(Constants.kSensorPhase);
+        // /* choose to ensure sensor is positive when output is positive */
+        // mTalon.setSensorPhase(Constants.kSensorPhase);
 
-        /* choose based on what direction you want forward/positive to be.
-         * This does not affect sensor phase. */ 
-        mTalon.setInverted(true); //Constants.kMotorInvert);
+        // /* choose based on what direction you want forward/positive to be.
+        //  * This does not affect sensor phase. */ 
+        // mTalon.setInverted(true); //Constants.kMotorInvert);
 
-        /* set the peak and nominal outputs, 12V means full */
-        mTalon.configNominalOutputForward(0, Constants.kTimeoutMs);
-        mTalon.configNominalOutputReverse(0, Constants.kTimeoutMs);
-        mTalon.configPeakOutputForward(0.75, Constants.kTimeoutMs);
-        mTalon.configPeakOutputReverse(-0.5, Constants.kTimeoutMs);
-        /*
-         * set the allowable closed-loop error, Closed-Loop output will be
-         * neutral within this range. See Table in Section 17.2.1 for native
-         * units per rotation.
-         */
-        mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 3, Constants.kTimeoutMs);
+        // /* set the peak and nominal outputs, 12V means full */
+        // mTalon.configNominalOutputForward(0, Constants.kTimeoutMs);
+        // mTalon.configNominalOutputReverse(0, Constants.kTimeoutMs);
+        // mTalon.configPeakOutputForward(0.75, Constants.kTimeoutMs);
+        // mTalon.configPeakOutputReverse(-0.5, Constants.kTimeoutMs);
+        // /*
+        //  * set the allowable closed-loop error, Closed-Loop output will be
+        //  * neutral within this range. See Table in Section 17.2.1 for native
+        //  * units per rotation.
+        //  */
+        // mTalon.configAllowableClosedloopError(Constants.kPIDLoopIdx, 3, Constants.kTimeoutMs);
 
     }
     	
@@ -138,7 +138,7 @@ public class Wrist extends Subsystem {
                 mWantedPosition = WristPositions.STARTINGPOSITION;
                 mPositionChanged = false;
                 mCurrentStateStartTime = timestamp;
-                mTalon.setSelectedSensorPosition(0, 0, 10);             
+                //mTalon.setSelectedSensorPosition(0, 0, 10);             
               //  DriverStation.reportError("Wrist SystemState: " + mSystemState, false);
             }
         }
@@ -188,14 +188,14 @@ public class Wrist extends Subsystem {
     
     private SystemState handleIdle() {
         if (mStateChanged) {
-            mTalon.set(ControlMode.PercentOutput, 0);
+            //mTalon.set(ControlMode.PercentOutput, 0);
         }
         return defaultStateTransfer();
     }
 
     private SystemState handleWristTracking() {
         if (mPositionChanged) {
-            mTalon.set(ControlMode.Position, mWantedPosition.getPos());
+            //mTalon.set(ControlMode.Position, mWantedPosition.getPos());
             mPositionChanged = false;
         }
 	    return defaultStateTransfer();
@@ -225,8 +225,8 @@ public class Wrist extends Subsystem {
         SmartDashboard.putString("WristWantState", mWantedState.name());
         //SmartDashboard.putNumber("WristWantState", (double)mWantedState.ordinal());
         SmartDashboard.putString("WristWantPos", mWantedPosition.toString());
-        SmartDashboard.putNumber("WristCurPos", mTalon.getSelectedSensorPosition(0));
-        SmartDashboard.putNumber("WristQuadPos", mTalon.getSensorCollection().getQuadraturePosition());
+        //SmartDashboard.putNumber("WristCurPos", mTalon.getSelectedSensorPosition(0));
+        //SmartDashboard.putNumber("WristQuadPos", mTalon.getSensorCollection().getQuadraturePosition());
         //SmartDashboard.putBoolean("WristRevSw", mTalon.getSensorCollection().isRevLimitSwitchClosed());
         //SmartDashboard.putBoolean("WristLastRevSw", mRevSwitchSet);
     }
@@ -243,7 +243,7 @@ public class Wrist extends Subsystem {
     
     @Override
     public void zeroSensors() {
-        mTalon.set(ControlMode.PercentOutput, 0);
+        //mTalon.set(ControlMode.PercentOutput, 0);
     }
 
     @Override

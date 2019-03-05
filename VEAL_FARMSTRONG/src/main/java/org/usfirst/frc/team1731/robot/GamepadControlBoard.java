@@ -16,6 +16,7 @@ public class GamepadControlBoard implements ControlBoardInterface {
     private final Joystick mOperator;
 
     private Boolean invertDrivePrevious = Boolean.FALSE;
+    private Boolean toggleDriveSpeedPrevious = Boolean.FALSE;
     private static ControlBoardInterface mInstance = null;
     
     public static ControlBoardInterface getInstance() {
@@ -97,7 +98,8 @@ public class GamepadControlBoard implements ControlBoardInterface {
         boolean right_trigger = (Math.abs(mDriver.getRawAxis(3)) > 0.8);
         if (mDriver.getRawButton(7) && mDriver.getRawButton(8)) {
             return 2; // retract climber/legolift
-        } else if (left_trigger && right_trigger) {
+        } else if (left_trigger && right_trigger
+                 && mOperator.getRawButton(2    )) { // SAFETY! button B on operator controller
             return 1; // extend climber/legolift
         }
         return 0; // pause/stop climber
@@ -210,8 +212,16 @@ public class GamepadControlBoard implements ControlBoardInterface {
     }
 
 	@Override
-    public boolean getTestWrist(){
-        return mDriver.getRawButton(4);
+    public boolean getToggleDriveSpeed(){
+        boolean toggleDriveSpeed=false;
+        synchronized(toggleDriveSpeedPrevious){
+            boolean toggleDriveSpeedCurrent= mDriver.getRawButton(9);
+            if(toggleDriveSpeedCurrent && !toggleDriveSpeedPrevious){
+                toggleDriveSpeed=true;
+            }
+            toggleDriveSpeedPrevious = toggleDriveSpeedCurrent;
+        }
+        return toggleDriveSpeed;
     }
 
     /*

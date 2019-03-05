@@ -13,7 +13,6 @@ import org.usfirst.frc.team1731.robot.RobotState;
 import org.usfirst.frc.team1731.robot.ShooterAimingParameters;
 import org.usfirst.frc.team1731.robot.loops.Loop;
 import org.usfirst.frc.team1731.robot.loops.Looper;
-import org.usfirst.frc.team1731.robot.subsystems.Wrist.WristPositions;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -73,7 +72,7 @@ public class Superstructure extends Subsystem {
     //private final RevRoboticsAirPressureSensor mAirPressureSensor = new RevRoboticsAirPressureSensor(3);
     private final Climber mClimber = Climber.getInstance();
     
-    private final Wrist mWrist = Wrist.getInstance();
+   // private final Wrist mWrist = Wrist.getInstance();
 
     // Superstructure doesn't own the drive, but needs to access it
     private final Drive mDrive = Drive.getInstance();
@@ -259,10 +258,10 @@ public class Superstructure extends Subsystem {
         private SystemState handleStartingConfiguration(){
             mBeakSwinger.set(DoubleSolenoid.Value.kForward);
             mBeakLips.set(DoubleSolenoid.Value.kReverse);
-            mTopRoller.set(DoubleSolenoid.Value.kReverse); //per Brent L.
+            mTopRoller.set(DoubleSolenoid.Value.kForward);
             mMustache.set(DoubleSolenoid.Value.kReverse);
             mClimber.setWantedState(Climber.WantedState.IDLE);
-            mWrist.setWantedPosition(WristPositions.STARTINGPOSITION);
+           // mWrist.setWantedPosition(WristPositions.STARTINGPOSITION);
             seWristtWantedPosition(WantedWristPosition.STARTINGPOSITION);
 
             switch (mWantedState) {
@@ -936,6 +935,16 @@ public class Superstructure extends Subsystem {
                 mRotateWristLong.set(DoubleSolenoid.Value.kForward);
         }
 
+    }
+
+    public void closeBeak() {
+        mBeakLips.set(DoubleSolenoid.Value.kForward);
+
+    }
+
+    public void uproller() {
+        mTopRoller.set(DoubleSolenoid.Value.kReverse);
+        seWristtWantedPosition(WantedWristPosition.STRAIGHTAHEAD);
     }
 
     public void setOverrideCompressor(boolean force_off) {
