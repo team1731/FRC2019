@@ -8,9 +8,6 @@ import org.usfirst.frc.team1731.robot.Kinematics;
 import org.usfirst.frc.team1731.robot.RobotState;
 import org.usfirst.frc.team1731.robot.subsystems.Drive;
 
-import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 /**
  * Periodically estimates the state of the robot using the robot's distance traveled (compares two waypoints), gyroscope
  * orientation, and velocity, among various other factors. Similar to a car's odometer.
@@ -30,74 +27,16 @@ public class RobotStateEstimator implements Loop {
     double left_encoder_prev_distance_ = 0;
     double right_encoder_prev_distance_ = 0;
 
-    //#region Vision Camera Variables
-    boolean visionCamAvailable = false;
-    double visionCamXPosition;
-
-    public boolean GetVisionCamAvailable(){
-        return visionCamAvailable;
-    }
-
-    public double GetVisionCamXPosition(){
-        return visionCamXPosition;
-    }
-    //#endregion
-
-
     @Override
     public synchronized void onStart(double timestamp) {
         left_encoder_prev_distance_ = drive_.getLeftDistanceInches();
         right_encoder_prev_distance_ = drive_.getRightDistanceInches();
-        SmartDashboard.putString("RawVisionCamData_Raw", "0");
-        SmartDashboard.putString("SentVisionCamData", "0");
-        AttemptVisionCamConnection();
     }
 
     private ControlBoardInterface mControlBoard = GamepadControlBoard.getInstance();
-    private SerialPort visionCam;
-
-    private void AttemptVisionCamConnection(){
-        try {
-            visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
-        } catch(Exception e){
-            visionCam = null;
-            visionCamAvailable = false;
-            System.out.println(e.toString());
-        }
-    }
 
     @Override
     public synchronized void onLoop(double timestamp) {
-
-        //#region Vision Camera
-
-        boolean tracktorDrive = mControlBoard.getTractorDrive();
-        if(visionCam == null){
-            visionCamAvailable = false;
-            AttemptVisionCamConnection();
-        } else {
-            String visionTargetPositions_Raw = visionCam.readString();
-            String[] visionTargetPositions = visionTargetPositions_Raw.split(";");
-            visionCamAvailable = visionTargetPositions[0].length() > 0 && visionTargetPositions[0] != null;
-            int wantedIndex = visionTargetPositions.length-1;
-            while(visionTargetPositions[wantedIndex].length() != 3 && visionTargetPositions[wantedIndex].length() != 5){
-                if(wantedIndex <= 0){
-                    break;
-                }
-                wantedIndex--;
-            }
-            SmartDashboard.putString("RawVisionCamData_Raw", visionTargetPositions_Raw);
-            SmartDashboard.putString("SentVisionCamData", visionTargetPositions[wantedIndex]);
-            try {
-                visionCamXPosition = Double.valueOf(visionTargetPositions[wantedIndex]);
-            } catch(Exception e){
-                visionCamAvailable = false;
-                visionCamXPosition = -1;
-            }
-        }
-
-        //#endregion
-
         //#region Original Estimator Code
         final double left_distance = drive_.getLeftDistanceInches();
         final double right_distance = drive_.getRightDistanceInches();

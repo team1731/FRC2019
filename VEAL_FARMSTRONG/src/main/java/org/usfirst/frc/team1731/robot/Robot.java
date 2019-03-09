@@ -41,6 +41,7 @@ import org.usfirst.frc.team1731.robot.auto.modes.spacey.Mode_I;
 import org.usfirst.frc.team1731.robot.auto.modes.spacey.Mode_J;
 import org.usfirst.frc.team1731.robot.loops.Looper;
 import org.usfirst.frc.team1731.robot.loops.RobotStateEstimator;
+import org.usfirst.frc.team1731.robot.loops.VisionCamProcessor;
 import org.usfirst.frc.team1731.robot.subsystems.ConnectionMonitor;
 import org.usfirst.frc.team1731.robot.subsystems.Drive;
 import org.usfirst.frc.team1731.robot.subsystems.Elevator;
@@ -95,6 +96,7 @@ public class Robot extends TimedRobot {
     private RobotState mRobotState = RobotState.getInstance();
     private AutoModeExecuter mAutoModeExecuter = null;
     private RobotStateEstimator mRobotStateEstimator = RobotStateEstimator.getInstance();
+    private VisionCamProcessor mVisionCamProcessor = VisionCamProcessor.getInstance();
 
     private AutoModeBase[] autoModesToExecute;
 
@@ -213,7 +215,8 @@ public class Robot extends TimedRobot {
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
 
-          mEnabledLooper.register(mRobotStateEstimator); // THIS IS NEEDED FOR AUTO TO WORK  Commented out to get CPU down!!!!!!!!
+            mEnabledLooper.register(mRobotStateEstimator);
+            mEnabledLooper.register(mVisionCamProcessor); 
 
             //http://roborio-1731-frc.local:1181/?action=stream
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
@@ -498,10 +501,10 @@ public class Robot extends TimedRobot {
 
                 SmartDashboard.putNumber("VisionTurnValue", 0);
                 SmartDashboard.putString("VisionStatusRobot.java", "Checking for vision cam...");
-                if(true && mRobotStateEstimator.GetVisionCamAvailable()){
+                if(true && mVisionCamProcessor.GetVisionCamAvailable()){
                     try {
                         SmartDashboard.putString("VisionStatusRobot.java", "Setting turn value...");
-                        turn = (mRobotStateEstimator.GetVisionCamXPosition()-160)/160;
+                        turn = (mVisionCamProcessor.GetVisionCamXPosition()-160)/160;
                         SmartDashboard.putNumber("VisionTurnValue", turn);
                     } catch(NumberFormatException e){
                         SmartDashboard.putString("VisionStatusRobot.java", "An exception ocurred...");
