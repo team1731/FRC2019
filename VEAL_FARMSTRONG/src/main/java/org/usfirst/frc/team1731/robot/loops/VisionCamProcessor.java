@@ -1,5 +1,7 @@
 package org.usfirst.frc.team1731.robot.loops;
 
+import java.util.Arrays;
+
 import org.usfirst.frc.team1731.robot.ControlBoardInterface;
 import org.usfirst.frc.team1731.robot.GamepadControlBoard;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -20,14 +22,19 @@ public class VisionCamProcessor implements Loop {
     }
 
     //#region Vision Camera Variables
-    boolean visionCamAvailable = false;
-    double visionCamXPosition;
+    boolean visionCamAvailable;
+    boolean visionCamHasTarget;
+    int visionCamXPosition;
 
-    public boolean GetVisionCamAvailable(){
+    public boolean getVisionCamAvailable(){
         return visionCamAvailable;
     }
 
-    public double GetVisionCamXPosition(){
+    public boolean getVisionCamHasTarget(){
+        return visionCamHasTarget;
+    }
+
+    public int getVisionCamXPosition(){
         return visionCamXPosition;
     }
     //#endregion
@@ -36,18 +43,20 @@ public class VisionCamProcessor implements Loop {
     @Override
     public synchronized void onStart(double timestamp) {
         SmartDashboard.putString("RawVisionCamData_Raw", "0");
-        SmartDashboard.putString("SentVisionCamData", "0");
-        AttemptVisionCamConnection();
+        blanks = 0;
+        visionCamAvailable = false;
+        visionCamHasTarget = false;
+        attemptVisionCamConnection();
     }
 
-    private ControlBoardInterface mControlBoard = GamepadControlBoard.getInstance();
     private SerialPort visionCam;
+    private int blanks;
 
-    private void AttemptVisionCamConnection(){
+    private void attemptVisionCamConnection(){
         try {
             visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
+            visionCamAvailable = true;
         } catch(Exception e){
-            visionCam = null;
             visionCamAvailable = false;
             System.out.println(e.toString());
         }
@@ -55,36 +64,46 @@ public class VisionCamProcessor implements Loop {
 
     @Override
     public synchronized void onLoop(double timestamp) {
-
-        boolean tracktorDrive = mControlBoard.getTractorDrive();
-        if(visionCam == null){
-            visionCamAvailable = false;
-            AttemptVisionCamConnection();
-        } else {
-            String visionTargetPositions_Raw = visionCam.readString();
+        if(!visionCamAvailable){
+            attemptVisionCamConnection();
+        }
+        if(visionCamAvailable){
+            String visionTargetPositions_Raw = visionCam.readString().trim();
             String[] visionTargetPositions = visionTargetPositions_Raw.split(";");
-            visionCamAvailable = visionTargetPositions[0].length() > 0 && visionTargetPositions[0] != null;
-            int wantedIndex = visionTargetPositions.length-1;
-            while(visionTargetPositions[wantedIndex].length() != 3 && visionTargetPositions[wantedIndex].length() != 5){
-                if(wantedIndex <= 0){
-                    break;
+            if(visionTargetPositions.length > 0){
+                try{
+                    String stringValue = visionTargetPositions[0].trim();
+                    if(stringValue.length() > 0){
+                        visionCamXPosition = Integer.parseInt(stringValue);
+                        visionCamHasTarget = true;
+                        blanks = 0;
+                    }
+                    else{
+                        blanks++;
+                    }
                 }
-                wantedIndex--;
+                catch(Exception e){
+                    System.out.println(e);
+                    visionCamHasTarget = false;
+                }
+            }
+            if(blanks > 5){
+                visionCamHasTarget = false;
+                blanks = 0;
             }
             SmartDashboard.putString("RawVisionCamData_Raw", visionTargetPositions_Raw);
-            SmartDashboard.putString("SentVisionCamData", visionTargetPositions[wantedIndex]);
-            try {
-                visionCamXPosition = Double.valueOf(visionTargetPositions[wantedIndex]);
-            } catch(Exception e){
-                visionCamAvailable = false;
-                visionCamXPosition = -1;
+            if(visionCamHasTarget){
+                SmartDashboard.putNumber("visionCamXPosition", visionCamXPosition);
+            }
+            else{
+                SmartDashboard.putString("visionCamXPosition", "NO DATA");
             }
         }
     }
 
     @Override
     public void onStop(double timestamp) {
-        // no-op
+        visionCamHasTarget = false;
     }
 
 }

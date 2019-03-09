@@ -197,7 +197,7 @@ public class Robot extends TimedRobot {
                 System.out.println(t.toString());
             }
     */
-            String tractorGain = SmartDashboard.getString("TractorGain", "1.1");
+            String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
 
       //      autoCode = SmartDashboard.getString("AutoCode", "L"); // or R
      //       autoModesToExecute = determineAutoModesToExecute(autoCode);
@@ -381,6 +381,9 @@ public class Robot extends TimedRobot {
     public void periodic() {
         try {
             greenLEDRingLight.set(false); // turn on the light during teleop
+            
+            //arduino.setcolor(mVisionCamProcessor.getVisionCamHasTarget() ? GREEN : RED);
+            SmartDashboard.putBoolean("visionCamHasTarget", mVisionCamProcessor.getVisionCamHasTarget());
 
             double timestamp = Timer.getFPGATimestamp();
 
@@ -495,57 +498,26 @@ public class Robot extends TimedRobot {
                 }
             }
 
-            //TODO: Fix everything
-            //else if(climber != 1){
+            else if(climber != 1){
                 stopAuto(); // if none of the above 4 auto buttons is being held down and we're not climbing
 
-                SmartDashboard.putNumber("VisionTurnValue", 0);
-                SmartDashboard.putString("VisionStatusRobot.java", "Checking for vision cam...");
-                if(true && mVisionCamProcessor.GetVisionCamAvailable()){
+                if(mControlBoard.getTractorDrive() && mVisionCamProcessor.getVisionCamHasTarget()){
                     try {
-                        SmartDashboard.putString("VisionStatusRobot.java", "Setting turn value...");
-                        turn = (mVisionCamProcessor.GetVisionCamXPosition()-160)/160;
+                        String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
+                        mTractorBeamGain = Double.parseDouble(tractorGain);
+                        turn = mTractorBeamGain*((mVisionCamProcessor.getVisionCamXPosition()-160)/160);
                         SmartDashboard.putNumber("VisionTurnValue", turn);
                     } catch(NumberFormatException e){
                         SmartDashboard.putString("VisionStatusRobot.java", "An exception ocurred...");
                         System.out.println(e.toString());
                     }
-                    arduinoLedOutput(Constants.kArduino_GREEN);
+                    arduinoLedOutput(Constants.kArduino_BLUE);    
+                    tractorIndicator = Boolean.TRUE;
+                } else {
+                    arduinoLedOutput(Constants.kArduino_RED);
+                    tractorIndicator = Boolean.FALSE;
                 }
 
-                /*
-                if (visionCam != null) {
-                    String[] visionTargetPositions = visionCam.readString().split(",");
-                    if(visionTargetPositions.length > 0){
-                        try{
-                            String xPosStr = visionTargetPositions[0];
-                            double xPos = Double.parseDouble(xPosStr);
-                            if (tractorDrive) {
-                                String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
-                                mTractorBeamGain = Double.parseDouble(tractorGain);
-                                turn = mTractorBeamGain*(xPos-160)/160; 
-                               
-                                System.out.println("xPos ===== " + xPos + "  ------ TURN ==== " + turn);
-                            }
-    
-                            arduinoLedOutput(Constants.kArduino_BLUE);    
-                            tractorIndicator = Boolean.TRUE;  
-                        }
-                        catch(Throwable t){
-                            arduinoLedOutput(Constants.kArduino_RED);
-                            tractorIndicator = Boolean.FALSE;
-                        }
-                    }
-                    else {
-                        System.out.println("No data received from vision camera");
-                        arduinoLedOutput(Constants.kArduino_RED);
-                        tractorIndicator = Boolean.FALSE;
-                    }
-                }
-                */
-
-                //regular cheesy drive
-                //regular cheesy drive
                 //regular cheesy drive
                 if(driveSpeedIsToggled){
                     throttle *= 0.5;//'slow' driver controller speed
@@ -558,11 +530,11 @@ public class Robot extends TimedRobot {
                     arduinoLedOutput(Constants.kArduino_BLUEW);
                 }
                 mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
-                !mControlBoard.getLowGear()));
+                                                                    !mControlBoard.getLowGear()));
                 boolean wantLowGear = mControlBoard.getLowGear();
                 mDrive.setHighGear(!wantLowGear);
                 mClimber.setWantedState(Climber.WantedState.IDLE);
-            //}
+            }
             //else{
             //    stopAuto(); // if none of the above 4 auto buttons is being held down and we're climbing
                             // NOTE: the superstructure controls the drive wheels during a climb
@@ -697,7 +669,7 @@ public class Robot extends TimedRobot {
        //bdl  mSubsystemManager.writeToLog();
        //bdl  mEnabledLooper.outputToSmartDashboard();
 
-     //    SmartDashboard.putBoolean("Tractor Beam", tractorIndicator);
+        SmartDashboard.putBoolean("Tractor Beam", tractorIndicator);
         // SmartDashboard.putString("AutoCodesReceived", autoCodes);
         // //SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));
         // SmartDashboard.putBoolean("Cal Dn", mControlBoard.getCalibrateDown());
