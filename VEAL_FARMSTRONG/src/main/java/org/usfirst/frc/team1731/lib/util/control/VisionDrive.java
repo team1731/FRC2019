@@ -12,6 +12,7 @@ public class VisionDrive extends TimedRobot {
 
     @Override
     public void robotInit() {
+        /*
         String[] visionTargetPosition = visionCam.readString().split(",");
         if(visionTargetPosition.length > 0){
             System.out.println("x: "+visionTargetPosition[0]+ ", y: "+visionTargetPosition[1]);
@@ -19,7 +20,7 @@ public class VisionDrive extends TimedRobot {
             System.out.println("No data received from vision camera");
         }
         //x,y
-        
+        */
     }
 
 }

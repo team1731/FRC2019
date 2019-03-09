@@ -491,14 +491,20 @@ public class Robot extends TimedRobot {
                     //mAutoModeExecuter.start();
                 }
             }
-            else if(climber != 1){
+
+            //TODO: Fix everything
+            //else if(climber != 1){
                 stopAuto(); // if none of the above 4 auto buttons is being held down and we're not climbing
 
-                if(mControlBoard.getTractorDrive() && mRobotStateEstimator.GetVisionCamAvailable()){
+                SmartDashboard.putNumber("VisionTurnValue", 0);
+                SmartDashboard.putString("VisionStatusRobot.java", "Checking for vision cam...");
+                if(true && mRobotStateEstimator.GetVisionCamAvailable()){
                     try {
+                        SmartDashboard.putString("VisionStatusRobot.java", "Setting turn value...");
                         turn = (mRobotStateEstimator.GetVisionCamXPosition()-160)/160;
                         SmartDashboard.putNumber("VisionTurnValue", turn);
                     } catch(NumberFormatException e){
+                        SmartDashboard.putString("VisionStatusRobot.java", "An exception ocurred...");
                         System.out.println(e.toString());
                     }
                     arduinoLedOutput(Constants.kArduino_GREEN);
@@ -553,11 +559,11 @@ public class Robot extends TimedRobot {
                 boolean wantLowGear = mControlBoard.getLowGear();
                 mDrive.setHighGear(!wantLowGear);
                 mClimber.setWantedState(Climber.WantedState.IDLE);
-            }
-            else{
-                stopAuto(); // if none of the above 4 auto buttons is being held down and we're climbing
+            //}
+            //else{
+            //    stopAuto(); // if none of the above 4 auto buttons is being held down and we're climbing
                             // NOTE: the superstructure controls the drive wheels during a climb
-            }
+            //}
 
             allPeriodic();
         } catch (Throwable t) {
