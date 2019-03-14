@@ -203,7 +203,7 @@ public class Robot extends TimedRobot {
     */
             String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
 
-      //      autoCode = SmartDashboard.getString("AutoCode", "L"); // or R
+            autoCode = SmartDashboard.getString("AutoCode", "L"); // or R
      //       autoModesToExecute = determineAutoModesToExecute(autoCode);
     
             greenLEDRingLight = new DigitalOutput(0);
@@ -233,9 +233,9 @@ public class Robot extends TimedRobot {
             catch (Throwable t) {
                 System.out.println("Exception while connecting driver camera: " + t.toString());
             }
-      //      SmartDashboard.putString(AUTO_CODE, "L");
+            SmartDashboard.putString(AUTO_CODE, "L");
 
-      //      SmartDashboard.putString("TractorGain", "1.2");   
+            SmartDashboard.putString("TractorGain", "1.2");   
             
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
@@ -521,7 +521,7 @@ public class Robot extends TimedRobot {
                     try {
                         String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
                         mTractorBeamGain = Double.parseDouble(tractorGain);
-                        turn = mTractorBeamGain*((mVisionCamProcessor.getVisionCamXPosition()-160)/160);
+                        turn = mTractorBeamGain*((mVisionCamProcessor.getVisionCamXPosition()-160)/160.0);
                         SmartDashboard.putNumber("VisionTurnValue", turn);
                     } catch(NumberFormatException e){
                         SmartDashboard.putString("VisionStatusRobot.java", "An exception ocurred...");
