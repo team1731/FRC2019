@@ -24,6 +24,7 @@ public class NavX {
                 }
                 mLastSensorTimestampMs = sensor_timestamp;
                 mYawDegrees = -update.yaw;
+
             }
         }
     }
@@ -38,6 +39,7 @@ public class NavX {
 
     public NavX(SPI.Port spi_port_id) {
         mAHRS = new AHRS(spi_port_id, (byte) 200);
+       mAHRS.enableBoardlevelYawReset(true); // bdl -added this because sw reset didnt seem to work
         resetState();
         mAHRS.registerCallback(new Callback(), null);
     }

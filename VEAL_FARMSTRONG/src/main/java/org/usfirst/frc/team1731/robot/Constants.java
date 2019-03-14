@@ -45,7 +45,7 @@ public class Constants extends ConstantsBase {
     /* ROBOT PHYSICAL CONSTANTS */
     // encoder has 4096 /3 tics per revolution
     // Wheels  was 3.4149
-    public static double kDriveWheelDiameterInches = 24;  //factor of 3 in
+    public static double kDriveWheelDiameterInches = 8;  //factor of 3 in
     public static double kTrackWidthInches = 22.00;
     public static double kTrackScrubFactor = 0.924;
 
@@ -68,10 +68,10 @@ public class Constants extends ConstantsBase {
 
     // PID gains for drive velocity loop (HIGH GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveHighGearVelocityKp = 3.0;   //cheezy guys had 1.2
+    public static double kDriveHighGearVelocityKp = 1.5;   //cheezy guys had 1.2
     public static double kDriveHighGearVelocityKi = 0.0;
-    public static double kDriveHighGearVelocityKd = 30.0;    //cheezy guys had 6.0
-    public static double kDriveHighGearVelocityKf = 0.97;    //cheezy guys had .15. Orig: 0.7
+    public static double kDriveHighGearVelocityKd = 6;    //cheezy guys had 6.0
+    public static double kDriveHighGearVelocityKf = 0.39;    //cheezy guys had .15. Orig: 0.7
     public static int kDriveHighGearVelocityIZone = 0;
     public static double kDriveHighGearVelocityRampRate = 0.05;// 240.0;
     public static double kDriveHighGearNominalOutput = 0.0;   // cheezy gusy had .5
@@ -79,10 +79,10 @@ public class Constants extends ConstantsBase {
 
     // PID gains for drive velocity loop (LOW GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveLowGearPositionKp = 1;  // was 1.0
+    public static double kDriveLowGearPositionKp = 2;  // was 1.0
     public static double kDriveLowGearPositionKi = 0;   // was 0
-    public static double kDriveLowGearPositionKd = 0; // was 100
-    public static double kDriveLowGearPositionKf = 2.62; // was 2.62 ---- 0.(9)7 * 2.7 gear ratio. Orig: 1.91
+    public static double kDriveLowGearPositionKd = 30.0; // was 100
+    public static double kDriveLowGearPositionKf = 0.39; // was 2.62 ---- 0.(9)7 * 2.7 gear ratio. Orig: 1.91
     public static int kDriveLowGearPositionIZone = 0; // was 0
     public static double kDriveLowGearPositionRampRate = 0.05; // was 0.05//240.0; // V/s
     public static double kDriveLowGearNominalOutput = 0.05; // was 0.05// V
@@ -95,10 +95,10 @@ public class Constants extends ConstantsBase {
     // 6.0:1
     // 16.37:1
     // 
-    public static int kDriveLowGearMaxVelocity = 400;  //these are units of units per 100ms - bdl - this number works out to 3.92 ft/sec
+    public static int kDriveLowGearMaxVelocity = 1600;  //these are units of units per 100ms - bdl - this number works out to 3.92 ft/sec
     
     //public static double kDriveLowGearMaxAccel = 18.0 * 12.0 * 60.0 / (Math.PI * kDriveWheelDiameterInches); // 18 fps/s
-    public static int kDriveLowGearMaxAccel = 400;  //These are   in units per 100ms                                                                                                       // in RPM/s
+    public static int kDriveLowGearMaxAccel = 2400;  //These are   in units per 100ms                                                                                                       // in RPM/s
 
     public static double kDriveVoltageCompensationRampRate = 0.0;
 
@@ -217,16 +217,16 @@ public class Constants extends ConstantsBase {
     public static double kClimberRetractPercent = -1.0; //-0.6;
 
    
-    public static int kClimberRetractedPositionLeft = 20; //left is 25
-    public static int kClimberDartsHaveHitTheFloorLeft = 220;
-    public static int kClimberDartsHaveDetachedLeft = 620;
-    public static int kClimberExtendedPositionLeft =  kClimberRetractedPositionLeft + 810; // +9.5 inches ( was 670; )
+    public static int kClimberRetractedPositionLeft = 70; //left is 25
+    public static int kClimberDartsHaveHitTheFloorLeft = 300;
+    public static int kClimberDartsHaveDetachedLeft = 700;
+    public static int kClimberExtendedPositionLeft =  kClimberRetractedPositionLeft + 800; // +9.5 inches ( was 670; )
     
 
-    public static int kClimberRetractedPositionRight = 204; //right is 225
-    public static int kClimberDartsHaveHittheFloorRight = 400;
-    public static int kClimberDartsHaveDetachedRight = 800;
-    public static int kClimberExtendedPositionRight = kClimberRetractedPositionRight + 810; // +9.5 inches (was 875;)
+    public static int kClimberRetractedPositionRight = 70; //right is 225
+    public static int kClimberDartsHaveHittheFloorRight = 300;
+    public static int kClimberDartsHaveDetachedRight = 700;
+    public static int kClimberExtendedPositionRight = kClimberRetractedPositionRight + 800; // +9.5 inches (was 875;)
 
 
     public static int kClimberStartWheelsLeft = 600;

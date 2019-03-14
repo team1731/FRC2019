@@ -65,7 +65,7 @@ public class VisionCamProcessor implements Loop {
     @Override
     public synchronized void onLoop(double timestamp) {
         if(!visionCamAvailable){
-            attemptVisionCamConnection();
+         //   attemptVisionCamConnection();
         }
         if(visionCamAvailable){
             String visionTargetPositions_Raw = visionCam.readString().trim();

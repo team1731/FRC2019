@@ -14,8 +14,8 @@ import org.usfirst.frc.team1731.robot.auto.actions.ResetPoseFromPathAction;
 import org.usfirst.frc.team1731.robot.auto.actions.RotateIntakeActionUp;
 import org.usfirst.frc.team1731.robot.auto.actions.SpitAction;
 import org.usfirst.frc.team1731.robot.paths.spacey.Path_1_A;
-import org.usfirst.frc.team1731.robot.paths.LeftRocketFrontToFeedStationPath;
-import org.usfirst.frc.team1731.robot.paths.LeftRocketRearToFeedStationPath;
+import org.usfirst.frc.team1731.robot.paths.LeftRocketRearToFeedStationPath1;
+import org.usfirst.frc.team1731.robot.paths.LeftRocketRearToFeedStationPath2;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 import org.usfirst.frc.team1731.robot.paths.spacey.Path_1_B;
 
@@ -33,10 +33,11 @@ public class LeftRocketRearToFeedStationMode extends AutoModeBase {
     protected void routine() throws AutoModeEndedException {
     	System.out.println("Executing LeftRocketRearToFeedStationMode");
     	
-    	PathContainer Path = new LeftRocketRearToFeedStationPath();
-    	runAction(new ResetPoseFromPathAction(Path));
-        runAction(new ParallelAction(Arrays.asList(new Action[] {
-        		new DrivePathAction(Path)
-        })));
+    	PathContainer Path = new LeftRocketRearToFeedStationPath1();
+        runAction(new ResetPoseFromPathAction(Path));
+        runAction(new DrivePathAction(Path));
+        Path = new LeftRocketRearToFeedStationPath2();
+        runAction(new DrivePathAction(Path));      
+        
     }
 }

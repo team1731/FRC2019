@@ -16,7 +16,11 @@ import org.usfirst.frc.team1731.robot.Constants.ELEVATOR_POSITION;
 import org.usfirst.frc.team1731.robot.Constants.GRABBER_POSITION;
 import org.usfirst.frc.team1731.robot.auto.AutoModeBase;
 import org.usfirst.frc.team1731.robot.auto.AutoModeExecuter;
+import org.usfirst.frc.team1731.robot.auto.modes.LeftFeedStationToRocketRearMode;
+import org.usfirst.frc.team1731.robot.auto.modes.LeftRocketFrontToFeedStationMode;
+import org.usfirst.frc.team1731.robot.auto.modes.LeftFeedStationToRocketFrontMode;
 import org.usfirst.frc.team1731.robot.auto.modes.LeftRocketRearToFeedStationMode;
+import org.usfirst.frc.team1731.robot.auto.modes.LeftLevel1ToRocketRearMode;
 import org.usfirst.frc.team1731.robot.auto.modes.StandStillMode;
 import org.usfirst.frc.team1731.robot.auto.modes.TestAuto;
 import org.usfirst.frc.team1731.robot.auto.modes.spacey.Mode_1;
@@ -169,7 +173,7 @@ public class Robot extends TimedRobot {
     public void zeroAllSensors() {
         mSubsystemManager.zeroSensors();
         mRobotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
-        mDrive.zeroSensors();
+       // mDrive.zeroSensors(); subsystem manager does this
     }
 
     /**
@@ -216,7 +220,7 @@ public class Robot extends TimedRobot {
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
 
             mEnabledLooper.register(mRobotStateEstimator);
-            mEnabledLooper.register(mVisionCamProcessor); 
+          mEnabledLooper.register(mVisionCamProcessor); 
 
             //http://roborio-1731-frc.local:1181/?action=stream
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
@@ -257,7 +261,7 @@ public class Robot extends TimedRobot {
                 mAutoModeExecuter.stop();
             }
 
-            zeroAllSensors();
+           // zeroAllSensors();
             mSuperstructure.setWantedState(Superstructure.WantedState.IDLE);
             mSuperstructure.setOverrideCompressor(true);
 
@@ -471,30 +475,42 @@ public class Robot extends TimedRobot {
 
             if(mControlBoard.getAutoRearToFeederStation()){
                 if(mAutoModeExecuter == null){
-                    //mAutoModeExecuter = new AutoModeExecuter();
-                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.ROCKET_REAR_TO_FEED_STATION.getArrayPosition()]);
-                    //mAutoModeExecuter.start();    
+                    mAutoModeExecuter = new AutoModeExecuter();
+                   // mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.ROCKET_REAR_TO_FEED_STATION.getArrayPosition()]);
+                    mAutoModeExecuter.setAutoMode( new LeftRocketRearToFeedStationMode());
+                    mAutoModeExecuter.start();    
                 }
             }
             else if(mControlBoard.getAutoFeederStationToRear()){
                 if(mAutoModeExecuter == null){
-                    //mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter.setAutoMode( new LeftFeedStationToRocketRearMode());
                     //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_REAR.getArrayPosition()]);
-                    //mAutoModeExecuter.start();
+                    mAutoModeExecuter.start();
                 }
             }
             else if(mControlBoard.getAutoFrontToFeederStation()){
                 if(mAutoModeExecuter == null){
-                    //mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter.setAutoMode( new LeftRocketFrontToFeedStationMode());
                     //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.ROCKET_FRONT_TO_FEED_STATION.getArrayPosition()]);
-                    //mAutoModeExecuter.start();
+                    mAutoModeExecuter.start();
                 }
             }
             else if(mControlBoard.getAutoFeederStationToFront()){
                 if(mAutoModeExecuter == null){
-                    //mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter.setAutoMode( new LeftFeedStationToRocketFrontMode());
                     //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
-                    //mAutoModeExecuter.start();
+                    mAutoModeExecuter.start();
+                }
+            }
+            else if(mControlBoard.getAutoLevel1ToRear()){
+                if(mAutoModeExecuter == null){
+                    mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter.setAutoMode( new LeftLevel1ToRocketRearMode());
+                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
+                    mAutoModeExecuter.start();
                 }
             }
 
@@ -521,12 +537,12 @@ public class Robot extends TimedRobot {
                 //regular cheesy drive
                 if(driveSpeedIsToggled){
                     throttle *= 0.5;//'slow' driver controller speed
-                    turn *= 0.5;
+                    turn *= 0.3;
                     arduinoLedOutput(Constants.kArduino_YELLW);
                 }
                 else{
-                    throttle *= 0.8;//'normal' driver controller speed
-                    turn *= 0.8;
+                    throttle *= 0.9;//'normal' driver controller speed
+                    turn *= 0.5;
                     arduinoLedOutput(Constants.kArduino_BLUEW);
                 }
                 mDrive.setOpenLoop(mCheesyDriveHelper.cheesyDrive(throttle, turn, mControlBoard.getQuickTurn(),
@@ -635,7 +651,7 @@ public class Robot extends TimedRobot {
 
         double disabledTimestamp = Timer.getFPGATimestamp();
         if((disabledTimestamp - disabledTimestampSave) > 2){
-            //zeroAllSensors();
+            zeroAllSensors();
             disabledTimestampSave = disabledTimestamp;
         }
     }
@@ -664,10 +680,10 @@ public class Robot extends TimedRobot {
      * Helper function that is called in all periodic functions
      */
     public void allPeriodic() {
-       //bdl  mRobotState.outputToSmartDashboard();
-       //bdl  mSubsystemManager.outputToSmartDashboard();
-       //bdl  mSubsystemManager.writeToLog();
-       //bdl  mEnabledLooper.outputToSmartDashboard();
+         mRobotState.outputToSmartDashboard();
+         mSubsystemManager.outputToSmartDashboard();
+         mSubsystemManager.writeToLog();
+          mEnabledLooper.outputToSmartDashboard();
 
         SmartDashboard.putBoolean("Tractor Beam", tractorIndicator);
         // SmartDashboard.putString("AutoCodesReceived", autoCodes);

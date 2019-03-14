@@ -2,8 +2,6 @@ package org.usfirst.frc.team1731.robot.loops;
 
 import org.usfirst.frc.team1731.lib.util.math.Rotation2d;
 import org.usfirst.frc.team1731.lib.util.math.Twist2d;
-import org.usfirst.frc.team1731.robot.ControlBoardInterface;
-import org.usfirst.frc.team1731.robot.GamepadControlBoard;
 import org.usfirst.frc.team1731.robot.Kinematics;
 import org.usfirst.frc.team1731.robot.RobotState;
 import org.usfirst.frc.team1731.robot.subsystems.Drive;
@@ -33,7 +31,7 @@ public class RobotStateEstimator implements Loop {
         right_encoder_prev_distance_ = drive_.getRightDistanceInches();
     }
 
-    private ControlBoardInterface mControlBoard = GamepadControlBoard.getInstance();
+   // private ControlBoardInterface mControlBoard = GamepadControlBoard.getInstance();
 
     @Override
     public synchronized void onLoop(double timestamp) {

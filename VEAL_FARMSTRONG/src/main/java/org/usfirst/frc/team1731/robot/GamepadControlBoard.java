@@ -197,6 +197,12 @@ public class GamepadControlBoard implements ControlBoardInterface {
     public boolean getAutoFeederStationToFront(){
         return mDriver.getRawButton(2);
     }
+    public boolean getAutoLevel1ToRear(){
+        return mDriver.getRawButton(7);
+    }
+    public boolean getAutoLevel1ToCargoShip(){
+        return mDriver.getRawButton(8);
+    }
 
 	@Override
     public boolean getInvertDrive(){
@@ -222,7 +228,7 @@ public class GamepadControlBoard implements ControlBoardInterface {
             toggleDriveSpeedPrevious = toggleDriveSpeedCurrent;
         }
         return toggleDriveSpeed;
-    }
+    }                                         
 
     /*
     //OPERATOR

@@ -356,7 +356,9 @@ public class Drive extends Subsystem {
     @Override
     public void zeroSensors() {
         resetEncoders();
-        mNavXBoard.zeroYaw();
+       // mNavXBoard.zeroYaw();
+        mNavXBoard.reset();
+        mNavXBoard.setAngleAdjustment( Rotation2d.fromDegrees(0.0));
     }
 
     /**
@@ -435,12 +437,12 @@ public class Drive extends Subsystem {
      */
     private synchronized void updatePositionSetpoint(double left_position_inches, double right_position_inches) {
         if (usesTalonPositionControl(mDriveControlState)) {
-        	mLeftMaster.set(ControlMode.Position, inchesToRotations(left_position_inches));
-        	mRightMaster.set(ControlMode.Position, inchesToRotations(right_position_inches));
+        	mLeftMaster.set(ControlMode.MotionMagic, inchesToRotations(left_position_inches)*4096);
+        	mRightMaster.set(ControlMode.MotionMagic, inchesToRotations(right_position_inches)*4096);
         } else {
             System.out.println("Hit a bad position control state");
-            mLeftMaster.set(ControlMode.Position,0);
-            mRightMaster.set(ControlMode.Position,0);
+            mLeftMaster.set(ControlMode.MotionMagic,0);
+            mRightMaster.set(ControlMode.MotionMagic,0);
         }
     }
 
@@ -679,11 +681,11 @@ public class Drive extends Subsystem {
             mDriveControlState = DriveControlState.TURN_TO_HEADING;
             updatePositionSetpoint(getLeftDistanceInches(), getRightDistanceInches());
         }
-        if (Math.abs(heading.inverse().rotateBy(mTargetHeading).getDegrees()) > 1E-3) {
+     //   if (Math.abs(heading.inverse().rotateBy(mTargetHeading).getDegrees()) > 1E-3) {
             mTargetHeading = heading;
             mIsOnTarget = false;
-        }
-        setHighGear(false);
+     //   }
+     //   setHighGear(false);
     }
 
     /**

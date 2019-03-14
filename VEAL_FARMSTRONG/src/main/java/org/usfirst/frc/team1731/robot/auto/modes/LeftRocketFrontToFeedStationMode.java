@@ -12,11 +12,13 @@ import org.usfirst.frc.team1731.robot.auto.actions.ParallelAction;
 import org.usfirst.frc.team1731.robot.auto.actions.PickUpAction;
 import org.usfirst.frc.team1731.robot.auto.actions.ResetPoseFromPathAction;
 import org.usfirst.frc.team1731.robot.auto.actions.RotateIntakeActionUp;
-import org.usfirst.frc.team1731.robot.auto.actions.SpitAction;
+import org.usfirst.frc.team1731.robot.auto.actions.TurnToHeadingAction;
 import org.usfirst.frc.team1731.robot.paths.spacey.Path_1_A;
-import org.usfirst.frc.team1731.robot.paths.LeftRocketFrontToFeedStationPath;
+import org.usfirst.frc.team1731.robot.paths.LeftRocketFrontToFeedStationPath1;
+import org.usfirst.frc.team1731.robot.paths.LeftRocketFrontToFeedStationPath2;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 import org.usfirst.frc.team1731.robot.paths.spacey.Path_1_B;
+import org.usfirst.frc.team1731.lib.util.math.Rotation2d;
 
 /**
  * Scores the preload gear onto the boiler-side peg then deploys the hopper and shoots all 60 balls (10 preload + 50
@@ -32,10 +34,11 @@ public class LeftRocketFrontToFeedStationMode extends AutoModeBase {
     protected void routine() throws AutoModeEndedException {
     	System.out.println("Executing LeftRocketFrontToFeedStationMode");
     	
-    	PathContainer Path = new LeftRocketFrontToFeedStationPath();
-    	runAction(new ResetPoseFromPathAction(Path));
-        runAction(new ParallelAction(Arrays.asList(new Action[] {
-        		new DrivePathAction(Path)
-        })));
+    	PathContainer Path = new LeftRocketFrontToFeedStationPath1();
+        runAction(new ResetPoseFromPathAction(Path));
+        runAction(new DrivePathAction(Path));
+        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(180.0)));
+        Path = new LeftRocketFrontToFeedStationPath2();
+        runAction(new DrivePathAction(Path));
     }
 }

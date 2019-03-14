@@ -14,7 +14,6 @@ import org.usfirst.frc.team1731.robot.auto.actions.ResetPoseFromPathAction;
 import org.usfirst.frc.team1731.robot.auto.actions.RotateIntakeActionUp;
 import org.usfirst.frc.team1731.robot.auto.actions.SpitAction;
 import org.usfirst.frc.team1731.robot.paths.spacey.Path_1_A;
-import org.usfirst.frc.team1731.robot.paths.LeftRocketFrontToFeedStationPath;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 import org.usfirst.frc.team1731.robot.paths.RightRocketRearToFeedStationPath;
 import org.usfirst.frc.team1731.robot.paths.spacey.Path_1_B;

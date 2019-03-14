@@ -1,3 +1,4 @@
+
 package org.usfirst.frc.team1731.robot.paths;
 
 import java.util.ArrayList;
@@ -10,20 +11,22 @@ import org.usfirst.frc.team1731.robot.paths.PathBuilder;
 import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
-public class LeftRocketFrontToFeedStationPath implements PathContainer {
+public class LeftFeedStationToRocketRearPath1 implements PathContainer {
     
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(43,295,0,10));
-        sWaypoints.add(new Waypoint(19,295,0,0));
+        sWaypoints.add(new Waypoint(20,295,0,0));
+        sWaypoints.add(new Waypoint(223,264,0,120));
+        sWaypoints.add(new Waypoint(305,285,0,120));
+ 
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(43, 295), Rotation2d.fromDegrees(180.0)); 
+        return new RigidTransform2d(new Translation2d(19, 295), Rotation2d.fromDegrees(180.0)); 
     }
 
     @Override
