@@ -165,6 +165,21 @@ public class Robot extends TimedRobot {
         }
     }
 
+    private void attemptVisionCamConnection(VisionCamProcessor mVisionCamProcessor){
+        SmartDashboard.putBoolean("visionCamConnected", false);
+        try {
+            SerialPort visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
+            if(visionCam != null){
+                visionCam.writeString("streamoff");
+                visionCam.writeString("usbsd");
+                mVisionCamProcessor.setVisionCam(visionCam);
+                SmartDashboard.putBoolean("visionCamConnected", true);
+            }
+        } catch(Exception e){
+            System.out.println(e.toString());
+        }
+    }
+
     public Robot() {
         super(0.2);
         CrashTracker.logRobotConstruction();
@@ -191,6 +206,8 @@ public class Robot extends TimedRobot {
                 //mLED.setLEDOff();
             }
     
+            attemptVisionCamConnection(mVisionCamProcessor);
+
        /*     try{
                 if(visionCam == null){
                     visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
