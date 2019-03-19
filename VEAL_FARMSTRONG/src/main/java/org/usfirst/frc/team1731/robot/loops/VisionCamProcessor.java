@@ -12,13 +12,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * orientation, and velocity, among various other factors. Similar to a car's odometer.
  */
 public class VisionCamProcessor implements Loop {
-    static VisionCamProcessor instance_ = new VisionCamProcessor();
+    static VisionCamProcessor instance_;
 
     public static VisionCamProcessor getInstance() {
+        if(instance_ == null){
+            instance_ = new VisionCamProcessor();
+        }
         return instance_;
     }
 
-    VisionCamProcessor() {
+    private VisionCamProcessor() {
+    }
+
+    public void setVisionCam(SerialPort visionCam){
+        this.visionCam = visionCam;
+        if(this.visionCam != null){
+            this.visionCamAvailable = true;
+        }
     }
 
     //#region Vision Camera Variables
@@ -46,21 +56,10 @@ public class VisionCamProcessor implements Loop {
         blanks = 0;
         visionCamAvailable = false;
         visionCamHasTarget = false;
-        attemptVisionCamConnection();
     }
 
     private SerialPort visionCam;
     private int blanks;
-
-    private void attemptVisionCamConnection(){
-        try {
-            visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
-            visionCamAvailable = true;
-        } catch(Exception e){
-            visionCamAvailable = false;
-            System.out.println(e.toString());
-        }
-    }
 
     @Override
     public synchronized void onLoop(double timestamp) {
