@@ -1,9 +1,5 @@
 package org.usfirst.frc.team1731.robot.loops;
 
-import java.util.Arrays;
-
-import org.usfirst.frc.team1731.robot.ControlBoardInterface;
-import org.usfirst.frc.team1731.robot.GamepadControlBoard;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -24,11 +20,28 @@ public class VisionCamProcessor implements Loop {
     private VisionCamProcessor() {
     }
 
+    private SerialPort visionCam;
+
+    private void attemptVisionCamConnection(){
+        SmartDashboard.putBoolean("visionCamConnected", false);
+        try {
+            if(visionCam == null){
+                visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
+            }
+            if(visionCam != null){
+                //visionCam.writeString("streamoff\n");
+                //visionCam.writeString("usbsd\n");
+                visionCamAvailable = true;
+                SmartDashboard.putBoolean("visionCamConnected", true);
+            }
+        } catch(Exception e){
+            System.out.println(e.toString());
+        }
+    }
+
     public void setVisionCam(SerialPort visionCam){
         this.visionCam = visionCam;
-        if(this.visionCam != null){
-            this.visionCamAvailable = true;
-        }
+        visionCamAvailable = true;
     }
 
     //#region Vision Camera Variables
@@ -54,20 +67,23 @@ public class VisionCamProcessor implements Loop {
     public synchronized void onStart(double timestamp) {
         SmartDashboard.putString("RawVisionCamData_Raw", "0");
         blanks = 0;
-        visionCamAvailable = false;
+        attemptVisionCamConnection();
         visionCamHasTarget = false;
+        for(int i=0; i<1000; i++){
+            System.out.println("onStart called");
+        }
     }
 
-    private SerialPort visionCam;
     private int blanks;
 
     @Override
     public synchronized void onLoop(double timestamp) {
         if(!visionCamAvailable){
-         //   attemptVisionCamConnection();
+            attemptVisionCamConnection();
         }
         if(visionCamAvailable){
             String visionTargetPositions_Raw = visionCam.readString().trim();
+            System.out.println(visionTargetPositions_Raw);
             String[] visionTargetPositions = visionTargetPositions_Raw.split(";");
             if(visionTargetPositions.length > 0){
                 try{
@@ -90,13 +106,15 @@ public class VisionCamProcessor implements Loop {
                 visionCamHasTarget = false;
                 blanks = 0;
             }
-            SmartDashboard.putString("RawVisionCamData_Raw", visionTargetPositions_Raw);
             if(visionCamHasTarget){
                 SmartDashboard.putNumber("visionCamXPosition", visionCamXPosition);
             }
             else{
                 SmartDashboard.putString("visionCamXPosition", "NO DATA");
             }
+        }
+        else{
+            System.out.println("No vision cam");
         }
     }
 

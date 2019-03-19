@@ -165,21 +165,6 @@ public class Robot extends TimedRobot {
         }
     }
 
-    private void attemptVisionCamConnection(VisionCamProcessor mVisionCamProcessor){
-        SmartDashboard.putBoolean("visionCamConnected", false);
-        try {
-            SerialPort visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
-            if(visionCam != null){
-                visionCam.writeString("streamoff");
-                visionCam.writeString("usbsd");
-                mVisionCamProcessor.setVisionCam(visionCam);
-                SmartDashboard.putBoolean("visionCamConnected", true);
-            }
-        } catch(Exception e){
-            System.out.println(e.toString());
-        }
-    }
-
     public Robot() {
         super(0.2);
         CrashTracker.logRobotConstruction();
@@ -205,8 +190,6 @@ public class Robot extends TimedRobot {
             } else {
                 //mLED.setLEDOff();
             }
-    
-            attemptVisionCamConnection(mVisionCamProcessor);
 
        /*     try{
                 if(visionCam == null){
@@ -237,7 +220,6 @@ public class Robot extends TimedRobot {
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
 
             mEnabledLooper.register(mRobotStateEstimator);
-          mEnabledLooper.register(mVisionCamProcessor); 
 
             //http://roborio-1731-frc.local:1181/?action=stream
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
@@ -253,6 +235,7 @@ public class Robot extends TimedRobot {
             SmartDashboard.putString(AUTO_CODE, "L");
 
             SmartDashboard.putString("TractorGain", "1.2");   
+            mEnabledLooper.register(mVisionCamProcessor); 
             
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
@@ -402,7 +385,7 @@ public class Robot extends TimedRobot {
     public void periodic() {
         try {
             greenLEDRingLight.set(false); // turn on the light during teleop
-            
+
             //arduino.setcolor(mVisionCamProcessor.getVisionCamHasTarget() ? GREEN : RED);
             SmartDashboard.putBoolean("visionCamHasTarget", mVisionCamProcessor.getVisionCamHasTarget());
 
@@ -534,7 +517,7 @@ public class Robot extends TimedRobot {
             else if(climber != 1){
                 stopAuto(); // if none of the above 4 auto buttons is being held down and we're not climbing
 
-                if(mControlBoard.getTractorDrive() && mVisionCamProcessor.getVisionCamHasTarget()){
+                if(tractorDrive && mVisionCamProcessor.getVisionCamHasTarget()){
                     try {
                         String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
                         mTractorBeamGain = Double.parseDouble(tractorGain);
