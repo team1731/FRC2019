@@ -44,7 +44,12 @@ public interface ControlBoardInterface {
 		boolean getAutoFeederStationToRear();
 		boolean getAutoFrontToFeederStation();
 		boolean getAutoFeederStationToFront();
+	//	boolean getAutoLevel1ToRear();
+		boolean getAutoLevel1ToCargoL1();
+		boolean getAutoCargoL1ToFeederStation();
 		boolean getAutoLevel1ToRear();
+
+
 		
 		boolean getInvertDrive();
 		boolean getToggleDriveSpeed();

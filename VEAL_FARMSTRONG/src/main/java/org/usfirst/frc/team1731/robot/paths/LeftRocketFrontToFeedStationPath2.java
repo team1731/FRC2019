@@ -10,21 +10,21 @@ import org.usfirst.frc.team1731.robot.paths.PathBuilder;
 import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
-public class LeftRocketFrontToFeedStationPath2 implements PathContainer {
+public class LeftRocketFrontToFeedStationPath2 extends MirrorablePath implements PathContainer {
     
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(194,294,0,30));
-        sWaypoints.add(new Waypoint(113,295,0,100));
-        sWaypoints.add(new Waypoint(26,295,0,100));
+        sWaypoints.add(new Waypoint(194, getY(294), 0,  30));
+        sWaypoints.add(new Waypoint(113, getY(295), 0, 100));
+        sWaypoints.add(new Waypoint( 26, getY(295), 0, 100));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(194, 295), Rotation2d.fromDegrees(180.0)); 
+        return new RigidTransform2d(new Translation2d(194, getY(295)), Rotation2d.fromDegrees(getAngle(180.0))); 
     }
 
     @Override

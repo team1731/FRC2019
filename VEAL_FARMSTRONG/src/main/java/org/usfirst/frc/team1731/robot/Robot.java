@@ -21,6 +21,8 @@ import org.usfirst.frc.team1731.robot.auto.modes.LeftRocketFrontToFeedStationMod
 import org.usfirst.frc.team1731.robot.auto.modes.LeftFeedStationToRocketFrontMode;
 import org.usfirst.frc.team1731.robot.auto.modes.LeftRocketRearToFeedStationMode;
 import org.usfirst.frc.team1731.robot.auto.modes.LeftLevel1ToRocketRearMode;
+import org.usfirst.frc.team1731.robot.auto.modes.LeftLevel1ToCargoL1Mode;
+import org.usfirst.frc.team1731.robot.auto.modes.LeftCargoL1ToFeederStationMode;
 import org.usfirst.frc.team1731.robot.auto.modes.StandStillMode;
 import org.usfirst.frc.team1731.robot.auto.modes.TestAuto;
 import org.usfirst.frc.team1731.robot.auto.modes.spacey.Mode_1;
@@ -207,7 +209,7 @@ public class Robot extends TimedRobot {
      //       autoModesToExecute = determineAutoModesToExecute(autoCode);
     
             greenLEDRingLight = new DigitalOutput(0);
-            greenLEDRingLight.set(true); // turn off the light until teleop
+            greenLEDRingLight.set(false); // turn off the light until teleop
 
             //leftRightCameraControl = new DigitalOutput(5);
 
@@ -384,7 +386,7 @@ public class Robot extends TimedRobot {
 
     public void periodic() {
         try {
-            greenLEDRingLight.set(false); // turn on the light during teleop
+            greenLEDRingLight.set(true); // turn on the light during teleop
             
             //arduino.setcolor(mVisionCamProcessor.getVisionCamHasTarget() ? GREEN : RED);
             SmartDashboard.putBoolean("visionCamHasTarget", mVisionCamProcessor.getVisionCamHasTarget());
@@ -505,6 +507,23 @@ public class Robot extends TimedRobot {
                     mAutoModeExecuter.start();
                 }
             }
+            else if(mControlBoard.getAutoLevel1ToCargoL1()){
+                if(mAutoModeExecuter == null){
+                    mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter.setAutoMode( new LeftLevel1ToCargoL1Mode());
+                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
+                    mAutoModeExecuter.start();
+                }
+            }          
+             else if(mControlBoard.getAutoCargoL1ToFeederStation()){
+                if(mAutoModeExecuter == null){
+                    mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter.setAutoMode( new LeftCargoL1ToFeederStationMode());
+                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
+                    mAutoModeExecuter.start();
+                }
+            }
+
             else if(mControlBoard.getAutoLevel1ToRear()){
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
@@ -639,7 +658,7 @@ public class Robot extends TimedRobot {
             //mLED.setLEDOff();
         }
         
-        greenLEDRingLight.set(true); // turn off the light until teleop
+        greenLEDRingLight.set(false); // turn off the light until teleop
 
         /*
         if(visionCam == null){

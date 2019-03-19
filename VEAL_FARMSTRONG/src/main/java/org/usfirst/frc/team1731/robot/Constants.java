@@ -68,14 +68,14 @@ public class Constants extends ConstantsBase {
 
     // PID gains for drive velocity loop (HIGH GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveHighGearVelocityKp = 1.5;   //cheezy guys had 1.2
+    public static double kDriveHighGearVelocityKp = 1.8;   //cheezy guys had 1.2
     public static double kDriveHighGearVelocityKi = 0.0;
     public static double kDriveHighGearVelocityKd = 6;    //cheezy guys had 6.0
     public static double kDriveHighGearVelocityKf = 0.39;    //cheezy guys had .15. Orig: 0.7
     public static int kDriveHighGearVelocityIZone = 0;
     public static double kDriveHighGearVelocityRampRate = 0.05;// 240.0;
     public static double kDriveHighGearNominalOutput = 0.0;   // cheezy gusy had .5
-    public static double kDriveHighGearMaxSetpoint = 17.0 * 12.0; // 17 fps
+    public static double kDriveHighGearMaxSetpoint = 150; //17.0 * 12.0; // 17 fps
 
     // PID gains for drive velocity loop (LOW GEAR)
     // Units: setpoint, error, and output are in inches per second.
@@ -98,7 +98,7 @@ public class Constants extends ConstantsBase {
     public static int kDriveLowGearMaxVelocity = 1600;  //these are units of units per 100ms - bdl - this number works out to 3.92 ft/sec
     
     //public static double kDriveLowGearMaxAccel = 18.0 * 12.0 * 60.0 / (Math.PI * kDriveWheelDiameterInches); // 18 fps/s
-    public static int kDriveLowGearMaxAccel = 2400;  //These are   in units per 100ms                                                                                                       // in RPM/s
+    public static int kDriveLowGearMaxAccel = 1600;  //These are   in units per 100ms                                                                                                       // in RPM/s
 
     public static double kDriveVoltageCompensationRampRate = 0.0;
 
@@ -209,8 +209,8 @@ public class Constants extends ConstantsBase {
     public static double kClimberTalonKD = 0.0;
     public static double kClimberTalonKF = 11; //was .2 working
 
-    public static int kClimberSlowCruiseVelocity = 15; //15000
-    public static int kClimberMediumCruiseVelocity = 15; //15000
+    public static int kClimberSlowCruiseVelocity = 10; //15000
+    public static int kClimberMediumCruiseVelocity = 10; //15000
     public static int kClimberFastCruiseVelocity = 35; //15000
     public static int kClimberAcceleration = 30; //6000
     public static double kClimberExtendPercent = 1.0; //0.8;
