@@ -9,21 +9,22 @@ import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 
 
 
-public class DriveForward implements PathContainer {
+public class DriveForward extends MirrorablePath implements PathContainer {
     
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(20,250,0,0));
-        sWaypoints.add(new Waypoint(35,250,15,60));
-        sWaypoints.add(new Waypoint(44,220,0,30));
-        sWaypoints.add(new Waypoint(44,210,0,0));
+        sWaypoints.add(new Waypoint(20, getY(250),  0,  0));
+        sWaypoints.add(new Waypoint(35, getY(250), 15, 60));
+        sWaypoints.add(new Waypoint(44, getY(220),  0, 30));
+        sWaypoints.add(new Waypoint(44, getY(210),  0,  0));
+        
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(20, 250), Rotation2d.fromDegrees(0)); 
+        return new RigidTransform2d(new Translation2d(20, getY(250)), Rotation2d.fromDegrees(getAngle(0))); 
     }
 
     @Override

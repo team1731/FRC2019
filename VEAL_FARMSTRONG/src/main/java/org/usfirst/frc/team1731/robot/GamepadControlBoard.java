@@ -197,12 +197,16 @@ public class GamepadControlBoard implements ControlBoardInterface {
     public boolean getAutoFeederStationToFront(){
         return mDriver.getRawButton(2);
     }
-    public boolean getAutoLevel1ToRear(){
+    public boolean getAutoLevel1ToCargoL1(){
         return mDriver.getRawButton(7);
     }
-    public boolean getAutoLevel1ToCargoShip(){
+    public boolean getAutoCargoL1ToFeederStation(){
         return mDriver.getRawButton(8);
     }
+    public boolean getAutoLevel1ToRear(){
+        return mOperator.getRawButton(4);
+    }
+
 
 	@Override
     public boolean getInvertDrive(){
