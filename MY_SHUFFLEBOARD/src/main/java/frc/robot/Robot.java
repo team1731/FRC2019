@@ -2,12 +2,15 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 
 public class Robot extends TimedRobot {
     private SerialPort visionCam;
     private int emptyCount;
+    private double teleopTimestampSave;
+    private String saveSendToVisionCam = "info";
 
     private void setupDriverCamera(){
         try {
@@ -43,33 +46,12 @@ public class Robot extends TimedRobot {
 
             // Thread.sleep(1000);
 
-            //setcam autoexp 1
-            visionCam.writeString("setcam autoexp 1\n"); visionCam.flush();        
-            System.out.println("setcam autoexp 1"); System.out.flush();
-            while((line = visionCam.readString()).length() > 0){
-                System.out.print(line.trim()); System.out.flush();
-            }
-
-            //setcam absexp 75
-            visionCam.writeString("setcam absexp 75\n"); visionCam.flush();        
-            System.out.println("setcam absexp 75"); System.out.flush();
-            while((line = visionCam.readString()).length() > 0){
-                System.out.print(line.trim()); System.out.flush();
-            }
-
-            //setpar serout USB
-            visionCam.writeString("setpar serout USB\n"); visionCam.flush();        
-            System.out.println("setpar serout USB"); System.out.flush();
-            while((line = visionCam.readString()).length() > 0){
-                System.out.print(line.trim()); System.out.flush();
-            }
-
-            //setpar serlog None
-            visionCam.writeString("setpar serlog None\n"); visionCam.flush();        
-            System.out.println("setpar serlog None"); System.out.flush();
-            while((line = visionCam.readString()).length() > 0){
-                System.out.print(line.trim()); System.out.flush();
-            }
+            //info
+            // visionCam.writeString("info\n"); visionCam.flush();        
+            // System.out.println("info"); System.out.flush();
+            // while((line = visionCam.readString()).length() > 0){
+            //     System.out.print(line.trim()); System.out.flush();
+            // }
 
             //setmapping2 YUYV 320 240 30.0 JeVois EagleTrkNoStream
             visionCam.writeString("setmapping2 YUYV 320 240 30.0 JeVois EagleTrkNoStream\n"); visionCam.flush();
@@ -78,18 +60,58 @@ public class Robot extends TimedRobot {
                 System.out.print(line.trim()); System.out.flush();
             }
             
-            String[] calNames = {"uh","lh","us","ls","uv","lv","er","dl","ap","ar","sl"};
-            int[] calValues = {85,65,255,200,255,200,0,3,5,100,100};
-            for(int i=0; i<calNames.length; i++){
-                visionCam.writeString("setpar " + calNames[i] + " " + calValues[i] + "\n"); visionCam.flush();        
-                System.out.println("setpar " + calNames[i] + " " + calValues[i]); System.out.flush();
-                while((line = visionCam.readString()).length() > 0){
-                    System.out.print(line.trim()); System.out.flush();
-                }    
+            //setcam autoexp 1
+            visionCam.writeString("setcam autoexp 1\n"); visionCam.flush();        
+            System.out.println("setcam autoexp 1"); System.out.flush();
+            while((line = visionCam.readString()).length() > 0){
+                System.out.print(line.trim()); System.out.flush();
             }
-            //streamon
-            visionCam.writeString("streamon\n"); visionCam.flush();        
-            System.out.println("streamon"); System.out.flush();
+
+            //setcam absexp 75
+            visionCam.writeString("setcam absexp 900\n"); visionCam.flush();        
+            System.out.println("setcam absexp 900"); System.out.flush();
+            while((line = visionCam.readString()).length() > 0){
+                System.out.print(line.trim()); System.out.flush();
+            }
+
+            // //setpar serout USB
+            // visionCam.writeString("setpar serout USB\n"); visionCam.flush();        
+            // System.out.println("setpar serout USB"); System.out.flush();
+            // while((line = visionCam.readString()).length() > 0){
+            //     System.out.print(line.trim()); System.out.flush();
+            // }
+
+            // //setpar serlog None
+            // visionCam.writeString("setpar serlog None\n"); visionCam.flush();        
+            // System.out.println("setpar serlog None"); System.out.flush();
+            // while((line = visionCam.readString()).length() > 0){
+            //     System.out.print(line.trim()); System.out.flush();
+            // }
+            
+            // //setcam presetwb 1 (auto)
+            // visionCam.writeString("setcam presetwb 1\n"); visionCam.flush();        
+            // System.out.println("setcam presetwb 1"); System.out.flush();
+            // while((line = visionCam.readString()).length() > 0){
+            //     System.out.print(line.trim()); System.out.flush();
+            // }
+
+            // //setcam autoexp 0
+            // visionCam.writeString("setcam autoexp 0\n"); visionCam.flush();        
+            // System.out.println("setcam autoexp 0"); System.out.flush();
+            // while((line = visionCam.readString()).length() > 0){
+            //     System.out.print(line.trim()); System.out.flush();
+            // }
+
+            // //setcam absexp
+            // visionCam.writeString("setcam absexp 900\n"); visionCam.flush();        
+            // System.out.println("setcam absexp 900"); System.out.flush();
+            // while((line = visionCam.readString()).length() > 0){
+            //     System.out.print(line.trim()); System.out.flush();
+            // }
+
+            //getcam absexp
+            visionCam.writeString("getcam absexp\n"); visionCam.flush();        
+            System.out.println("getcam absexp"); System.out.flush();
             while((line = visionCam.readString()).length() > 0){
                 System.out.print(line.trim()); System.out.flush();
             }
@@ -105,14 +127,32 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         setupDriverCamera();
         setupVisionCamera();
+        //CameraServer.getInstance().startAutomaticCapture(1); //for debug only! too much cpu and bw!
+        SmartDashboard.putString("sendToVisionCam", "info");
     }
 
     @Override
     public void teleopPeriodic(){
+        double teleopTimestamp = Timer.getFPGATimestamp();
+        if((teleopTimestamp - teleopTimestampSave) >= 3){
+            //adjustCameraValues();
+            String sendToVisionCam = SmartDashboard.getString("sendToVisionCam", "info");
+            if(!saveSendToVisionCam.equals(sendToVisionCam)){
+                visionCam.writeString(sendToVisionCam + "\n"); visionCam.flush();
+                System.out.println(sendToVisionCam); System.out.flush();
+                String line;
+                while((line = visionCam.readString()).length() > 0){
+                    System.out.print(line.trim()); System.out.flush();
+                }
+                saveSendToVisionCam = sendToVisionCam;    
+            }
+            teleopTimestampSave = teleopTimestamp;
+        }
+
         if(visionCam != null){
             String raw = visionCam.readString().trim();
             if(raw.length() > 0){
-                //System.out.println("received: '" + raw + "'");
+                System.out.println("received: '" + raw + "'");
                 SmartDashboard.putString("TARGET_X", raw);
                 emptyCount = 0;
                 SmartDashboard.putBoolean("TARGET_LOCK", true);
