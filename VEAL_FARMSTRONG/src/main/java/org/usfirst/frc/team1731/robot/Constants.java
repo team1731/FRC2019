@@ -186,13 +186,13 @@ public class Constants extends ConstantsBase {
     public static int kElevatorHatchFloor_EncoderValue= 0; 
     public static int kElevatorHatchShip_EncoderValue=233632; //1200;
     public static int kElevatorCargo3rd_EncoderValue =462264;  //9500; // was 9918
-    public static int kElevatorCargo2nd_EncoderValue =254496; //6351;
+    public static int kElevatorCargo2nd_EncoderValue =304544; //6351;  haymarket had 254496
     public static int kElevatorCargoFloor_EncoderValue =70912; //1580;
     public static int kElevatorCargoShip_EncoderValue= 233632 - 6*kElevatorTicsPerInch; //make it 6" lower (Haymarket playoffs)
     public static int kElevatorBallPickup_EncoderValue= 0; //was 1044
     public static int kElevatorHomeEncoderValue = 0;
     public static int kElevatorEncoderRange = 20;
-    public static int kElevatorCruiseVelocity = 20000;//15000
+    public static int kElevatorCruiseVelocity = 22000;//15000
     public static int kElevatorAcceleration = 30000; //6000
 
     //public static double kElevatorPeakForward = 0.6;

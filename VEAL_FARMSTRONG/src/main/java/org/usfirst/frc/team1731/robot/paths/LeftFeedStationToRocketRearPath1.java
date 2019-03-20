@@ -17,15 +17,16 @@ public class LeftFeedStationToRocketRearPath1 extends MirrorablePath implements 
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint( 20, getY(295), 0,   0));
-        sWaypoints.add(new Waypoint(223, getY(264), 0, 120));
-        sWaypoints.add(new Waypoint(305, getY(264), 0, 120));
+        sWaypoints.add(new Waypoint(230, getY(258), 5, 120));
+        sWaypoints.add(new Waypoint(270, getY(294), 5, 100));
+        sWaypoints.add(new Waypoint(300, getY(279), 5, 80));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(19, getY(295)), Rotation2d.fromDegrees(getAngle(180.0))); 
+        return new RigidTransform2d(new Translation2d(20, getY(295)), Rotation2d.fromDegrees(getAngle(180.0))); 
     }
 
     @Override

@@ -15,10 +15,10 @@ public class LeftRocketRearToFeedStationPath2 extends MirrorablePath implements 
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(314, getY(272),  0, 90));
-        sWaypoints.add(new Waypoint(242, getY(257), 20, 90));
-        sWaypoints.add(new Waypoint(100, getY(287), 20, 90));
-        sWaypoints.add(new Waypoint( 20, getY(287), 20, 60));
+        sWaypoints.add(new Waypoint(314, getY(272),  0, 70));
+        sWaypoints.add(new Waypoint(242, getY(257), 20, 70));
+        sWaypoints.add(new Waypoint(100, getY(295), 20, 70));
+        sWaypoints.add(new Waypoint( 20, getY(295), 20, 60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

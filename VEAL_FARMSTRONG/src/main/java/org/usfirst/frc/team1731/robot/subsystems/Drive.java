@@ -524,7 +524,7 @@ public class Drive extends Subsystem {
         final Rotation2d robot_to_target = field_to_robot.inverse().rotateBy(mTargetHeading);
 
         // Check if we are on target
-        final double kGoalPosTolerance = 0.75; // degrees
+        final double kGoalPosTolerance = 3.0; // degrees  254 had .75
         final double kGoalVelTolerance = 5.0; // inches per second
         if (Math.abs(robot_to_target.getDegrees()) < kGoalPosTolerance
                 && Math.abs(getLeftVelocityInchesPerSec()) < kGoalVelTolerance

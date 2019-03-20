@@ -184,27 +184,37 @@ public class GamepadControlBoard implements ControlBoardInterface {
         return ((pov != -1) && (pov > 135) && (pov < 225));
     }
 
+    //////////////////////////
+    // DRIVER AUTO CONTROLS
+    //////////////////////////
 	@Override
     public boolean getAutoRearToFeederStation(){
-        return mDriver.getRawButton(3);
+        return mDriver.getRawButton(1);
     }
     public boolean getAutoFeederStationToRear(){
         return mDriver.getRawButton(4);
     }
     public boolean getAutoFrontToFeederStation(){
-        return mDriver.getRawButton(1);
-    }
-    public boolean getAutoFeederStationToFront(){
         return mDriver.getRawButton(2);
     }
+    public boolean getAutoFeederStationToFront(){
+        return mDriver.getRawButton(3);
+    }
+
     public boolean getAutoLevel1ToCargoL1(){
-        return mDriver.getRawButton(7);
+        //return mDriver.getRawButton(7);
+        int pov = mDriver.getPOV(0);
+        return ((pov !=1) && (pov > 45) && (pov < 135));
     }
     public boolean getAutoCargoL1ToFeederStation(){
-        return mDriver.getRawButton(8);
+        //return mDriver.getRawButton(8);
+        int pov = mDriver.getPOV(0);
+        return ((pov !=1) && (pov > 225) && (pov < 315));
     }
     public boolean getAutoLevel1ToRear(){
-        return mOperator.getRawButton(4);
+        //return mOperator.getRawButton(4);
+        int pov = mDriver.getPOV(0);
+        return ((pov != -1) && (pov > 315 || pov < 45));
     }
 
 
