@@ -77,7 +77,7 @@ public class Elevator extends Subsystem {
 		mTalon.configNominalOutputForward(0, Constants.kTimeoutMs);
 		mTalon.configNominalOutputReverse(0, Constants.kTimeoutMs);
 		mTalon.configPeakOutputForward(1, Constants.kTimeoutMs);
-		mTalon.configPeakOutputReverse(-0.7, Constants.kTimeoutMs);
+		mTalon.configPeakOutputReverse(-1, Constants.kTimeoutMs);
 
 		/* Set Motion Magic gains in slot0 - see documentation */
 		mTalon.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
@@ -161,7 +161,7 @@ public class Elevator extends Subsystem {
                 mPositionChanged = false;
                 mWantedPosition = 0;
                 mCurrentStateStartTime = timestamp;
-                mTalon.setSelectedSensorPosition(0, 0, 10);                
+               // mTalon.setSelectedSensorPosition(0, 0, 10);                
               //  DriverStation.reportError("Elevator SystemState: " + mSystemState, false);
             }
         }
@@ -256,7 +256,7 @@ public class Elevator extends Subsystem {
         }
         mPositionChanged = true;
         mWantedPosition = Constants.kElevatorHomeEncoderValue;
-        mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
+        mTalon.setSelectedSensorPosition(-3000, 0, 0);
         wasCalibrated = true;
         return defaultStateTransfer();
     }
@@ -336,7 +336,7 @@ public class Elevator extends Subsystem {
     
     @Override
     public void zeroSensors() {
-       mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
+     //  mTalon.setSelectedSensorPosition(Constants.kElevatorHomeEncoderValue, 0, 0);
     }
 
     @Override

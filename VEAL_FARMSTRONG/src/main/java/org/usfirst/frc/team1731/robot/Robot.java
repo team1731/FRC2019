@@ -269,6 +269,7 @@ public class Robot extends TimedRobot {
 
             mAutoModeExecuter = null;
 
+            mDrive.zeroSensors();
             // Shift to high
             mDrive.setHighGear(true);
             mDrive.setBrakeMode(true);

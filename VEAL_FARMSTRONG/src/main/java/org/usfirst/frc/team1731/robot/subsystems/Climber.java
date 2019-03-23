@@ -295,7 +295,7 @@ public class Climber extends Subsystem {
             //***NOTE*** Backing up doesn't work anyway!!!
         }
 
-        if (!latchSensor.get()) {
+        if (latchSensor.get()) {
             return SystemState.LIFTINGNOWHEELS;
         }
  //        if ((timestamp - mCurrentStateStartTime < Constants.kUnlockClimberTime)) {//mDrive.isBackupComplete()){
