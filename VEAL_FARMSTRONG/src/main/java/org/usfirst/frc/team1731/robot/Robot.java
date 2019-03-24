@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
     private RobotState mRobotState = RobotState.getInstance();
     private AutoModeExecuter mAutoModeExecuter = null;
     private RobotStateEstimator mRobotStateEstimator = RobotStateEstimator.getInstance();
-    private VisionCamProcessor mVisionCamProcessor = VisionCamProcessor.getInstance();
+    //private VisionCamProcessor mVisionCamProcessor = VisionCamProcessor.getInstance();
 
     private AutoModeBase[] autoModesToExecute;
 
@@ -121,7 +121,7 @@ public class Robot extends TimedRobot {
     private Boolean invertCameraPrevious = Boolean.FALSE;
     private VideoSink videoSink;
 
-    private String autoCode;
+    private String autoCode = Constants.kDefaultAutoMode;
     
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                            Arrays.asList(
@@ -205,7 +205,7 @@ public class Robot extends TimedRobot {
     */
             String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
 
-            autoCode = SmartDashboard.getString("AutoCode", "L"); // or R
+            autoCode = SmartDashboard.getString("AutoCode", Constants.kDefaultAutoMode); // or R
      //       autoModesToExecute = determineAutoModesToExecute(autoCode);
     
             greenLEDRingLight = new DigitalOutput(0);
@@ -234,16 +234,16 @@ public class Robot extends TimedRobot {
             catch (Throwable t) {
                 System.out.println("Exception while connecting driver camera: " + t.toString());
             }
-            SmartDashboard.putString(AUTO_CODE, "L");
+            SmartDashboard.putString(AUTO_CODE, Constants.kDefaultAutoMode);
 
             SmartDashboard.putString("TractorGain", "1.2");   
-            mEnabledLooper.register(mVisionCamProcessor); 
+            //mEnabledLooper.register(mVisionCamProcessor); 
             
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
         }
-        zeroAllSensors();
+        //zeroAllSensors();
     }
 
     /**
@@ -263,7 +263,7 @@ public class Robot extends TimedRobot {
                 mAutoModeExecuter.stop();
             }
 
-           // zeroAllSensors();
+            zeroAllSensors();
             mSuperstructure.setWantedState(Superstructure.WantedState.IDLE);
             mSuperstructure.setOverrideCompressor(true);
 
@@ -390,7 +390,7 @@ public class Robot extends TimedRobot {
             greenLEDRingLight.set(true); // turn on the light during teleop
             
             //arduino.setcolor(mVisionCamProcessor.getVisionCamHasTarget() ? GREEN : RED);
-            SmartDashboard.putBoolean("visionCamHasTarget", mVisionCamProcessor.getVisionCamHasTarget());
+            //SmartDashboard.putBoolean("visionCamHasTarget", mVisionCamProcessor.getVisionCamHasTarget());
 
             double timestamp = Timer.getFPGATimestamp();
 
@@ -537,22 +537,22 @@ public class Robot extends TimedRobot {
             else if(climber != 1){
                 stopAuto(); // if none of the above 4 auto buttons is being held down and we're not climbing
 
-                if(tractorDrive && mVisionCamProcessor.getVisionCamHasTarget()){
-                    try {
-                        String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
-                        mTractorBeamGain = Double.parseDouble(tractorGain);
-                        turn = mTractorBeamGain*((mVisionCamProcessor.getVisionCamXPosition()-160)/160.0);
-                        SmartDashboard.putNumber("VisionTurnValue", turn);
-                    } catch(NumberFormatException e){
-                        SmartDashboard.putString("VisionStatusRobot.java", "An exception ocurred...");
-                        System.out.println(e.toString());
-                    }
-                    arduinoLedOutput(Constants.kArduino_BLUE);    
-                    tractorIndicator = Boolean.TRUE;
-                } else {
-                    arduinoLedOutput(Constants.kArduino_RED);
-                    tractorIndicator = Boolean.FALSE;
-                }
+                // if(tractorDrive && mVisionCamProcessor.getVisionCamHasTarget()){
+                //     try {
+                //         String tractorGain = SmartDashboard.getString("TractorGain", "1.0");
+                //         mTractorBeamGain = Double.parseDouble(tractorGain);
+                //         turn = mTractorBeamGain*((mVisionCamProcessor.getVisionCamXPosition()-160)/160.0);
+                //         SmartDashboard.putNumber("VisionTurnValue", turn);
+                //     } catch(NumberFormatException e){
+                //         SmartDashboard.putString("VisionStatusRobot.java", "An exception ocurred...");
+                //         System.out.println(e.toString());
+                //     }
+                //     arduinoLedOutput(Constants.kArduino_BLUE);    
+                //     tractorIndicator = Boolean.TRUE;
+                // } else {
+                //     arduinoLedOutput(Constants.kArduino_RED);
+                //     tractorIndicator = Boolean.FALSE;
+                // }
 
                 //regular cheesy drive
                 if(driveSpeedIsToggled){
@@ -658,9 +658,11 @@ public class Robot extends TimedRobot {
         } else {
             //mLED.setLEDOff();
         }
-        
-        greenLEDRingLight.set(false); // turn off the light until teleop
 
+        autoCode = SmartDashboard.getString("AutoCode", autoCode); // or R
+
+        greenLEDRingLight.set(false); // turn off the light until teleop
+        allPeriodic();
         /*
         if(visionCam == null){
             //visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);
@@ -669,11 +671,11 @@ public class Robot extends TimedRobot {
         */
 
 
-        double disabledTimestamp = Timer.getFPGATimestamp();
-        if((disabledTimestamp - disabledTimestampSave) > 2){
-            zeroAllSensors();
-            disabledTimestampSave = disabledTimestamp;
-        }
+        // double disabledTimestamp = Timer.getFPGATimestamp();
+        // if((disabledTimestamp - disabledTimestampSave) > 2){
+        //     zeroAllSensors();
+        //     disabledTimestampSave = disabledTimestamp;
+        // }
     }
 
     @Override
@@ -704,7 +706,7 @@ public class Robot extends TimedRobot {
          mSubsystemManager.outputToSmartDashboard();
          mSubsystemManager.writeToLog();
           mEnabledLooper.outputToSmartDashboard();
-
+        SmartDashboard.putString("AutoCode", autoCode);
         SmartDashboard.putBoolean("Tractor Beam", tractorIndicator);
         // SmartDashboard.putString("AutoCodesReceived", autoCodes);
         // //SmartDashboard.putString("SerialPorts", Arrays.toString(SerialPort.Port.values()));

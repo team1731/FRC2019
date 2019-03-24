@@ -42,7 +42,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Elevator extends Subsystem {
 
     private static Elevator sInstance = null;
-    
+    private static boolean isReset;
+
     public static Elevator getInstance() {
         if (sInstance == null) {
             sInstance = new Elevator();
@@ -161,7 +162,10 @@ public class Elevator extends Subsystem {
                 mPositionChanged = false;
                 mWantedPosition = 0;
                 mCurrentStateStartTime = timestamp;
-               // mTalon.setSelectedSensorPosition(0, 0, 10);                
+                if(!isReset){
+                    mTalon.setSelectedSensorPosition(0, 0, 10);                
+                    isReset = true;
+                }
               //  DriverStation.reportError("Elevator SystemState: " + mSystemState, false);
             }
         }

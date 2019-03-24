@@ -121,7 +121,7 @@ public class Drive extends Subsystem {
                 setOpenLoop(DriveSignal.NEUTRAL);
                 setBrakeMode(false);
                 setVelocitySetpoint(0, 0);
-                mNavXBoard.reset();
+                //mNavXBoard.reset();
             }
         }
 

@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
  * determined through calibrations.
  */
 public class Constants extends ConstantsBase {
+
+    public static String kDefaultAutoMode = "L";
+    
     public static double kLooperDt = 0.005;
 
     // Target parameters
