@@ -98,6 +98,11 @@ public class JevoisVisionServer extends CrashTrackingRunnable {
                 String visionTargetPositions_Raw = visionCam.readString();
                 handleMessage(visionTargetPositions_Raw,getTimestamp());
             }
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         }
 

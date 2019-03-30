@@ -55,6 +55,7 @@ import org.usfirst.frc.team1731.robot.subsystems.Elevator;
 
 import org.usfirst.frc.team1731.robot.subsystems.Intake;
 import org.usfirst.frc.team1731.robot.subsystems.Superstructure;
+import org.usfirst.frc.team1731.robot.vision.JevoisVisionServer;
 import org.usfirst.frc.team1731.robot.subsystems.Climber;
 
 import edu.wpi.cscore.UsbCamera;
@@ -124,6 +125,7 @@ public class Robot extends TimedRobot {
     private VideoSink videoSink;
 
     private String autoCode = Constants.kDefaultAutoMode;
+    private JevoisVisionServer mVisionServer = JevoisVisionServer.getInstance();
     
     private final SubsystemManager mSubsystemManager = new SubsystemManager(
                            Arrays.asList(
