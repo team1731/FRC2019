@@ -48,6 +48,7 @@ import org.usfirst.frc.team1731.robot.auto.modes.spacey.Mode_J;
 import org.usfirst.frc.team1731.robot.loops.Looper;
 import org.usfirst.frc.team1731.robot.loops.RobotStateEstimator;
 import org.usfirst.frc.team1731.robot.loops.VisionCamProcessor;
+import org.usfirst.frc.team1731.robot.loops.JevoisVisionProcessor;
 import org.usfirst.frc.team1731.robot.subsystems.ConnectionMonitor;
 import org.usfirst.frc.team1731.robot.subsystems.Drive;
 import org.usfirst.frc.team1731.robot.subsystems.Elevator;
@@ -102,7 +103,8 @@ public class Robot extends TimedRobot {
     private RobotState mRobotState = RobotState.getInstance();
     private AutoModeExecuter mAutoModeExecuter = null;
     private RobotStateEstimator mRobotStateEstimator = RobotStateEstimator.getInstance();
-    private VisionCamProcessor mVisionCamProcessor = VisionCamProcessor.getInstance();
+ //  private VisionCamProcessor mVisionCamProcessor = VisionCamProcessor.getInstance();
+    private JevoisVisionProcessor mVisionCamProcessor = JevoisVisionProcessor.getInstance();
 
     private AutoModeBase[] autoModesToExecute;
 
