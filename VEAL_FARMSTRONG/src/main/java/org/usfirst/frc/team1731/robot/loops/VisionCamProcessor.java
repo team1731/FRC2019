@@ -112,7 +112,7 @@ public class VisionCamProcessor implements Loop {
                     visionCamYPosition = Double.parseDouble((String) j.get("Y"));
                     visionCamZPosition = Double.parseDouble((String) j.get("Z"));
                     isValid = true;
-                } catch(org.json.simple.parser.ParseException e){
+                } catch(Exception e){
                     System.err.println(e.toString());
                 }
 

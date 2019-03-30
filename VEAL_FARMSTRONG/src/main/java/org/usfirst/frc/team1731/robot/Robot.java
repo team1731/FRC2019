@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
     private RobotState mRobotState = RobotState.getInstance();
     private AutoModeExecuter mAutoModeExecuter = null;
     private RobotStateEstimator mRobotStateEstimator = RobotStateEstimator.getInstance();
-    //private VisionCamProcessor mVisionCamProcessor = VisionCamProcessor.getInstance();
+    private VisionCamProcessor mVisionCamProcessor = VisionCamProcessor.getInstance();
 
     private AutoModeBase[] autoModesToExecute;
 
@@ -237,7 +237,7 @@ public class Robot extends TimedRobot {
             SmartDashboard.putString(AUTO_CODE, Constants.kDefaultAutoMode);
 
             SmartDashboard.putString("TractorGain", "1.2");   
-            //mEnabledLooper.register(mVisionCamProcessor); 
+            mEnabledLooper.register(mVisionCamProcessor); 
             
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
