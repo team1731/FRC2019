@@ -150,8 +150,10 @@ public class RobotState {
                 // find intersection with the goal
                 if (zr > 0) {
                     double scaling = differential_height_ / zr;
-                    double distance = Math.hypot(xr, yr) * scaling + Constants.kBoilerRadius;
+                    System.out.println("differential_height_: "+differential_height_);
+                    double distance = Math.hypot(xr, yr) * scaling;
                     Rotation2d angle = new Rotation2d(xr, yr, true);
+                    SmartDashboard.putString("RobotState_distance/angle", "Distance: "+distance+" angle: "+angle);
                     field_to_goals.add(field_to_camera
                             .transformBy(RigidTransform2d
                                     .fromTranslation(new Translation2d(distance * angle.cos(), distance * angle.sin())))

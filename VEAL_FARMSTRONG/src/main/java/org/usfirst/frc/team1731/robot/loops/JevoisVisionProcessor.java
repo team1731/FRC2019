@@ -6,6 +6,8 @@ import org.usfirst.frc.team1731.robot.vision.JevoisVisionUpdate;
 import org.usfirst.frc.team1731.robot.vision.VisionUpdate;
 import org.usfirst.frc.team1731.robot.vision.VisionUpdateReceiver;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * This function adds vision updates (from the Nexus smartphone) to a list in RobotState. This helps keep track of goals
  * detected by the vision system. The code to determine the best goal to shoot at and prune old Goal tracks is in
@@ -31,7 +33,6 @@ public class JevoisVisionProcessor implements Loop  {
 
     @Override
     public void onLoop(double timestamp) {
-
         JevoisVisionUpdate update;
         synchronized (this) {
             if (update_ == null) {
@@ -40,6 +41,9 @@ public class JevoisVisionProcessor implements Loop  {
             update = update_;
             update_ = null;
         }
+
+        SmartDashboard.putString("JevoisVisionProcessorUpdate", "update was captured at "+update.getCapturedAtTimestamp());
+
         robot_state_.addVisionUpdate(update.getCapturedAtTimestamp(), update.getTargets());
     }
 
@@ -48,8 +52,11 @@ public class JevoisVisionProcessor implements Loop  {
         // no-op
     }
 
+    int updateCounter = 0;
    
     public synchronized void gotUpdate(JevoisVisionUpdate update) {
+        updateCounter++;
+        SmartDashboard.putString("JevoisVisionProcessorGotUpdate", "Got Update: "+updateCounter);
         update_ = update;
     }
 

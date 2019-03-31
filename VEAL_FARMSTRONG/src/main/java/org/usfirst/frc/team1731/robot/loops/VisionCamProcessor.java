@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * Periodically estimates the state of the robot using the robot's distance traveled (compares two waypoints), gyroscope
  * orientation, and velocity, among various other factors. Similar to a car's odometer.
  */
+@Deprecated
 public class VisionCamProcessor implements Loop {
     static VisionCamProcessor instance_;
 
@@ -45,7 +46,7 @@ public class VisionCamProcessor implements Loop {
                 SmartDashboard.putBoolean("visionCamConnected", true);
             }
         } catch(Exception e){
-            System.out.println(e.toString());
+            System.err.println(e.toString());
         }
     }
 

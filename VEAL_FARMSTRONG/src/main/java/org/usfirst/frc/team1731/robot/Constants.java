@@ -27,8 +27,8 @@ public class Constants extends ConstantsBase {
     // Section 3.13
     // ...and https://firstfrc.blob.core.windows.net/frc2017/Drawings/2017FieldComponents.pdf
     // Parts GE-17203-FLAT and GE-17371 (sheet 7)
-    public static double kBoilerTargetTopHeight = 19.5;
-    public static double kBoilerRadius = 7.5;
+    public static double kBoilerTargetTopHeight = 29; //was 19.5
+    public static double kBoilerRadius = 0; //was 7.5
 
     // Wrist parameters
    // public static int kWristTalon = 4;
@@ -371,7 +371,7 @@ public class Constants extends ConstantsBase {
     public static double kCameraXOffset = 0.0;
     public static double kCameraYOffset = 0.0;
     public static double kCameraZOffset = 4.0;  // they had 20.9
-    public static double kCameraPitchAngleDegrees = 29.56; // Measured on 4/26
+    public static double kCameraPitchAngleDegrees = 18.135; // Measured on 3/30
     public static double kCameraYawAngleDegrees = 0.0;
     public static double kCameraDeadband = 0.0;
 
