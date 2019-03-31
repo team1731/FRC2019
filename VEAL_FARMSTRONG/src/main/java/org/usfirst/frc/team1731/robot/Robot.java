@@ -20,6 +20,7 @@ import org.usfirst.frc.team1731.robot.auto.modes.LeftFeedStationToRocketRearMode
 import org.usfirst.frc.team1731.robot.auto.modes.LeftRocketFrontToFeedStationMode;
 import org.usfirst.frc.team1731.robot.auto.modes.LeftFeedStationToRocketFrontMode;
 import org.usfirst.frc.team1731.robot.auto.modes.LeftRocketRearToFeedStationMode;
+import org.usfirst.frc.team1731.robot.auto.modes.PlacePanel;
 import org.usfirst.frc.team1731.robot.auto.modes.LeftLevel1ToRocketRearMode;
 import org.usfirst.frc.team1731.robot.auto.modes.LeftLevel1ToCargoL1Mode;
 import org.usfirst.frc.team1731.robot.auto.modes.LeftCargoL1ToFeederStationMode;
@@ -533,6 +534,14 @@ public class Robot extends TimedRobot {
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
                     mAutoModeExecuter.setAutoMode( new LeftLevel1ToRocketRearMode());
+                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
+                    mAutoModeExecuter.start();
+                }
+            }
+            else if(mControlBoard.getTractorDrive()){
+                if(mAutoModeExecuter == null){
+                    mAutoModeExecuter = new AutoModeExecuter();
+                    mAutoModeExecuter.setAutoMode( new PlacePanel());
                     //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
                     mAutoModeExecuter.start();
                 }

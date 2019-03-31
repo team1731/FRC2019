@@ -61,14 +61,15 @@ public class Drive extends Subsystem {
         AIM_TO_GOAL, // turn to face the boiler
         TURN_TO_HEADING, // turn in place
         DRIVE_TOWARDS_GOAL_COARSE_ALIGN, // turn to face the boiler, then DRIVE_TOWARDS_GOAL_COARSE_ALIGN
-        DRIVE_TOWARDS_GOAL_APPROACH // drive forwards until we are at optimal shooting distance
+        DRIVE_TOWARDS_GOAL_APPROACH, // drive forwards until we are at optimal shooting distance
+        TRACTOR_BEAM
     }
 
     /**
      * Check if the drive talons are configured for velocity control
      */
     protected static boolean usesTalonVelocityControl(DriveControlState state) {
-        if (state == DriveControlState.VELOCITY_SETPOINT || state == DriveControlState.PATH_FOLLOWING) {
+        if (state == DriveControlState.VELOCITY_SETPOINT || state == DriveControlState.PATH_FOLLOWING || state == DriveControlState.TRACTOR_BEAM) {
             return true;
         }
         return false;
@@ -110,6 +111,7 @@ public class Drive extends Subsystem {
     private boolean mIsBrakeMode = true;
     private boolean mIsOnTarget = false;
     private boolean mIsApproaching = false;
+    private boolean mTractorBeamisFinished = false;
 
     // Logging
     private final ReflectingCSVWriter<PathFollower.DebugOutput> mCSVWriter;
@@ -154,6 +156,9 @@ public class Drive extends Subsystem {
                     return;
                 case DRIVE_TOWARDS_GOAL_APPROACH:
                     updateDriveTowardsGoalApproach(timestamp);
+                    return;
+                case TRACTOR_BEAM:
+                    updateTractorBeam(timestamp);
                     return;
                 default:
                     System.out.println("Unexpected drive control state: " + mDriveControlState);
@@ -618,6 +623,38 @@ public class Drive extends Subsystem {
         }
     }
 
+        /**
+     * Called periodically when the robot is in tractor beam mode.  Checks angle to target - if valid signal, steers to that error.  if no valid signal
+     * it latches on the last valid heading and drives that heading.  Speed is controlled by the distance to the target with the IR sensors.
+     */
+    private void updateTractorBeam(double timestamp) {
+        Optional<ShooterAimingParameters> aiming_params = getCachedAimingParameters();
+        Double CameraTBHeading = aiming_params.get().getRobotToGoal().getDegrees();
+        Double CameraTBDistanceToGo =aiming_params.get().getRange();
+     
+        if (!mTractorBeamisFinished) {
+            if (avg(IRLeft,IRRight) < .01) {
+                mTractorBeamisFinished = true;
+            }
+            else if (aiming_params.isPresent())  {
+                TBHeadingValid = true;
+                double tbLastGoodTimestamp = Timer.getFPGATimestamp();
+                double steeringCmd = CameraTBHeading * 5.0;
+            }
+             else if ((Timer.getFPGATimestamp() - tbLastGoodTimestamp) < 3) {
+                double steeringCmd = CameraTBHeading * 5.0;
+            }
+            
+            throttle = Constants.TBtopspeed - Constants.TBtopspeed * (max(IRLeft,IRRight)/4096);
+            
+            updateVelocitySetpoint(throttle - steeringCmd, throttle - steeringCmd);
+        } else {
+            updateVelocitySetpoint(0, 0);
+        }
+    }
+
+
+
     public synchronized boolean isOnTarget() {
         // return true;
         return mIsOnTarget;
@@ -687,7 +724,21 @@ public class Drive extends Subsystem {
      //   }
      //   setHighGear(false);
     }
-
+    /**
+     * Configures the drivebase to tractor beam.  
+     * 
+     *
+     */
+    public synchronized void setWantTractorBeam() {
+        if (mDriveControlState != DriveControlState.TRACTOR_BEAM) {
+            configureTalonsForSpeedControl();
+            mTractorBeamisFinished = false;
+           // RobotState.getInstance().resetDistanceDriven();
+            mDriveControlState = DriveControlState.TRACTOR_BEAM;
+        } else {
+            setVelocitySetpoint(0, 0);
+        }
+    }
     /**
      * Configures the drivebase to drive a path. Used for autonomous driving
      * 
@@ -713,6 +764,7 @@ public class Drive extends Subsystem {
             setVelocitySetpoint(0, 0);
         }
     }
+    
 
     public synchronized boolean isDoneWithPath() {
         if (mDriveControlState == DriveControlState.PATH_FOLLOWING && mPathFollower != null) {

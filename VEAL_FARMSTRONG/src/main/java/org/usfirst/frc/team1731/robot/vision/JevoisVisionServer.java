@@ -48,6 +48,7 @@ public class JevoisVisionServer extends CrashTrackingRunnable {
     public static JevoisVisionServer getInstance() {
         if (s_instance == null) {
             s_instance = new JevoisVisionServer();
+
         }
         return null;// s_instance;
     }
