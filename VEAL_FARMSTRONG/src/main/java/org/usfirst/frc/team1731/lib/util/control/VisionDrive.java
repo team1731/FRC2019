@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 /**
  * https://www.youtube.com/watch?v=_mKlRbapkXo
  */
+@Deprecated
 public class VisionDrive extends TimedRobot {
 
     private SerialPort visionCam = new SerialPort(115200, SerialPort.Port.kUSB1);

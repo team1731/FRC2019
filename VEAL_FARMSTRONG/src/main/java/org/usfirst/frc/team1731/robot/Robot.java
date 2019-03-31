@@ -227,6 +227,8 @@ public class Robot extends TimedRobot {
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
 
             mEnabledLooper.register(mRobotStateEstimator);
+            mEnabledLooper.register(mVisionCamProcessor); 
+            
 
             //http://roborio-1731-frc.local:1181/?action=stream
             //   /CameraPublisher/<camera name>/streams=["mjpeg:http://roborio-1731-frc.local:1181/?action=stream", "mjpeg:http://10.17.31.2:1181/?action=stream"]
@@ -242,12 +244,13 @@ public class Robot extends TimedRobot {
             SmartDashboard.putString(AUTO_CODE, Constants.kDefaultAutoMode);
 
             SmartDashboard.putString("TractorGain", "1.2");   
-            mEnabledLooper.register(mVisionCamProcessor); 
+            
             
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
         }
+
         //zeroAllSensors();
     }
 
