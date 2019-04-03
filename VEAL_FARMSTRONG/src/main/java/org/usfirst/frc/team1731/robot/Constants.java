@@ -105,6 +105,10 @@ public class Constants extends ConstantsBase {
 
     public static double kDriveVoltageCompensationRampRate = 0.0;
 
+    public static double kTBMaxSpeed = 40;
+    public static double kTBGain = 0.1;
+    public static double kTBWallDistance = 1000;  //This is what the IR sensor reads when you hit the wall
+
     // Turn to heading gains
     public static double kDriveTurnKp = 3.0;
     public static double kDriveTurnKi = 1.5;
@@ -361,7 +365,7 @@ public class Constants extends ConstantsBase {
     public static double kPathStopSteeringDistance = 9.0;
 
     // Goal tracker constants
-    public static double kMaxGoalTrackAge = 1.0;
+    public static double kMaxGoalTrackAge = 30.0;  // cp had 1.0
     public static double kMaxTrackerDistance = 18.0;
     public static double kCameraFrameRate = 30.0;
     public static double kTrackReportComparatorStablityWeight = 1.0;

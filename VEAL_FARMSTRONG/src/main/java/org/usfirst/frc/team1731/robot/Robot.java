@@ -3,6 +3,7 @@ package org.usfirst.frc.team1731.robot;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.usfirst.frc.team1731.lib.util.CheesyDriveHelper;
 import org.usfirst.frc.team1731.lib.util.CrashTracker;
@@ -401,7 +402,7 @@ public class Robot extends TimedRobot {
             //SmartDashboard.putBoolean("visionCamHasTarget", mVisionCamProcessor.getVisionCamHasTarget());
 
             double timestamp = Timer.getFPGATimestamp();
-
+            boolean inTractorBeam = false;
             boolean grabCube = mControlBoard.getGrabCubeButton();
             boolean calibrateDown = mControlBoard.getCalibrateDown();
             boolean calibrateUp = mControlBoard.getCalibrateUp();
@@ -484,6 +485,21 @@ public class Robot extends TimedRobot {
             //}
             //videoSink.setSource(selectedCamera);
 
+            if (mControlBoard.getTractorDrive()) {
+                double now = Timer.getFPGATimestamp();
+                Optional<ShooterAimingParameters> aimParams = mRobotState.getAimingParameters();
+                if (aimParams.isPresent() && Math.abs(now - aimParams.get().getLastSeenTimestamp()) < 0.5) {
+                    mDrive.setWantTractorBeam();
+                    if (mDrive.isTBFinished()) {
+                        // open beak
+                    } else {
+                        // close beak
+                    }
+
+                } 
+
+            }
+
             if(mControlBoard.getAutoRearToFeederStation()){
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
@@ -541,6 +557,9 @@ public class Robot extends TimedRobot {
                     mAutoModeExecuter.start();
                 }
             }
+
+
+            /*
             else if(mControlBoard.getTractorDrive()){
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
@@ -549,8 +568,9 @@ public class Robot extends TimedRobot {
                     mAutoModeExecuter.start();
                 }
             }
+            */
 
-            else if(climber != 1){
+            else if((climber != 1) && !mDrive.isDrivingTractorBeam()){
                 stopAuto(); // if none of the above 4 auto buttons is being held down and we're not climbing
 
                 // if(tractorDrive && mVisionCamProcessor.getVisionCamHasTarget()){

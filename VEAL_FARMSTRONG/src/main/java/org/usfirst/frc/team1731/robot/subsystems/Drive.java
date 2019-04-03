@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.AnalogInput;
 
 /**
  * This subsystem consists of the robot's drivetrain: 4 CIM motors, 4 talons, one solenoid and 2 pistons to shift gears,
@@ -97,6 +98,9 @@ public class Drive extends Subsystem {
     // *FOR RUNNING ON ESTHER* ---> private final TalonSRX mLeftMaster, mRightMaster;
 
     private final NavX mNavXBoard;
+ 
+    private AnalogInput  mIRRight = new AnalogInput(0);
+    private AnalogInput mIRLeft = new AnalogInput(1);
 
     // Controllers
     private RobotState mRobotState = RobotState.getInstance();
@@ -111,7 +115,11 @@ public class Drive extends Subsystem {
     private boolean mIsBrakeMode = true;
     private boolean mIsOnTarget = false;
     private boolean mIsApproaching = false;
-    private boolean mTractorBeamisFinished = false;
+
+    //TB variables
+    private boolean mIsDrivingTractorBeam = false;
+    private boolean mTBIsFinished = false;
+
 
     // Logging
     private final ReflectingCSVWriter<PathFollower.DebugOutput> mCSVWriter;
@@ -322,6 +330,8 @@ public class Drive extends Subsystem {
         SmartDashboard.putNumber("right voltage (V)", mRightMaster.getMotorOutputVoltage());
         SmartDashboard.putNumber("left speed (ips)", left_speed);
         SmartDashboard.putNumber("right speed (ips)", right_speed);
+        SmartDashboard.putNumber("IR left", mIRLeft.getAverageValue());
+        SmartDashboard.putNumber("IR Right", mIRRight.getAverageValue());
         // if (usesTalonVelocityControl(mDriveControlState)) {
         //     SmartDashboard.putNumber("left speed error (ips)",
         //         //    rpmToInchesPerSecond(mLeftMaster.getSetpoint()) - left_speed);
@@ -514,6 +524,7 @@ public class Drive extends Subsystem {
         Optional<ShooterAimingParameters> aim = mRobotState.getAimingParameters();
         if (aim.isPresent()) {
             mTargetHeading = aim.get().getRobotToGoal();
+            
         }
     }
 
@@ -628,37 +639,67 @@ public class Drive extends Subsystem {
      * it latches on the last valid heading and drives that heading.  Speed is controlled by the distance to the target with the IR sensors.
      */
     private void updateTractorBeam(double timestamp) {
-        Optional<ShooterAimingParameters> aiming_params = getCachedAimingParameters();
-        Double CameraTBHeading = aiming_params.get().getRobotToGoal().getDegrees();
-        Double CameraTBDistanceToGo =aiming_params.get().getRange();
-     
-        if (!mTractorBeamisFinished) {
-            if (avg(IRLeft,IRRight) < .01) {
-                mTractorBeamisFinished = true;
-            }
-            else if (aiming_params.isPresent())  {
-                TBHeadingValid = true;
-                double tbLastGoodTimestamp = Timer.getFPGATimestamp();
-                double steeringCmd = CameraTBHeading * 5.0;
-            }
-             else if ((Timer.getFPGATimestamp() - tbLastGoodTimestamp) < 3) {
-                double steeringCmd = CameraTBHeading * 5.0;
-            }
+        Optional<ShooterAimingParameters> aiming_params = mRobotState.getAimingParameters();
+        if (aiming_params.isPresent()) {
+            mTargetHeading = aiming_params.get().getRobotToGoal();
             
-            throttle = Constants.TBtopspeed - Constants.TBtopspeed * (max(IRLeft,IRRight)/4096);
-            
-            updateVelocitySetpoint(throttle - steeringCmd, throttle - steeringCmd);
+        }
+        final Rotation2d field_to_robot = mRobotState.getLatestFieldToVehicle().getValue().getRotation();
+
+        // Figure out the rotation necessary to turn to face the goal.
+        final Rotation2d robot_to_target = field_to_robot.inverse().rotateBy(mTargetHeading);
+
+        Double steeringCmd = 0.0 ;
+        Double throttle = 0.0 ;
+
+        if (!mTBIsFinished) {
+      //      System.out.println("IR LEFT: " + mIRLeft.getAverageValue() + "   IR RIGHT: "  + mIRRight.getAverageValue());
+            if ((mIRLeft.getAverageValue() + mIRRight.getAverageValue() / 2.0) > Constants.kTBWallDistance) {
+                mIsDrivingTractorBeam = false;
+                mTBIsFinished = true;
+                updateVelocitySetpoint(0, 0);
+                System.out.println("TRACTOR BEAM FINISHED!!!!");
+                return;
+            }
+
+            if (aiming_params.isPresent()) {
+                steeringCmd = robot_to_target.getDegrees() * Constants.kTBGain;
+                System.out.println("RobotTogoal" + robot_to_target.getDegrees());
+                System.out.println("SteeringA: " + steeringCmd);
+
+            } else {
+                mIsDrivingTractorBeam = false;
+                updateVelocitySetpoint(0, 0);
+                System.out.println("TRACTOR BEAM STOPPED DRIVING (no aim) !!!!");
+                return;
+            }
+
+            throttle = Constants.kTBMaxSpeed - Constants.kTBMaxSpeed
+                    * (Double.max(mIRLeft.getAverageValue(), mIRRight.getAverageValue()) / 1000);
+          //  steeringCmd=5.0;
+          //  throttle = 30.0;
+            updateVelocitySetpoint(throttle + steeringCmd, throttle - steeringCmd);
         } else {
             updateVelocitySetpoint(0, 0);
         }
     }
 
 
-
     public synchronized boolean isOnTarget() {
         // return true;
         return mIsOnTarget;
     }
+
+    public synchronized boolean isDrivingTractorBeam() {
+        // return true;
+        return mIsDrivingTractorBeam;
+    }
+
+    public synchronized boolean isTBFinished() {
+        // return true;
+        return mTBIsFinished;
+    }
+
 
     public synchronized boolean isAutoAiming() {
         return mDriveControlState == DriveControlState.AIM_TO_GOAL;
@@ -732,12 +773,11 @@ public class Drive extends Subsystem {
     public synchronized void setWantTractorBeam() {
         if (mDriveControlState != DriveControlState.TRACTOR_BEAM) {
             configureTalonsForSpeedControl();
-            mTractorBeamisFinished = false;
+            mIsDrivingTractorBeam = true;
+            mTBIsFinished = false;
            // RobotState.getInstance().resetDistanceDriven();
             mDriveControlState = DriveControlState.TRACTOR_BEAM;
-        } else {
-            setVelocitySetpoint(0, 0);
-        }
+        } 
     }
     /**
      * Configures the drivebase to drive a path. Used for autonomous driving
@@ -774,6 +814,7 @@ public class Drive extends Subsystem {
             return true;
         }
     }
+
 
     public synchronized void forceDoneWithPath() {
         if (mDriveControlState == DriveControlState.PATH_FOLLOWING && mPathFollower != null) {

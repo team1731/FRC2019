@@ -148,9 +148,9 @@ public class RobotState {
                 double zr = zyaw * camera_pitch_correction_.cos() - xyaw * camera_pitch_correction_.sin();
 
                 // find intersection with the goal
-                if (zr > 0) {
+                if (zr != 0) {
                     double scaling = differential_height_ / zr;
-                    System.out.println("differential_height_: "+differential_height_);
+                   // System.out.println("zr: "+zr);
                     double distance = Math.hypot(xr, yr) * scaling;
                     Rotation2d angle = new Rotation2d(xr, yr, true);
                     SmartDashboard.putString("RobotState_distance/angle", "Distance: "+distance+" angle: "+angle);
@@ -221,6 +221,8 @@ public class RobotState {
         SmartDashboard.putNumber("robot_pose_y", odometry.getTranslation().y());
         SmartDashboard.putNumber("robot_pose_theta", odometry.getRotation().getDegrees());
         SmartDashboard.putNumber("robot velocity", vehicle_velocity_measured_.dx);
+
+        
         List<RigidTransform2d> poses = getCaptureTimeFieldToGoal();
         for (RigidTransform2d pose : poses) {
             // Only output first goal
