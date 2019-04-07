@@ -25,7 +25,7 @@ public class DrivePathAction implements Action {
 
     @Override
     public boolean isFinished() {
-        return mDrive.isDoneWithPath();
+        return (mDrive.isDoneWithPath() || mDrive.isTBFinished());
     }
 
     @Override
@@ -40,6 +40,7 @@ public class DrivePathAction implements Action {
 
     @Override
     public void start() {
+        mDrive.resetTractorBeam();
         mDrive.setWantDrivePath(mPath, mPathContainer.isReversed());
     }
 }

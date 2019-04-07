@@ -14,6 +14,7 @@ import org.usfirst.frc.team1731.lib.util.math.Twist2d;
 import org.usfirst.frc.team1731.robot.GoalTracker.TrackReport;
 import org.usfirst.frc.team1731.robot.vision.TargetInfo;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -134,6 +135,7 @@ public class RobotState {
         RigidTransform2d field_to_camera = getFieldToCamera(timestamp);
         if (!(vision_update == null || vision_update.isEmpty())) {
             for (TargetInfo target : vision_update) {
+                
                 double ydeadband = (target.getY() > -Constants.kCameraDeadband
                         && target.getY() < Constants.kCameraDeadband) ? 0.0 : target.getY();
 
@@ -148,9 +150,9 @@ public class RobotState {
                 double zr = zyaw * camera_pitch_correction_.cos() - xyaw * camera_pitch_correction_.sin();
 
                 // find intersection with the goal
-                if (zr != 0) {
+                if (zr > 0) {
                     double scaling = differential_height_ / zr;
-                   // System.out.println("zr: "+zr);
+                 //   System.out.println("zr: "+zr);
                     double distance = Math.hypot(xr, yr) * scaling;
                     Rotation2d angle = new Rotation2d(xr, yr, true);
                     SmartDashboard.putString("RobotState_distance/angle", "Distance: "+distance+" angle: "+angle);
@@ -233,7 +235,14 @@ public class RobotState {
         Optional<ShooterAimingParameters> aiming_params = getCachedAimingParameters();
         if (aiming_params.isPresent()) {
             SmartDashboard.putNumber("goal_range", aiming_params.get().getRange());
-            SmartDashboard.putNumber("goal_theta", aiming_params.get().getRobotToGoal().getDegrees());
+          //  SmartDashboard.putNumber("goal_theta", aiming_params.get().getRobotToGoal().getDegrees());
+            final Rotation2d field_to_robot = getLatestFieldToVehicle().getValue().getRotation();
+            Rotation2d mTargetHeading = aiming_params.get().getRobotToGoal();
+            // Figure out the rotation necessary to turn to face the goal.
+            final Rotation2d robot_to_target = field_to_robot.inverse().rotateBy(mTargetHeading);
+            SmartDashboard.putNumber("goal_theta", robot_to_target.getDegrees());
+            double now = Timer.getFPGATimestamp();
+            SmartDashboard.putNumber("TimeVisionLastSeen",Math.abs(now - aiming_params.get().getLastSeenTimestamp()));
         } else {
             SmartDashboard.putNumber("goal_range", 0.0);
             SmartDashboard.putNumber("goal_theta", 0.0);

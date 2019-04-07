@@ -27,7 +27,7 @@ public class Constants extends ConstantsBase {
     // Section 3.13
     // ...and https://firstfrc.blob.core.windows.net/frc2017/Drawings/2017FieldComponents.pdf
     // Parts GE-17203-FLAT and GE-17371 (sheet 7)
-    public static double kBoilerTargetTopHeight = 29; //was 19.5
+    public static double kBoilerTargetTopHeight = 27.5; //was 19.5
     public static double kBoilerRadius = 0; //was 7.5
 
     // Wrist parameters
@@ -105,9 +105,9 @@ public class Constants extends ConstantsBase {
 
     public static double kDriveVoltageCompensationRampRate = 0.0;
 
-    public static double kTBMaxSpeed = 40;
-    public static double kTBGain = 0.1;
-    public static double kTBWallDistance = 1000;  //This is what the IR sensor reads when you hit the wall
+    public static double kTBMaxSpeed = 90;
+    public static double kTBGain = 3.0;
+    public static double kTBWallDistance = 1800;  //This is what the IR sensor reads when you hit the wall
 
     // Turn to heading gains
     public static double kDriveTurnKp = 3.0;
@@ -365,7 +365,7 @@ public class Constants extends ConstantsBase {
     public static double kPathStopSteeringDistance = 9.0;
 
     // Goal tracker constants
-    public static double kMaxGoalTrackAge = 30.0;  // cp had 1.0
+    public static double kMaxGoalTrackAge = 3.0;  // cp had 1.0
     public static double kMaxTrackerDistance = 18.0;
     public static double kCameraFrameRate = 30.0;
     public static double kTrackReportComparatorStablityWeight = 1.0;

@@ -63,7 +63,12 @@ public class Superstructure extends Subsystem {
 
     private final DoubleSolenoid mTopRoller = Constants.makeDoubleSolenoidForIds(1, Constants.kTopRoller1, Constants.kTopRoller2);
     private final DoubleSolenoid mBeakSwinger = Constants.makeDoubleSolenoidForIds(0, Constants.kBeakSwinger1, Constants.kBeakSwinger2);
-    private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakOpener1, Constants.kBeakOpener2);
+
+//DEBUG ONLY - NOT FOR COMPETITION - PUT THIS BACK IN!!!!!!!!!
+    //private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakOpener1, Constants.kBeakOpener2);
+    private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(0, 3, 2);
+    
+    
     private final DoubleSolenoid mMustache = Constants.makeDoubleSolenoidForIds(0, Constants.kMustache1, Constants.kMustache2);
     private final DoubleSolenoid mRotateWristShort = Constants.makeDoubleSolenoidForIds(1, Constants.kRotateWristShort1, Constants.kRotateWristShort2);
     private final DoubleSolenoid mRotateWristLong = Constants.makeDoubleSolenoidForIds(1, Constants.kRotateWristLong1, Constants.kRotateWristLong2); 
@@ -938,8 +943,27 @@ public class Superstructure extends Subsystem {
     }
 
     public void closeBeak() {
+        mBeakLips.set(DoubleSolenoid.Value.kReverse);
+
+    }
+    public void openBeak() {
         mBeakLips.set(DoubleSolenoid.Value.kForward);
 
+    }
+
+    public void prepareToPickupHatch() {
+        mBeakSwinger.set(DoubleSolenoid.Value.kForward);
+        mBeakLips.set(DoubleSolenoid.Value.kReverse);
+        mTopRoller.set(DoubleSolenoid.Value.kReverse);
+        mMustache.set(DoubleSolenoid.Value.kReverse);
+    }
+   
+
+    public void ejectHatch() {
+        mBeakSwinger.set(DoubleSolenoid.Value.kForward);
+        mBeakLips.set(DoubleSolenoid.Value.kReverse);
+        mTopRoller.set(DoubleSolenoid.Value.kReverse);
+        mMustache.set(DoubleSolenoid.Value.kForward);
     }
 
     public void uproller() {

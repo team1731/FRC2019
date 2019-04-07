@@ -52,6 +52,17 @@ public class Drive extends Subsystem {
         return mInstance;
     }
 
+    public static class TractorBeamDebug {
+        public double t;
+        public double steeringCmd;
+        public double throttle;
+        public double goal_theta;
+        public double IRLeft;
+        public double IRRight;
+
+    }
+
+    TractorBeamDebug mTractorBeamDebug = new TractorBeamDebug();
     
     // The robot drivetrain's various states.
     public enum DriveControlState {
@@ -119,10 +130,11 @@ public class Drive extends Subsystem {
     //TB variables
     private boolean mIsDrivingTractorBeam = false;
     private boolean mTBIsFinished = false;
-
+    private boolean mFirstTimeInTractorBeam = false;
 
     // Logging
     private final ReflectingCSVWriter<PathFollower.DebugOutput> mCSVWriter;
+    private final ReflectingCSVWriter<TractorBeamDebug> mCSVWriter2;
 
     private final Loop mLoop = new Loop() {
         @Override
@@ -179,11 +191,15 @@ public class Drive extends Subsystem {
         public void onStop(double timestamp) {
             stop();
             mCSVWriter.flush();
+            mCSVWriter2.flush();
         }
     };
 
     private Drive() {
-    	  //DriverStation.reportError("Drive Constructor", false);
+        //DriverStation.reportError("Drive Constructor", false);
+        
+        setFirstTimeInTractorBeam(true);
+
         // Start all Talons in open loop mode.
         mLeftMaster = TalonSRXFactory.createDefaultTalon(Constants.kLeftDriveMasterId);
         mLeftMaster.set(ControlMode.PercentOutput, 0);
@@ -245,6 +261,8 @@ public class Drive extends Subsystem {
 
         mCSVWriter = new ReflectingCSVWriter<PathFollower.DebugOutput>("/home/lvuser/PATH-FOLLOWER-LOGS.csv",
                 PathFollower.DebugOutput.class);
+        mCSVWriter2 = new ReflectingCSVWriter<TractorBeamDebug>("/home/lvuser/TractorBeam-LOGS.csv",
+                TractorBeamDebug.class);
     }
 
     @Override
@@ -289,8 +307,8 @@ public class Drive extends Subsystem {
     }
 
     public boolean isBackupComplete(){
-        System.out.println(mLeftMaster.getClosedLoopError() + " ----------- " 
-                         + mRightMaster.getClosedLoopError());
+       // System.out.println(mLeftMaster.getClosedLoopError() + " ----------- " 
+       //                  + mRightMaster.getClosedLoopError());
         //
         //*****CAUTION!! - the way things are currently set up, the closed loop error
         //                 isn't working! But, the PID still seems to work! ????????? */
@@ -324,6 +342,7 @@ public class Drive extends Subsystem {
 
     @Override
     public void outputToSmartDashboard() {
+        SmartDashboard.putNumber("mtargetheading",mTargetHeading.getDegrees());
         final double left_speed = getLeftVelocityInchesPerSec();
         final double right_speed = getRightVelocityInchesPerSec();
         SmartDashboard.putNumber("left voltage (V)", mLeftMaster.getMotorOutputVoltage());
@@ -639,51 +658,86 @@ public class Drive extends Subsystem {
      * it latches on the last valid heading and drives that heading.  Speed is controlled by the distance to the target with the IR sensors.
      */
     private void updateTractorBeam(double timestamp) {
-        Optional<ShooterAimingParameters> aiming_params = mRobotState.getAimingParameters();
-        if (aiming_params.isPresent()) {
-            mTargetHeading = aiming_params.get().getRobotToGoal();
-            
-        }
+        Optional<ShooterAimingParameters> aimParams;
+      double now = Timer.getFPGATimestamp();
+      if (mFirstTimeInTractorBeam) {
+         aimParams = mRobotState.getAimingParameters();
+      } else {
+         aimParams = mRobotState.getCachedAimingParameters();
+    }
+
+   //   Optional<ShooterAimingParameters> aimParams = mRobotState.getAimingParameters();
+      if (aimParams.isPresent()   && (isFirstTimeInTractorBeam() ?
+                                Math.abs(now - aimParams.get().getLastSeenTimestamp()) < 0.5 : true)) {
+                    mTargetHeading = aimParams.get().getRobotToGoal();
+                    setFirstTimeInTractorBeam(false);
+                    System.out.println("gotgoodaim");
+                } else {
+                    System.out.println("No aim so allow drive");
+                    resetTractorBeam();
+                //    setOpenLoop(DriveSignal.NEUTRAL);
+                    return;
+                }
+
+
         final Rotation2d field_to_robot = mRobotState.getLatestFieldToVehicle().getValue().getRotation();
 
         // Figure out the rotation necessary to turn to face the goal.
+      //  final Rotation2d robot_to_target = field_to_robot.inverse().rotateBy(mTargetHeading);
         final Rotation2d robot_to_target = field_to_robot.inverse().rotateBy(mTargetHeading);
-
+     //   System.out.println("heading, field to robot, robot to target" + mTargetHeading + "," + field_to_robot.getDegrees() + "," + robot_to_target.getDegrees());
+                
         Double steeringCmd = 0.0 ;
         Double throttle = 0.0 ;
 
         if (!mTBIsFinished) {
       //      System.out.println("IR LEFT: " + mIRLeft.getAverageValue() + "   IR RIGHT: "  + mIRRight.getAverageValue());
-            if ((mIRLeft.getAverageValue() + mIRRight.getAverageValue() / 2.0) > Constants.kTBWallDistance) {
-                mIsDrivingTractorBeam = false;
-                mTBIsFinished = true;
+            if ((mIRLeft.getAverageValue() > Constants.kTBWallDistance|| mIRRight.getAverageValue()  > Constants.kTBWallDistance)) {
+                setIsDrivingTractorBeam(false);
+                setIsTBFinished(true);
+                setFirstTimeInTractorBeam(true);
                 updateVelocitySetpoint(0, 0);
                 System.out.println("TRACTOR BEAM FINISHED!!!!");
+               // setOpenLoop(DriveSignal.NEUTRAL);
                 return;
             }
-
-            if (aiming_params.isPresent()) {
-                steeringCmd = robot_to_target.getDegrees() * Constants.kTBGain;
-                System.out.println("RobotTogoal" + robot_to_target.getDegrees());
-                System.out.println("SteeringA: " + steeringCmd);
-
-            } else {
-                mIsDrivingTractorBeam = false;
-                updateVelocitySetpoint(0, 0);
-                System.out.println("TRACTOR BEAM STOPPED DRIVING (no aim) !!!!");
-                return;
-            }
-
+           
+           // configureTalonsForSpeedControl();
+            setIsDrivingTractorBeam(true);
+            steeringCmd = robot_to_target.getDegrees() * Constants.kTBGain;
+           // System.out.println("Getting throttle");
             throttle = Constants.kTBMaxSpeed - Constants.kTBMaxSpeed
-                    * (Double.max(mIRLeft.getAverageValue(), mIRRight.getAverageValue()) / 1000);
-          //  steeringCmd=5.0;
-          //  throttle = 30.0;
-            updateVelocitySetpoint(throttle + steeringCmd, throttle - steeringCmd);
+                    * (Double.max(mIRLeft.getAverageValue(), mIRRight.getAverageValue()) / Constants.kTBWallDistance);
+            if (throttle < 30.0) {
+                throttle = 30.0;
+            }        
+           // steeringCmd=0.0;
+           // throttle = 40.0;
+            updateVelocitySetpoint(throttle - steeringCmd, throttle + steeringCmd); 
+          //  updateVelocitySetpoint(0,0);
+
+          //  System.out.println("Throttle, steeringcmd" +  throttle + "," + steeringCmd);
+            mTractorBeamDebug.t = timestamp;
+            mTractorBeamDebug.throttle = throttle;
+            mTractorBeamDebug.steeringCmd = steeringCmd;
+            mTractorBeamDebug.goal_theta = steeringCmd/Constants.kTBGain;
+            mTractorBeamDebug.IRLeft = mIRLeft.getAverageValue();
+            mTractorBeamDebug.IRRight = mIRRight.getAverageValue();
+            mCSVWriter2.add(mTractorBeamDebug);
         } else {
+            System.out.println("stopping cuz we are done");
+            setOpenLoop(DriveSignal.NEUTRAL);
             updateVelocitySetpoint(0, 0);
         }
     }
 
+    public synchronized boolean isFirstTimeInTractorBeam(){
+        return mFirstTimeInTractorBeam;
+    }
+
+    public synchronized void setFirstTimeInTractorBeam(boolean firstTimeInTractorBeam){
+        mFirstTimeInTractorBeam = firstTimeInTractorBeam;
+    }
 
     public synchronized boolean isOnTarget() {
         // return true;
@@ -693,6 +747,21 @@ public class Drive extends Subsystem {
     public synchronized boolean isDrivingTractorBeam() {
         // return true;
         return mIsDrivingTractorBeam;
+    }
+
+    public synchronized void setIsDrivingTractorBeam(boolean isDrivingTB) {
+        mIsDrivingTractorBeam = isDrivingTB;
+    }
+
+    private synchronized void setIsTBFinished(boolean isTBFinished) {
+        mTBIsFinished = isTBFinished;
+    }
+
+    public synchronized void resetTractorBeam() {
+        // return true;
+       setIsDrivingTractorBeam(false);
+       setIsTBFinished(false);
+       setFirstTimeInTractorBeam(true);
     }
 
     public synchronized boolean isTBFinished() {
@@ -772,9 +841,10 @@ public class Drive extends Subsystem {
      */
     public synchronized void setWantTractorBeam() {
         if (mDriveControlState != DriveControlState.TRACTOR_BEAM) {
-            configureTalonsForSpeedControl();
-            mIsDrivingTractorBeam = true;
-            mTBIsFinished = false;
+            System.out.println("going into TB");
+           // configureTalonsForSpeedControl();
+           // setIsDrivingTractorBeam(true);
+           // setIsTBFinished(false);
            // RobotState.getInstance().resetDistanceDriven();
             mDriveControlState = DriveControlState.TRACTOR_BEAM;
         } 
@@ -896,6 +966,7 @@ public class Drive extends Subsystem {
     @Override
     public void writeToLog() {
         mCSVWriter.write();
+        mCSVWriter2.write();
     }
 
     public boolean checkSystem() {

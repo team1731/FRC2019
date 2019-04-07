@@ -65,5 +65,6 @@ public interface ControlBoardInterface {
 		boolean getCargoShipBall();
 		boolean getStartingConfiguration();
 
-		boolean getTractorDrive();
+		boolean getTractorDrivePickupHatch();
+		boolean getTractorDriveEjectHatch();
 }
