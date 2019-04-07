@@ -42,7 +42,7 @@ public class JevoisVisionProcessor implements Loop  {
             update_ = null;
         }
 
-        SmartDashboard.putString("JevoisVisionProcessorUpdate", "update was captured at "+update.getCapturedAtTimestamp());
+     //   SmartDashboard.putString("JevoisVisionProcessorUpdate", "update was captured at "+update.getCapturedAtTimestamp());
 
         robot_state_.addVisionUpdate(update.getCapturedAtTimestamp(), update.getTargets());
     }
@@ -56,7 +56,7 @@ public class JevoisVisionProcessor implements Loop  {
    
     public synchronized void gotUpdate(JevoisVisionUpdate update) {
         updateCounter++;
-        SmartDashboard.putString("JevoisVisionProcessorGotUpdate", "Got Update: "+updateCounter);
+     //   SmartDashboard.putString("JevoisVisionProcessorGotUpdate", "Got Update: "+updateCounter);
         update_ = update;
     }
 

@@ -89,7 +89,7 @@ public class JevoisVisionServer {
             }
             
             if(dashboardCounter >= 10){
-                SmartDashboard.putString("JevoisVisionServerTargets", visionTargetPositions_Raw);
+              //  SmartDashboard.putString("JevoisVisionServerTargets", visionTargetPositions_Raw);
             }
 
             String[] visionTargetLines = visionTargetPositions_Raw.split("\n");
@@ -98,13 +98,17 @@ public class JevoisVisionServer {
                 boolean isValid = false;
                 try {
                     String thisTargetLine = visionTargetLines[i];
-                    //if(SafeToParse(thisTargetLine, true)){
-                        JSONParser parser = new JSONParser();
-                        JSONObject j = (JSONObject) parser.parse(thisTargetLine);
-                        visionCamDeltaTime = Double.parseDouble((String) j.get("DeltaTime"));
-                        visionCamYPosition = Double.parseDouble((String) j.get("Y"));
-                        visionCamZPosition = Double.parseDouble((String) j.get("Z"));
+                    // if(SafeToParse(thisTargetLine, true)){
+                    JSONParser parser = new JSONParser();
+                    JSONObject j = (JSONObject) parser.parse(thisTargetLine);
+                    visionCamDeltaTime = Double.parseDouble((String) j.get("DeltaTime"));
+                    visionCamYPosition = Double.parseDouble((String) j.get("Y"));
+                    visionCamZPosition = Double.parseDouble((String) j.get("Z"));
+                    if (visionCamYPosition == 0.0 && visionCamZPosition == 0.0) {
+                        isValid = false;
+                    } else {
                         isValid = true;
+                    }
                     //}
                 } catch(Exception e) {
                     System.err.println("Parse error: "+e.toString());
@@ -121,7 +125,7 @@ public class JevoisVisionServer {
             if(targetInfoArray.size() > 0){ 
                 sentTimes++;
                 if(dashboardCounter >= 10){
-                    SmartDashboard.putString("JevoisVisionServerUpdate", "Sent: "+sentTimes);
+                 //   SmartDashboard.putString("JevoisVisionServerUpdate", "Sent: "+sentTimes);
                 }
                 mJevoisVisionProcessor.gotUpdate(new JevoisVisionUpdate(Timer.getFPGATimestamp()-visionCamDeltaTime, targetInfoArray));
 
@@ -140,13 +144,13 @@ public class JevoisVisionServer {
             try {
                 Thread.sleep(1000);
                 connectionAttempt++;
-                SmartDashboard.putString("JevoisVisionServerOutput", "Attempting Jevois connection... ("+connectionAttempt+")");
+               // SmartDashboard.putString("JevoisVisionServerOutput", "Attempting Jevois connection... ("+connectionAttempt+")");
                 
                 visionCam = new SerialPort(115200, SerialPort.Port.kMXP);
                 visionCam.setTimeout(5);
 
                 if(visionCam != null){
-                    SmartDashboard.putString("JevoisVisionServerOutput", "(NO RUN) Connected successfully on attempt "+connectionAttempt);
+                 //   SmartDashboard.putString("JevoisVisionServerOutput", "(NO RUN) Connected successfully on attempt "+connectionAttempt);
                     visionCamAvailable = true;
                     
                     //run();
@@ -184,7 +188,7 @@ public class JevoisVisionServer {
                         break;
                     }
                     if(lastDashboardMessage != dashboardMessage){
-                        SmartDashboard.putString("JevoisVisionServerOutput", dashboardMessage);
+                      //  SmartDashboard.putString("JevoisVisionServerOutput", dashboardMessage);
                     }
                     lastDashboardMessage = dashboardMessage;
                 } catch (Exception e){
@@ -194,7 +198,7 @@ public class JevoisVisionServer {
                     AttemptJevoisConnection();
                 }
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(5);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

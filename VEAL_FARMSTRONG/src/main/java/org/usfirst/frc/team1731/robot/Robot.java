@@ -125,6 +125,8 @@ public class Robot extends TimedRobot {
     private DigitalOutput arduinoLed2;
 
     private Boolean invertCameraPrevious = Boolean.FALSE;
+    private Boolean mTractorBeamPickupSelected = false;
+    private Boolean mTractorBeamHatchSelected = false;
     private VideoSink videoSink;
 
     private String autoCode = Constants.kDefaultAutoMode;
@@ -152,7 +154,7 @@ public class Robot extends TimedRobot {
     private InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> mTuningFlywheelMap = new InterpolatingTreeMap<>();
 
     private DigitalInput tapeSensor;
- 
+
     //private SerialPort visionCam;
 
     private double disabledTimestampSave;
@@ -416,7 +418,7 @@ public class Robot extends TimedRobot {
             boolean elevCargoShipPos = mControlBoard.getCargoShipBall();
             boolean startingConfiguration = mControlBoard.getStartingConfiguration();       
             int climber = mControlBoard.getClimber();           
-            boolean tractorDrive = mControlBoard.getTractorDrive();
+           // boolean tractorDrive = mControlBoard.getTractorDrive();
 
             double elevatorPOV = mControlBoard.getElevatorControl();
 
@@ -486,19 +488,46 @@ public class Robot extends TimedRobot {
             //}
             //videoSink.setSource(selectedCamera);
 
-            if (mControlBoard.getTractorDrive()) {
-                double now = Timer.getFPGATimestamp();
-                Optional<ShooterAimingParameters> aimParams = mRobotState.getAimingParameters();
-                if (aimParams.isPresent() && Math.abs(now - aimParams.get().getLastSeenTimestamp()) < 0.5) {
+
+
+
+
+            if (mControlBoard.getTractorDrivePickupHatch() || mControlBoard.getTractorDriveEjectHatch()) {
+                Optional<ShooterAimingParameters> aimParams;
+                aimParams = mRobotState.getAimingParameters();
+ 
+                if (mControlBoard.getTractorDrivePickupHatch() && aimParams.isPresent()) {
+
+                    if (!mTractorBeamPickupSelected) {   //this is the first time in
+                        mSuperstructure.prepareToPickupHatch();
+                        mTractorBeamPickupSelected = true;
+                    } 
+
                     mDrive.setWantTractorBeam();
+
                     if (mDrive.isTBFinished()) {
-                        // open beak
-                    } else {
-                        // close beak
+                        mSuperstructure.openBeak();
+                    } 
+                }
+
+                if (mControlBoard.getTractorDriveEjectHatch() && aimParams.isPresent()) {
+                    // System.out.println("im here!!!!!!!");
+                    mDrive.setWantTractorBeam();
+
+                    if (mDrive.isTBFinished()) {
+                        mSuperstructure.ejectHatch();
                     }
+                }
+                if (mDrive.isFirstTimeInTractorBeam()) {
+                    mDrive.setIsDrivingTractorBeam(true);
+                }
+            } else {
+                mDrive.resetTractorBeam();
+                if (mTractorBeamPickupSelected) {
+                    mTractorBeamPickupSelected = false;
+                    mSuperstructure.openBeak();
 
-                } 
-
+                }
             }
 
             if(mControlBoard.getAutoRearToFeederStation()){
@@ -612,31 +641,20 @@ public class Robot extends TimedRobot {
             throw t;
         }
     }
+
     /*
-    public boolean getInvertCamera(){
-        boolean invertCamera=false;
-        synchronized(invertCameraPrevious){
-          boolean invertCameraCurrent = (selectedCamera == cameraFront && mControlBoard.getBackCamera()) ||
-                                        (selectedCamera == cameraBack && mControlBoard.getFrontCamera());
-            if(invertCameraCurrent && !invertCameraPrevious){
-                invertCamera=true;
-            }
-            invertCameraPrevious = invertCameraCurrent;
-        }
-        return invertCamera;
-    }
-    
-    private void toggleCamera(){
-        camerasAreReversed = !camerasAreReversed;
-        if (selectedCamera == cameraFront) {
-            selectedCamera = cameraBack;
-            arduinoLedOutput(Constants.kArduino_BLUEW);
-        } else {
-            selectedCamera = cameraFront;
-            arduinoLedOutput(Constants.kArduino_BLUEW);
-        } 
-      }
-      */
+     * public boolean getInvertCamera(){ boolean invertCamera=false;
+     * synchronized(invertCameraPrevious){ boolean invertCameraCurrent =
+     * (selectedCamera == cameraFront && mControlBoard.getBackCamera()) ||
+     * (selectedCamera == cameraBack && mControlBoard.getFrontCamera());
+     * if(invertCameraCurrent && !invertCameraPrevious){ invertCamera=true; }
+     * invertCameraPrevious = invertCameraCurrent; } return invertCamera; }
+     * 
+     * private void toggleCamera(){ camerasAreReversed = !camerasAreReversed; if
+     * (selectedCamera == cameraFront) { selectedCamera = cameraBack;
+     * arduinoLedOutput(Constants.kArduino_BLUEW); } else { selectedCamera =
+     * cameraFront; arduinoLedOutput(Constants.kArduino_BLUEW); } }
+     */
     private void arduinoLedOutput(int value) {
         arduinoLed0.set((value & 0x01)==0 ? Boolean.FALSE: Boolean.TRUE);
         arduinoLed1.set((value & 0x02)==0 ? Boolean.FALSE: Boolean.TRUE);
