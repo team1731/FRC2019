@@ -88,7 +88,14 @@ public class Robot extends TimedRobot {
 	private static final String AUTO_CODE = "AutoCode";
     private static Map<String, AutoModeBase> AUTO_MODES; // modes defined in Mark's "BIBLE"
     
-    
+    private static AutoModeBase newLeftRocketRearToFeedStationMode  = new LeftRocketRearToFeedStationMode();
+    private static AutoModeBase newLeftFeedStationToRocketRearMode  = new LeftFeedStationToRocketRearMode();
+    private static AutoModeBase newLeftRocketFrontToFeedStationMode = new LeftRocketFrontToFeedStationMode();
+    private static AutoModeBase newLeftFeedStationToRocketFrontMode = new LeftFeedStationToRocketFrontMode();
+    private static AutoModeBase newLeftLevel1ToCargoL1Mode          = new LeftLevel1ToCargoL1Mode();
+    private static AutoModeBase newLeftCargoL1ToFeederStationMode   = new LeftCargoL1ToFeederStationMode();
+    private static AutoModeBase newLeftLevel1ToRocketRearMode       = new LeftLevel1ToRocketRearMode();
+
 	static {
 		initAutoModes();
 	}
@@ -497,48 +504,42 @@ public class Robot extends TimedRobot {
             if(mControlBoard.getAutoRearToFeederStation()){
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
-                   // mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.ROCKET_REAR_TO_FEED_STATION.getArrayPosition()]);
-                    mAutoModeExecuter.setAutoMode( new LeftRocketRearToFeedStationMode());
+                    mAutoModeExecuter.setAutoMode( newLeftRocketRearToFeedStationMode );
                     mAutoModeExecuter.start();    
                 }
             }
             else if(mControlBoard.getAutoFeederStationToRear()){
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
-                    mAutoModeExecuter.setAutoMode( new LeftFeedStationToRocketRearMode());
-                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_REAR.getArrayPosition()]);
+                    mAutoModeExecuter.setAutoMode( newLeftFeedStationToRocketRearMode );
                     mAutoModeExecuter.start();
                 }
             }
             else if(mControlBoard.getAutoFrontToFeederStation()){
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
-                    mAutoModeExecuter.setAutoMode( new LeftRocketFrontToFeedStationMode());
-                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.ROCKET_FRONT_TO_FEED_STATION.getArrayPosition()]);
+                    mAutoModeExecuter.setAutoMode( newLeftRocketFrontToFeedStationMode );
                     mAutoModeExecuter.start();
                 }
             }
             else if(mControlBoard.getAutoFeederStationToFront()){
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
-                    mAutoModeExecuter.setAutoMode( new LeftFeedStationToRocketFrontMode());
-                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
+                    mAutoModeExecuter.setAutoMode( newLeftFeedStationToRocketFrontMode );
                     mAutoModeExecuter.start();
                 }
             }
             else if(mControlBoard.getAutoLevel1ToCargoL1()){
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
-                    mAutoModeExecuter.setAutoMode( new LeftLevel1ToCargoL1Mode());
-                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
+                    mAutoModeExecuter.setAutoMode( newLeftLevel1ToCargoL1Mode );
                     mAutoModeExecuter.start();
                 }
             }          
              else if(mControlBoard.getAutoCargoL1ToFeederStation()){
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
-                    mAutoModeExecuter.setAutoMode( new LeftCargoL1ToFeederStationMode());
-                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
+                    mAutoModeExecuter.setAutoMode( newLeftCargoL1ToFeederStationMode );
                     mAutoModeExecuter.start();
                 }
             }
@@ -546,8 +547,7 @@ public class Robot extends TimedRobot {
             else if(mControlBoard.getAutoLevel1ToRear()){
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
-                    mAutoModeExecuter.setAutoMode( new LeftLevel1ToRocketRearMode());
-                    //mAutoModeExecuter.setAutoMode(autoModesToExecute[AUTO_MODE_SEL.FEED_STATION_TO_ROCKET_FRONT.getArrayPosition()]);
+                    mAutoModeExecuter.setAutoMode( newLeftLevel1ToRocketRearMode );
                     mAutoModeExecuter.start();
                 }
             }
