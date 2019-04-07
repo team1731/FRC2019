@@ -661,7 +661,7 @@ public class Drive extends Subsystem {
         Optional<ShooterAimingParameters> aimParams;
       double now = Timer.getFPGATimestamp();
       if (mFirstTimeInTractorBeam) {
-         aimParams = mRobotState.getAimingParameters();
+         aimParams = mRobotState.getCachedAimingParameters();
       } else {
          aimParams = mRobotState.getCachedAimingParameters();
     }
@@ -671,9 +671,9 @@ public class Drive extends Subsystem {
                                 Math.abs(now - aimParams.get().getLastSeenTimestamp()) < 0.5 : true)) {
                     mTargetHeading = aimParams.get().getRobotToGoal();
                     setFirstTimeInTractorBeam(false);
-                    System.out.println("gotgoodaim");
+                //    System.out.println("gotgoodaim");
                 } else {
-                    System.out.println("No aim so allow drive");
+                //    System.out.println("No aim so allow drive");
                     resetTractorBeam();
                 //    setOpenLoop(DriveSignal.NEUTRAL);
                     return;

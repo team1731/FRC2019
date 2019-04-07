@@ -486,11 +486,18 @@ public class Robot extends TimedRobot {
             //    toggleCamera(); 
             //}
             //videoSink.setSource(selectedCamera);
-            if (mControlBoard.getTractorDrivePickupHatch() || mControlBoard.getTractorDriveEjectHatch()) {
-               
-                if (mControlBoard.getTractorDrivePickupHatch()) {
 
-                    if (mTractorBeamPickupSelected) {   //this is the first time in
+
+
+
+
+            if (mControlBoard.getTractorDrivePickupHatch() || mControlBoard.getTractorDriveEjectHatch()) {
+                Optional<ShooterAimingParameters> aimParams;
+                aimParams = mRobotState.getAimingParameters();
+ 
+                if (mControlBoard.getTractorDrivePickupHatch() && aimParams.isPresent()) {
+
+                    if (!mTractorBeamPickupSelected) {   //this is the first time in
                         mSuperstructure.prepareToPickupHatch();
                         mTractorBeamPickupSelected = true;
                     } 
@@ -502,7 +509,7 @@ public class Robot extends TimedRobot {
                     } 
                 }
 
-                if (mControlBoard.getTractorDriveEjectHatch()) {
+                if (mControlBoard.getTractorDriveEjectHatch() && aimParams.isPresent()) {
                     // System.out.println("im here!!!!!!!");
                     mDrive.setWantTractorBeam();
 
