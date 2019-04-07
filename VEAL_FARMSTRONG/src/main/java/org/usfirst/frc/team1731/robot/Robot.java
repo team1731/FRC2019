@@ -629,6 +629,10 @@ public class Robot extends TimedRobot {
                 boolean wantLowGear = mControlBoard.getLowGear();
                 mDrive.setHighGear(!wantLowGear);
                 mClimber.setWantedState(Climber.WantedState.IDLE);
+
+                if(mRobotState.getFieldToVehicle(timestamp).getTranslation().x() > (Constants.FIELD_CTR_INCHES - Constants.WARNING_BUFFER_INCHES)){
+                    mControlBoard.rumbleDriver();
+                }
             }
             //else{
             //    stopAuto(); // if none of the above 4 auto buttons is being held down and we're climbing

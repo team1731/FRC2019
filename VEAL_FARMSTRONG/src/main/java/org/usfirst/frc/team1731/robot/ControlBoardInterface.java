@@ -8,6 +8,8 @@ public interface ControlBoardInterface {
 		// DRIVER CONTROLS
 
 		//boolean getElevatorButton();
+		
+		void rumbleDriver();
 
 		boolean getFlipUpButton();
 
