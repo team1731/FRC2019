@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
  * determined through calibrations.
  */
 public class Constants extends ConstantsBase {
+
+    public static String kDefaultAutoMode = "L";
+    
     public static double kLooperDt = 0.005;
 
     // Target parameters
@@ -24,8 +27,8 @@ public class Constants extends ConstantsBase {
     // Section 3.13
     // ...and https://firstfrc.blob.core.windows.net/frc2017/Drawings/2017FieldComponents.pdf
     // Parts GE-17203-FLAT and GE-17371 (sheet 7)
-    public static double kBoilerTargetTopHeight = 88.0;
-    public static double kBoilerRadius = 7.5;
+    public static double kBoilerTargetTopHeight = 29; //was 19.5
+    public static double kBoilerRadius = 0; //was 7.5
 
     // Wrist parameters
    // public static int kWristTalon = 4;
@@ -101,6 +104,10 @@ public class Constants extends ConstantsBase {
     public static int kDriveLowGearMaxAccel = 1600;  //These are   in units per 100ms                                                                                                       // in RPM/s
 
     public static double kDriveVoltageCompensationRampRate = 0.0;
+
+    public static double kTBMaxSpeed = 40;
+    public static double kTBGain = 0.1;
+    public static double kTBWallDistance = 1000;  //This is what the IR sensor reads when you hit the wall
 
     // Turn to heading gains
     public static double kDriveTurnKp = 3.0;
@@ -181,13 +188,13 @@ public class Constants extends ConstantsBase {
     public static int kElevatorLevel_2nd = 1;
     public static int kElevatorLevel_3rd = 2;
     public static int kElevatorTopEncoderValue = 600000;
-    public static int kElevatorHatch3rd_EncoderValue=462264;// 9500; //was 9918
-    public static int kElevatorHatch2nd_EncoderValue= 233632;//4872;
+    public static int kElevatorHatch3rd_EncoderValue=462264 - 3*kElevatorTicsPerInch;// 9500; //was 9918
+    public static int kElevatorHatch2nd_EncoderValue= 233632 - 2*kElevatorTicsPerInch;//4872;
     public static int kElevatorHatchFloor_EncoderValue= 0; 
     public static int kElevatorHatchShip_EncoderValue=233632; //1200;
     public static int kElevatorCargo3rd_EncoderValue =462264;  //9500; // was 9918
     public static int kElevatorCargo2nd_EncoderValue =304544; //6351;  haymarket had 254496
-    public static int kElevatorCargoFloor_EncoderValue =70912; //1580;
+    public static int kElevatorCargoFloor_EncoderValue =70912 + (int)(1.5*kElevatorTicsPerInch); //1580;
     public static int kElevatorCargoShip_EncoderValue= 233632 - 6*kElevatorTicsPerInch; //make it 6" lower (Haymarket playoffs)
     public static int kElevatorBallPickup_EncoderValue= 0; //was 1044
     public static int kElevatorHomeEncoderValue = 0;
@@ -217,13 +224,13 @@ public class Constants extends ConstantsBase {
     public static double kClimberRetractPercent = -1.0; //-0.6;
 
    
-    public static int kClimberRetractedPositionLeft = 70; //left is 25
+    public static int kClimberRetractedPositionLeft = 80; //left is 25
     public static int kClimberDartsHaveHitTheFloorLeft = 300;
     public static int kClimberDartsHaveDetachedLeft = 700;
     public static int kClimberExtendedPositionLeft =  kClimberRetractedPositionLeft + 800; // +9.5 inches ( was 670; )
     
 
-    public static int kClimberRetractedPositionRight = 70; //right is 225
+    public static int kClimberRetractedPositionRight = 63; //right is 225
     public static int kClimberDartsHaveHittheFloorRight = 300;
     public static int kClimberDartsHaveDetachedRight = 700;
     public static int kClimberExtendedPositionRight = kClimberRetractedPositionRight + 800; // +9.5 inches (was 875;)
@@ -358,17 +365,17 @@ public class Constants extends ConstantsBase {
     public static double kPathStopSteeringDistance = 9.0;
 
     // Goal tracker constants
-    public static double kMaxGoalTrackAge = 1.0;
+    public static double kMaxGoalTrackAge = 30.0;  // cp had 1.0
     public static double kMaxTrackerDistance = 18.0;
     public static double kCameraFrameRate = 30.0;
     public static double kTrackReportComparatorStablityWeight = 1.0;
     public static double kTrackReportComparatorAgeWeight = 1.0;
 
     // Pose of the camera frame w.r.t. the robot frame
-    public static double kCameraXOffset = -3.3211;
+    public static double kCameraXOffset = 0.0;
     public static double kCameraYOffset = 0.0;
-    public static double kCameraZOffset = 20.9;
-    public static double kCameraPitchAngleDegrees = 29.56; // Measured on 4/26
+    public static double kCameraZOffset = 4.0;  // they had 20.9
+    public static double kCameraPitchAngleDegrees = 18.135; // Measured on 3/30
     public static double kCameraYawAngleDegrees = 0.0;
     public static double kCameraDeadband = 0.0;
 

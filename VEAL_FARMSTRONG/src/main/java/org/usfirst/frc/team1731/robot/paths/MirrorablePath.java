@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1731.robot.paths;
 
+import org.usfirst.frc.team1731.robot.Constants;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -10,7 +11,7 @@ public abstract class MirrorablePath implements PathContainer {
     private boolean isMirrored;
 
     public MirrorablePath(){
-        isMirrored = "R".equals(SmartDashboard.getString("AutoCode", "L"));
+        isMirrored = "R".equals(SmartDashboard.getString("AutoCode", Constants.kDefaultAutoMode));
     }
 
     protected int getY(int unMirroredYValue){
