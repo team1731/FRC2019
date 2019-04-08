@@ -288,7 +288,7 @@ public class Robot extends TimedRobot {
 
             mEnabledLooper.start();
             mSuperstructure.reloadConstants();
-            mSuperstructure.closeBeak();
+            mSuperstructure.openBeak();
             mSuperstructure.uproller();
             
         } catch (Throwable t) {
@@ -489,28 +489,23 @@ public class Robot extends TimedRobot {
             //videoSink.setSource(selectedCamera);
 
 
-
-
-
             if (mControlBoard.getTractorDrivePickupHatch() || mControlBoard.getTractorDriveEjectHatch()) {
-                Optional<ShooterAimingParameters> aimParams;
-                aimParams = mRobotState.getAimingParameters();
- 
-                if (mControlBoard.getTractorDrivePickupHatch() && aimParams.isPresent()) {
 
-                    if (!mTractorBeamPickupSelected) {   //this is the first time in
+                if (mControlBoard.getTractorDrivePickupHatch()) {
+
+                    if (!mTractorBeamPickupSelected) { // this is the first time in
                         mSuperstructure.prepareToPickupHatch();
                         mTractorBeamPickupSelected = true;
-                    } 
+                    }
 
                     mDrive.setWantTractorBeam();
 
                     if (mDrive.isTBFinished()) {
                         mSuperstructure.openBeak();
-                    } 
+                    }
                 }
 
-                if (mControlBoard.getTractorDriveEjectHatch() && aimParams.isPresent()) {
+                if (mControlBoard.getTractorDriveEjectHatch()) {
                     // System.out.println("im here!!!!!!!");
                     mDrive.setWantTractorBeam();
 
@@ -521,7 +516,7 @@ public class Robot extends TimedRobot {
                 if (mDrive.isFirstTimeInTractorBeam()) {
                     mDrive.setIsDrivingTractorBeam(true);
                 }
-            } else {
+            } else if (!mControlBoard.getAutoLevel1ToCargoL1()) {
                 mDrive.resetTractorBeam();
                 if (mTractorBeamPickupSelected) {
                     mTractorBeamPickupSelected = false;

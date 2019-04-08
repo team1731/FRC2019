@@ -12,12 +12,15 @@ import org.usfirst.frc.team1731.robot.auto.actions.ResetPoseFromPathAction;
 import org.usfirst.frc.team1731.robot.auto.actions.TractorBeamEjectHatchAction;
 import org.usfirst.frc.team1731.robot.auto.actions.TractorBeamPickupHatchAction;
 import org.usfirst.frc.team1731.robot.auto.actions.TurnToHeadingAction;
+import org.usfirst.frc.team1731.robot.auto.actions.WaitAction;
 import org.usfirst.frc.team1731.robot.paths.LeftCargo1ToFeederStationPath1;
 import org.usfirst.frc.team1731.robot.paths.LeftCargo1ToFeederStationPath2;
+import org.usfirst.frc.team1731.robot.paths.LeftFeedStationToCargoShipH2;
 import org.usfirst.frc.team1731.robot.paths.LeftFeedStationToRocketFrontPath1;
 import org.usfirst.frc.team1731.robot.paths.LeftFeedStationToRocketFrontPath2;
 import org.usfirst.frc.team1731.robot.paths.LeftLevel1ToCargoL1Path1;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
+import org.usfirst.frc.team1731.robot.subsystems.Drive;
 
 
 /**
@@ -32,30 +35,38 @@ public class LeftLevel1ToCargoL1Mode extends AutoModeBase {
 
     @Override
     protected void routine() throws AutoModeEndedException {
-    	System.out.println("Executing LeftLevel1ToCargoL1Mode");
-    	
+        System.out.println("Executing LeftLevel1ToCargoL1Mode");
+       
+    	Drive.getInstance().setGyroAngle( Rotation2d.fromDegrees(180.0));
     	PathContainer Path = new LeftLevel1ToCargoL1Path1();
         runAction(new ResetPoseFromPathAction(Path));  
-       // runAction(new DrivePathAction(Path));
-        runAction(new ParallelAction(Arrays.asList(new Action[] {
-            new TractorBeamEjectHatchAction(), 
-            new DrivePathAction(Path)
-        })));
+        runAction(new DrivePathAction(Path));
+        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(-90.0)));
+
+        runAction(new TractorBeamEjectHatchAction());
+        runAction(new WaitAction(0.5));
         Path = new LeftCargo1ToFeederStationPath1();
        // runAction(new ResetPoseFromPathAction(Path));  //location is probably pretty good given this happens once
         runAction(new DrivePathAction(Path));
       //  runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(-90.0)));
         Path = new LeftCargo1ToFeederStationPath2();
-        runAction(new ParallelAction(Arrays.asList(new Action[] {
-            new TractorBeamPickupHatchAction(), 
-            new DrivePathAction(Path)
-        })));
-         Path = new LeftFeedStationToRocketFrontPath1();
-        runAction(new ResetPoseFromPathAction(Path));
         runAction(new DrivePathAction(Path));
-        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(0.0)));
-        Path = new LeftFeedStationToRocketFrontPath2();
-        runAction(new DrivePathAction(Path));
+        runAction(new TractorBeamPickupHatchAction());
+        runAction(new WaitAction(0.5));
+
+      //  runAction(new ParallelAction(Arrays.asList(new Action[] {
+      //      new TractorBeamPickupHatchAction(), 
+      //      new DrivePathAction(Path)
+      //  })));
+         Path = new LeftFeedStationToCargoShipH2();
+         runAction(new ResetPoseFromPathAction(Path));
+         runAction(new DrivePathAction(Path));
+         runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(-90.0)));
+  
+         runAction(new TractorBeamEjectHatchAction());
+         runAction(new WaitAction(0.5));
+ 
+
     }
 }
 

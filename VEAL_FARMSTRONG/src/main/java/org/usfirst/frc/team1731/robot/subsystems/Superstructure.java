@@ -411,6 +411,7 @@ public class Superstructure extends Subsystem {
             case EJECTING_HATCH:
                 return SystemState.EJECTING_HATCH;
             case ELEVATOR_TRACKING:
+            
                 mBeakLips.set(DoubleSolenoid.Value.kForward);
                 return SystemState.ELEVATOR_TRACKING;
             case CARGO_CAPTURED:

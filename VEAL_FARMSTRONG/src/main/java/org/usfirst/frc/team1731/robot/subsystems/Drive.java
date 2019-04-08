@@ -661,7 +661,7 @@ public class Drive extends Subsystem {
         Optional<ShooterAimingParameters> aimParams;
       double now = Timer.getFPGATimestamp();
       if (mFirstTimeInTractorBeam) {
-         aimParams = mRobotState.getCachedAimingParameters();
+         aimParams = mRobotState.getAimingParameters();
       } else {
          aimParams = mRobotState.getCachedAimingParameters();
     }
@@ -674,7 +674,8 @@ public class Drive extends Subsystem {
                 //    System.out.println("gotgoodaim");
                 } else {
                 //    System.out.println("No aim so allow drive");
-                    resetTractorBeam();
+                setFirstTimeInTractorBeam(true);
+                //    resetTractorBeam();
                 //    setOpenLoop(DriveSignal.NEUTRAL);
                     return;
                 }
@@ -685,7 +686,7 @@ public class Drive extends Subsystem {
         // Figure out the rotation necessary to turn to face the goal.
       //  final Rotation2d robot_to_target = field_to_robot.inverse().rotateBy(mTargetHeading);
         final Rotation2d robot_to_target = field_to_robot.inverse().rotateBy(mTargetHeading);
-     //   System.out.println("heading, field to robot, robot to target" + mTargetHeading + "," + field_to_robot.getDegrees() + "," + robot_to_target.getDegrees());
+    //   System.out.println("heading, field to robot, robot to target" + mTargetHeading + "," + field_to_robot.getDegrees() + "," + robot_to_target.getDegrees());
                 
         Double steeringCmd = 0.0 ;
         Double throttle = 0.0 ;
@@ -713,7 +714,7 @@ public class Drive extends Subsystem {
             }        
            // steeringCmd=0.0;
            // throttle = 40.0;
-            updateVelocitySetpoint(throttle - steeringCmd, throttle + steeringCmd); 
+           updateVelocitySetpoint(throttle - steeringCmd, throttle + steeringCmd); 
           //  updateVelocitySetpoint(0,0);
 
           //  System.out.println("Throttle, steeringcmd" +  throttle + "," + steeringCmd);
@@ -880,7 +881,7 @@ public class Drive extends Subsystem {
         if (mDriveControlState == DriveControlState.PATH_FOLLOWING && mPathFollower != null) {
             return mPathFollower.isFinished();
         } else {
-            System.out.println("Robot is not in path following mode");
+           // System.out.println("Robot is not in path following mode");
             return true;
         }
     }

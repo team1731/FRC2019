@@ -16,9 +16,11 @@ public class LeftCargo1ToFeederStationPath2 extends MirrorablePath implements Pa
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(287, getY(248), 0,   0));
-        sWaypoints.add(new Waypoint(230, getY(240), 0, 120));
-        sWaypoints.add(new Waypoint( 75, getY(295), 0, 120, "StartTractorBeam"));
-        sWaypoints.add(new Waypoint( 19, getY(295), 0,  80));
+        sWaypoints.add(new Waypoint(230, getY(240), 0, 90));
+        sWaypoints.add(new Waypoint( 130, getY(295), 0, 60));
+        sWaypoints.add(new Waypoint( 100, getY(295), 0, 60));
+
+     //   sWaypoints.add(new Waypoint( 19, getY(295), 0,  80));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

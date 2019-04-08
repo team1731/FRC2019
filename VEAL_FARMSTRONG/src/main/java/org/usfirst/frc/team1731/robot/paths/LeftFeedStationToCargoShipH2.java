@@ -10,15 +10,14 @@ import org.usfirst.frc.team1731.robot.paths.PathBuilder;
 import org.usfirst.frc.team1731.robot.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team1731.robot.paths.PathContainer;
 
-public class LeftLevel1ToCargoL1Path1 extends MirrorablePath implements PathContainer {
+public class LeftFeedStationToCargoShipH2 extends MirrorablePath implements PathContainer {
     
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         
-        sWaypoints.add(new Waypoint( 67, getY(208), 0,   0));
-        sWaypoints.add(new Waypoint(115, getY(208), 0,  100));
-        sWaypoints.add(new Waypoint(270, getY(245), 0, 100));
+        sWaypoints.add(new Waypoint(20, getY(295), 0,   0));
+        sWaypoints.add(new Waypoint(290, getY(245), 0, 100));
    //     sWaypoints.add(new Waypoint(240, getY(265), 0,  60));
 //sWaypoints.add(new Waypoint(255, getY(260), 5,  60));
    //     sWaypoints.add(new Waypoint(260, getY(250), 0,  60));
@@ -44,7 +43,7 @@ worked twice in a row - but slow and coordinates goofy
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(67, getY(208)), Rotation2d.fromDegrees(getAngle(180.0))); 
+        return new RigidTransform2d(new Translation2d(20, getY(295)), Rotation2d.fromDegrees(getAngle(180.0))); 
     }
 
     @Override

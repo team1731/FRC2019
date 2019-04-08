@@ -32,27 +32,28 @@ public class TractorBeamEjectHatchAction implements Action {
 
     @Override
     public boolean isFinished() {
-        return (mDrive.isDoneWithPath() || mDrive.isTBFinished());
+     //   return (mDrive.isDoneWithPath() || mDrive.isTBFinished());
+    return mDrive.isTBFinished();
 
     }
 
     @Override
     public void update() {
-        if (mDrive.hasPassedMarker("StartTractorBeam")) {
+      //  if (mDrive.hasPassedMarker("StartTractorBeam")) {
            // System.out.println("Starting Tractor Beam");
-           double now = Timer.getFPGATimestamp();
+         //  double now = Timer.getFPGATimestamp();
          //  Optional<ShooterAimingParameters> aimParams = mRobotState.getAimingParameters();
          //  if (aimParams.isPresent() && Math.abs(now - aimParams.get().getLastSeenTimestamp()) < 0.5) {
                mDrive.setWantTractorBeam();
          //  }
-        }
+     //   }
     }
 
     @Override
     public void done() {
-        if (mDrive.isTBFinished()) {
+       // if (mDrive.isTBFinished()) {
             mSuperstructure.ejectHatch();
-        }
+       // }
     }
 
     @Override

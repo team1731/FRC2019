@@ -107,7 +107,7 @@ public class Constants extends ConstantsBase {
 
     public static double kTBMaxSpeed = 90;
     public static double kTBGain = 3.0;
-    public static double kTBWallDistance = 1800;  //This is what the IR sensor reads when you hit the wall
+    public static double kTBWallDistance = 1500;  //This is what the IR sensor reads when you hit the wall
 
     // Turn to heading gains
     public static double kDriveTurnKp = 3.0;
@@ -372,7 +372,7 @@ public class Constants extends ConstantsBase {
     public static double kTrackReportComparatorAgeWeight = 1.0;
 
     // Pose of the camera frame w.r.t. the robot frame
-    public static double kCameraXOffset = 0.0;
+    public static double kCameraXOffset = 16.0;
     public static double kCameraYOffset = 0.0;
     public static double kCameraZOffset = 4.0;  // they had 20.9
     public static double kCameraPitchAngleDegrees = 18.135; // Measured on 3/30
