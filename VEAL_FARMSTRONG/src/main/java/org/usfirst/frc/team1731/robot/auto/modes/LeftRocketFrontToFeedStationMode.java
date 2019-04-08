@@ -12,6 +12,7 @@ import org.usfirst.frc.team1731.robot.auto.actions.ParallelAction;
 import org.usfirst.frc.team1731.robot.auto.actions.PickUpAction;
 import org.usfirst.frc.team1731.robot.auto.actions.ResetPoseFromPathAction;
 import org.usfirst.frc.team1731.robot.auto.actions.RotateIntakeActionUp;
+import org.usfirst.frc.team1731.robot.auto.actions.TractorBeamPickupHatchAction;
 import org.usfirst.frc.team1731.robot.auto.actions.TurnToHeadingAction;
 import org.usfirst.frc.team1731.robot.paths.spacey.Path_1_A;
 import org.usfirst.frc.team1731.robot.paths.LeftRocketFrontToFeedStationPath1;
@@ -38,7 +39,7 @@ public class LeftRocketFrontToFeedStationMode extends AutoModeBase {
         runAction(new ResetPoseFromPathAction(Path));
         runAction(new DrivePathAction(Path));
         runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(180.0)));
-        Path = new LeftRocketFrontToFeedStationPath2();
-        runAction(new DrivePathAction(Path));
+        runAction(new TractorBeamPickupHatchAction());
+        
     }
 }
