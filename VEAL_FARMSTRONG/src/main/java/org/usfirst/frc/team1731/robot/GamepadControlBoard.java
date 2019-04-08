@@ -2,6 +2,7 @@ package org.usfirst.frc.team1731.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 /**
  * Contains the button mappings for the Gamepad control board.  Like the drive code, one instance of the GamepadControlBoard 
@@ -31,6 +32,12 @@ public class GamepadControlBoard implements ControlBoardInterface {
     	mOperator = new Joystick(1);
     }
     
+    @Override
+    public void rumbleDriver(){
+        mDriver.setRumble(RumbleType.kLeftRumble, 1.0);
+        mDriver.setRumble(RumbleType.kRightRumble, 1.0);
+    }
+
     @Override
     public boolean getGrabCubeButton() {
     	 return false; // Math.abs(mOperator.getRawAxis(3)) > .8;
