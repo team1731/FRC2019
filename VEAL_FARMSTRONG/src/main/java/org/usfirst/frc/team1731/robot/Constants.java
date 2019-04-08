@@ -30,9 +30,9 @@ public class Constants extends ConstantsBase {
     public static double kBoilerTargetTopHeight = 27.5; //was 19.5
     public static double kBoilerRadius = 0; //was 7.5
 
-    public static int FIELD_CTR_INCHES = 17 * 12;
+    public static int FIELD_CTR_INCHES = 27 * 12;
     public static int WARNING_BUFFER_INCHES = 36;
-    
+
     // Wrist parameters
    // public static int kWristTalon = 4;
     public static int kWristKI = 0;
