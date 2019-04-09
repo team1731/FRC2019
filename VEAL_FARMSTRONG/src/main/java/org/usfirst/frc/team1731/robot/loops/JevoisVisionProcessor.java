@@ -43,7 +43,6 @@ public class JevoisVisionProcessor implements Loop  {
         }
 
      //   SmartDashboard.putString("JevoisVisionProcessorUpdate", "update was captured at "+update.getCapturedAtTimestamp());
-
         robot_state_.addVisionUpdate(update.getCapturedAtTimestamp(), update.getTargets());
     }
 

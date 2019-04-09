@@ -488,6 +488,10 @@ public class Robot extends TimedRobot {
             //}
             //videoSink.setSource(selectedCamera);
 
+            Optional<ShooterAimingParameters> aimParams;
+            double now = Timer.getFPGATimestamp();
+            aimParams = mRobotState.getAimingParameters();
+            mDrive.setAimingParams(aimParams);
 
             if (mControlBoard.getTractorDrivePickupHatch() || mControlBoard.getTractorDriveEjectHatch()) {
 
@@ -510,13 +514,19 @@ public class Robot extends TimedRobot {
                     mDrive.setWantTractorBeam();
 
                     if (mDrive.isTBFinished()) {
-                        mSuperstructure.ejectHatch();
+                     //+   mSuperstructure.ejectHatch();
                     }
                 }
                 if (mDrive.isFirstTimeInTractorBeam()) {
                     mDrive.setIsDrivingTractorBeam(true);
                 }
-            } else if (!mControlBoard.getAutoLevel1ToCargoL1()) {
+            } else if (!mControlBoard.getAutoLevel1ToCargoL1() &&
+                         !mControlBoard.getAutoLevel1ToCargoL1() &&
+                         !mControlBoard.getAutoFeederStationToFront() &&
+                         !mControlBoard.getAutoFeederStationToRear() &&
+                         !mControlBoard.getAutoFrontToFeederStation()&&
+                         !mControlBoard.getAutoRearToFeederStation() &&
+                         !mControlBoard.getAutoLevel1ToRear()) {
                 mDrive.resetTractorBeam();
                 if (mTractorBeamPickupSelected) {
                     mTractorBeamPickupSelected = false;
@@ -626,7 +636,7 @@ public class Robot extends TimedRobot {
                 mClimber.setWantedState(Climber.WantedState.IDLE);
 
                 if(mRobotState.getFieldToVehicle(timestamp).getTranslation().x() > (Constants.FIELD_CTR_INCHES - Constants.WARNING_BUFFER_INCHES)){
-                    mControlBoard.rumbleDriver();
+               //     mControlBoard.rumbleDriver();
                 }
             }
             //else{

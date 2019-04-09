@@ -131,6 +131,7 @@ public class Drive extends Subsystem {
     private boolean mIsDrivingTractorBeam = false;
     private boolean mTBIsFinished = false;
     private boolean mFirstTimeInTractorBeam = false;
+    private Optional <ShooterAimingParameters> myCachedAimParams;
 
     // Logging
     private final ReflectingCSVWriter<PathFollower.DebugOutput> mCSVWriter;
@@ -658,20 +659,28 @@ public class Drive extends Subsystem {
      * it latches on the last valid heading and drives that heading.  Speed is controlled by the distance to the target with the IR sensors.
      */
     private void updateTractorBeam(double timestamp) {
-        Optional<ShooterAimingParameters> aimParams;
+      Optional<ShooterAimingParameters> aimParams;
+    
       double now = Timer.getFPGATimestamp();
+      /*
       if (mFirstTimeInTractorBeam) {
-         aimParams = mRobotState.getAimingParameters();
+         aimParams = mRobotState.getCachedAimingParameters();
       } else {
          aimParams = mRobotState.getCachedAimingParameters();
     }
-
+    */
+  /*  myCachedAimParams = aimParams;
+    
+    if (!aimParams.isPresent() ) {
+ 
+    }*/
+    aimParams = myCachedAimParams ;
    //   Optional<ShooterAimingParameters> aimParams = mRobotState.getAimingParameters();
       if (aimParams.isPresent()   && (isFirstTimeInTractorBeam() ?
                                 Math.abs(now - aimParams.get().getLastSeenTimestamp()) < 0.5 : true)) {
                     mTargetHeading = aimParams.get().getRobotToGoal();
                     setFirstTimeInTractorBeam(false);
-                //    System.out.println("gotgoodaim");
+                  //  System.out.println("gotgoodaim" + mTargetHeading.getDegrees() + "," + (now - aimParams.get().getLastSeenTimestamp()) +" ," + aimParams.get().getRobotToGoal() );
                 } else {
                 //    System.out.println("No aim so allow drive");
                 setFirstTimeInTractorBeam(true);
@@ -834,6 +843,10 @@ public class Drive extends Subsystem {
             mIsOnTarget = false;
      //   }
      //   setHighGear(false);
+    }
+
+    public synchronized void setAimingParams(Optional <ShooterAimingParameters> AimParams) {
+        myCachedAimParams = AimParams;
     }
     /**
      * Configures the drivebase to tractor beam.  

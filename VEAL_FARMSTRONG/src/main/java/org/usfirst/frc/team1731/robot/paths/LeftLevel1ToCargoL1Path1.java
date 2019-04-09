@@ -18,7 +18,7 @@ public class LeftLevel1ToCargoL1Path1 extends MirrorablePath implements PathCont
         
         sWaypoints.add(new Waypoint( 67, getY(208), 0,   0));
         sWaypoints.add(new Waypoint(115, getY(208), 0,  100));
-        sWaypoints.add(new Waypoint(270, getY(245), 0, 100));
+        sWaypoints.add(new Waypoint(280, getY(245), 0, 100));
    //     sWaypoints.add(new Waypoint(240, getY(265), 0,  60));
 //sWaypoints.add(new Waypoint(255, getY(260), 5,  60));
    //     sWaypoints.add(new Waypoint(260, getY(250), 0,  60));

@@ -142,7 +142,7 @@ public class RobotState {
                 // Compensate for camera yaw
                 double xyaw = target.getX() * camera_yaw_correction_.cos() + ydeadband * camera_yaw_correction_.sin();
                 double yyaw = ydeadband * camera_yaw_correction_.cos() - target.getX() * camera_yaw_correction_.sin();
-                double zyaw = target.getZ();
+                double zyaw = -target.getZ();
 
                 // Compensate for camera pitch
                 double xr = zyaw * camera_pitch_correction_.sin() + xyaw * camera_pitch_correction_.cos();
@@ -156,6 +156,7 @@ public class RobotState {
                     double distance = Math.hypot(xr, yr) * scaling;
                     Rotation2d angle = new Rotation2d(xr, yr, true);
                     SmartDashboard.putString("RobotState_distance/angle", "Distance: "+distance+" angle: "+angle);
+    //                System.out.println("RobotState_distance/angle Distance: "+distance+" angle: "+angle);
                     field_to_goals.add(field_to_camera
                             .transformBy(RigidTransform2d
                                     .fromTranslation(new Translation2d(distance * angle.cos(), distance * angle.sin())))
@@ -238,10 +239,12 @@ public class RobotState {
           //  SmartDashboard.putNumber("goal_theta", aiming_params.get().getRobotToGoal().getDegrees());
             final Rotation2d field_to_robot = getLatestFieldToVehicle().getValue().getRotation();
             Rotation2d mTargetHeading = aiming_params.get().getRobotToGoal();
-            // Figure out the rotation necessary to turn to face the goal.
+ // Figure out the rotation necessary to turn to face the goal.
             final Rotation2d robot_to_target = field_to_robot.inverse().rotateBy(mTargetHeading);
             SmartDashboard.putNumber("goal_theta", robot_to_target.getDegrees());
             double now = Timer.getFPGATimestamp();
+  //          System.out.println("range,theta,timevisionlastseen" + aiming_params.get().getRange() + "," + robot_to_target.getDegrees() + "," + Math.abs(now - aiming_params.get().getLastSeenTimestamp()));  
+           
             SmartDashboard.putNumber("TimeVisionLastSeen",Math.abs(now - aiming_params.get().getLastSeenTimestamp()));
         } else {
             SmartDashboard.putNumber("goal_range", 0.0);
