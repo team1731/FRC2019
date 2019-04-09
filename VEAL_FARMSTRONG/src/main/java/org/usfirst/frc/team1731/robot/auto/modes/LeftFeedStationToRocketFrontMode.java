@@ -26,7 +26,7 @@ import org.usfirst.frc.team1731.robot.paths.PathContainer;
  * 
  * @see AutoModeBase
  */
-public class LeftFeedStationToRocketFrontMode extends AutoModeBase {
+public class LeftFeedStationToRocketFrontMode extends  MirrorableMode {
 
     @Override
     protected void routine() throws AutoModeEndedException {
@@ -35,7 +35,7 @@ public class LeftFeedStationToRocketFrontMode extends AutoModeBase {
         PathContainer Path = new LeftFeedStationToRocketFrontPath1();
         runAction(new ResetPoseFromPathAction(Path));
         runAction(new DrivePathAction(Path));
-        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(30.0)));
+        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(getAngle(30.0))));
         runAction(new TractorBeamEjectHatchAction());
         Path = new LeftRocketFrontToFeedStationPath1();
         runAction(new ResetPoseFromPathAction(Path));

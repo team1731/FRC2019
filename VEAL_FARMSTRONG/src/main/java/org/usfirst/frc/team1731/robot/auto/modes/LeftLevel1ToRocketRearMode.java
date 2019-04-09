@@ -28,7 +28,7 @@ import org.usfirst.frc.team1731.robot.subsystems.Drive;
  * 
  * @see AutoModeBase
  */
-public class LeftLevel1ToRocketRearMode extends AutoModeBase {
+public class LeftLevel1ToRocketRearMode extends MirrorableMode {
 
     @Override
     protected void routine() throws AutoModeEndedException {
@@ -38,7 +38,7 @@ public class LeftLevel1ToRocketRearMode extends AutoModeBase {
         PathContainer Path = new LeftLevel1ToRocketRearPath1();
         runAction(new ResetPoseFromPathAction(Path));
         runAction(new DrivePathAction(Path));
-        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(150.0)));
+        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(getAngle(150.0))));
         runAction(new TractorBeamEjectHatchAction());
         runAction(new WaitAction(0.5));
         Path = new LeftRocketRearToFeedStationPath1();
@@ -51,7 +51,7 @@ public class LeftLevel1ToRocketRearMode extends AutoModeBase {
         Path = new LeftFeedStationToRocketFrontPath1();
         runAction(new ResetPoseFromPathAction(Path));
         runAction(new DrivePathAction(Path));
-        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(30.0)));
+        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(getAngle(30.0))));
         runAction(new TractorBeamEjectHatchAction());
 
       //  runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(0.0)));

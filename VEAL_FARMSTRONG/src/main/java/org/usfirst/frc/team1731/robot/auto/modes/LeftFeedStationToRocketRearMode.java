@@ -34,7 +34,7 @@ import org.usfirst.frc.team1731.robot.paths.spacey.Path_1_B;
  * 
  * @see AutoModeBase
  */
-public class LeftFeedStationToRocketRearMode extends AutoModeBase {
+public class LeftFeedStationToRocketRearMode extends MirrorableMode {
 
     @Override
     protected void routine() throws AutoModeEndedException {
@@ -43,7 +43,7 @@ public class LeftFeedStationToRocketRearMode extends AutoModeBase {
     	PathContainer Path = new LeftFeedStationToRocketRearPath1();
         runAction(new ResetPoseFromPathAction(Path));
         runAction(new DrivePathAction(Path));
-        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(150.0)));
+        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(getAngle(150.0))));
         runAction(new TractorBeamEjectHatchAction());
         runAction(new WaitAction(0.5));
         Path = new LeftRocketRearToFeedStationPath1();

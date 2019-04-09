@@ -493,7 +493,8 @@ public class Robot extends TimedRobot {
             aimParams = mRobotState.getAimingParameters();
             mDrive.setAimingParams(aimParams);
 
-            if (mControlBoard.getTractorDrivePickupHatch() || mControlBoard.getTractorDriveEjectHatch()) {
+            if (mControlBoard.getTractorDrivePickupHatch() || mControlBoard.getTractorDriveEjectHatch())    
+            { 
 
                 if (mControlBoard.getTractorDrivePickupHatch()) {
 
@@ -502,7 +503,9 @@ public class Robot extends TimedRobot {
                         mTractorBeamPickupSelected = true;
                     }
 
+                    if  (aimParams.isPresent() && Math.abs(now - aimParams.get().getLastSeenTimestamp()) < 0.5  ) { 
                     mDrive.setWantTractorBeam();
+                    }
 
                     if (mDrive.isTBFinished()) {
                         mSuperstructure.openBeak();
@@ -511,13 +514,18 @@ public class Robot extends TimedRobot {
 
                 if (mControlBoard.getTractorDriveEjectHatch()) {
                     // System.out.println("im here!!!!!!!");
-                    mDrive.setWantTractorBeam();
+                    
+                    if  (aimParams.isPresent() && Math.abs(now - aimParams.get().getLastSeenTimestamp()) < 0.5  ) {
+                        mDrive.setWantTractorBeam();
+                        }
 
                     if (mDrive.isTBFinished()) {
                      //+   mSuperstructure.ejectHatch();
                     }
                 }
-                if (mDrive.isFirstTimeInTractorBeam()) {
+              //  System.out.println("A");
+                if ((mDrive.isFirstTimeInTractorBeam()) &&   (aimParams.isPresent() && Math.abs(now - aimParams.get().getLastSeenTimestamp()) < 0.5  )) { 
+               //     System.out.println("B");
                     mDrive.setIsDrivingTractorBeam(true);
                 }
             } else if (!mControlBoard.getAutoLevel1ToCargoL1() &&

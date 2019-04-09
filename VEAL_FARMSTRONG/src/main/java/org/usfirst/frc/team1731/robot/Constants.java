@@ -368,7 +368,7 @@ public class Constants extends ConstantsBase {
     public static double kPathStopSteeringDistance = 9.0;
 
     // Goal tracker constants
-    public static double kMaxGoalTrackAge = 4.0;  // cp had 1.0
+    public static double kMaxGoalTrackAge = 1.0;  // cp had 1.0
     public static double kMaxTrackerDistance = 18.0;
     public static double kCameraFrameRate = 30.0;
     public static double kTrackReportComparatorStablityWeight = 1.0;

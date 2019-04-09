@@ -31,7 +31,7 @@ import org.usfirst.frc.team1731.robot.subsystems.Drive;
  * 
  * @see AutoModeBase
  */
-public class LeftLevel1ToCargoL1Mode extends AutoModeBase {
+public class LeftLevel1ToCargoL1Mode extends MirrorableMode {
 
     @Override
     protected void routine() throws AutoModeEndedException {
@@ -41,7 +41,7 @@ public class LeftLevel1ToCargoL1Mode extends AutoModeBase {
     	PathContainer Path = new LeftLevel1ToCargoL1Path1();
         runAction(new ResetPoseFromPathAction(Path));  
         runAction(new DrivePathAction(Path));
-        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(-90.0)));
+        runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(getAngle(-90.0))));
 
         runAction(new TractorBeamEjectHatchAction());
         runAction(new WaitAction(0.5));
@@ -61,7 +61,7 @@ public class LeftLevel1ToCargoL1Mode extends AutoModeBase {
          Path = new LeftFeedStationToCargoShipH2();
          runAction(new ResetPoseFromPathAction(Path));
          runAction(new DrivePathAction(Path));
-         runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(-90.0)));
+         runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(getAngle(-90.0))));
   
          runAction(new TractorBeamEjectHatchAction());
          runAction(new WaitAction(0.5));
