@@ -690,17 +690,17 @@ public class Robot extends TimedRobot {
         try {
             CrashTracker.logDisabledInit();
 
-            if (mAutoModeExecuter != null) {
-                mAutoModeExecuter.stop();
-            }
-            mAutoModeExecuter = null;
+    //        if (mAutoModeExecuter != null) {
+    //            mAutoModeExecuter.stop();
+    //        }
+    //        mAutoModeExecuter = null;
 
-            mEnabledLooper.stop();
+      //      mEnabledLooper.stop();
 
             // Call stop on all our Subsystems.
-            mSubsystemManager.stop();
+      //      mSubsystemManager.stop();
 
-            mDrive.setOpenLoop(DriveSignal.NEUTRAL);
+      //      mDrive.setOpenLoop(DriveSignal.NEUTRAL);
 
             // If are tuning, dump map so far.
             if (Constants.kIsShooterTuning) {
@@ -725,7 +725,11 @@ public class Robot extends TimedRobot {
         }
 
         autoCode = SmartDashboard.getString("AutoCode", autoCode); // or R
-
+        Optional<ShooterAimingParameters> aimParams;
+        double now = Timer.getFPGATimestamp();
+        aimParams = mRobotState.getAimingParameters();
+        mDrive.setAimingParams(aimParams);
+        
         greenLEDRingLight.set(false); // turn off the light until teleop
         allPeriodic();
         /*

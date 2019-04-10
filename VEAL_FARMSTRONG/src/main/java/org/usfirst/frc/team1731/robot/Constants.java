@@ -101,10 +101,10 @@ public class Constants extends ConstantsBase {
     // 6.0:1
     // 16.37:1
     // 
-    public static int kDriveLowGearMaxVelocity = 1600;  //these are units of units per 100ms - bdl - this number works out to 3.92 ft/sec
+    public static int kDriveLowGearMaxVelocity = 1900;  //these are units of units per 100ms - bdl - this number works out to 3.92 ft/sec
     
     //public static double kDriveLowGearMaxAccel = 18.0 * 12.0 * 60.0 / (Math.PI * kDriveWheelDiameterInches); // 18 fps/s
-    public static int kDriveLowGearMaxAccel = 1600;  //These are   in units per 100ms                                                                                                       // in RPM/s
+    public static int kDriveLowGearMaxAccel = 1900;  //These are   in units per 100ms                                                                                                       // in RPM/s
 
     public static double kDriveVoltageCompensationRampRate = 0.0;
 

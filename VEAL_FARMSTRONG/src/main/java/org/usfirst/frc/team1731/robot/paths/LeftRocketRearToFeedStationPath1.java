@@ -16,7 +16,8 @@ public class LeftRocketRearToFeedStationPath1 extends MirrorablePath implements 
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(260, getY(295), 0,   0));
-        sWaypoints.add(new Waypoint(288, getY(280), 0, 110));
+        sWaypoints.add(new Waypoint(270, getY(290), 0,   80));
+        sWaypoints.add(new Waypoint(295, getY(290), 0, 80));
         //sWaypoints.add(new Waypoint(314, getY(272), 0, 90));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);

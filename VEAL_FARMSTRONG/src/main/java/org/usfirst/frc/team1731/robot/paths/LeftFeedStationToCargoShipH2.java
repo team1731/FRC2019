@@ -17,7 +17,7 @@ public class LeftFeedStationToCargoShipH2 extends MirrorablePath implements Path
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         
         sWaypoints.add(new Waypoint(20, getY(295), 0,   0));
-        sWaypoints.add(new Waypoint(290, getY(245), 0, 100));
+        sWaypoints.add(new Waypoint(290, getY(245), 0, 120));
    //     sWaypoints.add(new Waypoint(240, getY(265), 0,  60));
 //sWaypoints.add(new Waypoint(255, getY(260), 5,  60));
    //     sWaypoints.add(new Waypoint(260, getY(250), 0,  60));
