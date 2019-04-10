@@ -210,20 +210,20 @@ public class GamepadControlBoard implements ControlBoardInterface {
         return mDriver.getRawButton(3);
     }
 
-    public boolean getAutoLevel1ToCargoL1(){
+    public boolean getAutoLevel1ToCargoL1(){   
         //return mDriver.getRawButton(7);
         int pov = mDriver.getPOV(0);
-        return ((pov !=1) && (pov > 45) && (pov < 135));
+        return ((pov !=1) && (pov > 45) && (pov < 135) && "kXInputGamepad".equalsIgnoreCase(mDriver.getType().toString().trim()));
     }
     public boolean getAutoCargoL1ToFeederStation(){
         //return mDriver.getRawButton(8);
         int pov = mDriver.getPOV(0);
-        return ((pov !=1) && (pov > 225) && (pov < 315));
+        return ((pov !=1) && (pov > 225) && (pov < 315) && "kXInputGamepad".equalsIgnoreCase(mDriver.getType().toString().trim()));
     }
     public boolean getAutoLevel1ToRear(){
         //return mOperator.getRawButton(4);
         int pov = mDriver.getPOV(0);
-        return ((pov != -1) && (pov > 315 || pov < 45));
+        return ((pov != -1) && (pov > 315 || pov < 45) && "kXInputGamepad".equalsIgnoreCase(mDriver.getType().toString().trim()));
     }
 
 
