@@ -115,7 +115,8 @@ public class Robot extends TimedRobot {
     private boolean joystickAxesAreReversed;
     private boolean driveSpeedIsToggled;
     private boolean camerasAreReversed;
-    private boolean tractorIndicator = Boolean.FALSE;         
+    private boolean tractorIndicator = Boolean.FALSE;  
+    private boolean mLoopersAreRunning = false;       
     
     private UsbCamera cameraFront;
     //private UsbCamera cameraBack;
@@ -287,6 +288,7 @@ public class Robot extends TimedRobot {
             mDrive.setBrakeMode(true);
 
             mEnabledLooper.start();
+            mLoopersAreRunning = true;
             mSuperstructure.reloadConstants();
             mSuperstructure.openBeak();
             mSuperstructure.uproller();
@@ -370,11 +372,14 @@ public class Robot extends TimedRobot {
 
             // IF TELEOP DOESN"T WORK PUT THESE LINES BACK IN that are shifted to right and commented out below!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // Start loopers
-                        //   mEnabledLooper.start();
-                        //   mDrive.setOpenLoop(DriveSignal.NEUTRAL);
-                        //   mDrive.setBrakeMode(false);
+            if (!mLoopersAreRunning) {
+                           mEnabledLooper.start();
+                           mLoopersAreRunning = true;
+                           mDrive.setOpenLoop(DriveSignal.NEUTRAL);
+                           mDrive.setBrakeMode(false);
             // Shift to high
-                        //   mDrive.setHighGear(true);
+                           mDrive.setHighGear(true);
+            }
             //zeroAllSensors();
             mSuperstructure.reloadConstants();
             mSuperstructure.setOverrideCompressor(false);
