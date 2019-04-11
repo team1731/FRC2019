@@ -65,8 +65,8 @@ public class Superstructure extends Subsystem {
     private final DoubleSolenoid mBeakSwinger = Constants.makeDoubleSolenoidForIds(0, Constants.kBeakSwinger1, Constants.kBeakSwinger2);
 
 //DEBUG ONLY - NOT FOR COMPETITION - PUT THIS BACK IN!!!!!!!!!
-    //private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakOpener1, Constants.kBeakOpener2);
-    private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(0, 3, 2);
+    private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(1, Constants.kBeakOpener1, Constants.kBeakOpener2);
+   // private final DoubleSolenoid mBeakLips = Constants.makeDoubleSolenoidForIds(0, 3, 2);
     
     
     private final DoubleSolenoid mMustache = Constants.makeDoubleSolenoidForIds(0, Constants.kMustache1, Constants.kMustache2);

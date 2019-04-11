@@ -367,12 +367,14 @@ public class Robot extends TimedRobot {
         try {
             CrashTracker.logTeleopInit();
             mClimber.resetLift();
+
+            // IF TELEOP DOESN"T WORK PUT THESE LINES BACK IN that are shifted to right and commented out below!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // Start loopers
-            mEnabledLooper.start();
-            mDrive.setOpenLoop(DriveSignal.NEUTRAL);
-            mDrive.setBrakeMode(false);
+                        //   mEnabledLooper.start();
+                        //   mDrive.setOpenLoop(DriveSignal.NEUTRAL);
+                        //   mDrive.setBrakeMode(false);
             // Shift to high
-            mDrive.setHighGear(true);
+                        //   mDrive.setHighGear(true);
             //zeroAllSensors();
             mSuperstructure.reloadConstants();
             mSuperstructure.setOverrideCompressor(false);
