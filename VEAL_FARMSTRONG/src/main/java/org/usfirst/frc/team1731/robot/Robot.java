@@ -535,13 +535,13 @@ public class Robot extends TimedRobot {
                //     System.out.println("B");
                     mDrive.setIsDrivingTractorBeam(true);
                 }
-            } else if (!mControlBoard.getAutoLevel1ToCargoL1() &&
-                         !mControlBoard.getAutoLevel1ToCargoL1() &&
-                         !mControlBoard.getAutoFeederStationToFront() &&
-                         !mControlBoard.getAutoFeederStationToRear() &&
-                         !mControlBoard.getAutoFrontToFeederStation()&&
-                         !mControlBoard.getAutoRearToFeederStation() &&
-                         !mControlBoard.getAutoLevel1ToRear()) {
+            } else if (!mControlBoard.getAutoLevel1ToCargoL1() &&           //5
+                         !mControlBoard.getAutoCargoL1ToFeederStation() &&  //6
+                         !mControlBoard.getAutoFeederStationToFront() &&    //4
+                         !mControlBoard.getAutoFeederStationToRear() &&     //2
+                         !mControlBoard.getAutoFrontToFeederStation()&&     //3
+                         !mControlBoard.getAutoRearToFeederStation() &&     //1
+                         !mControlBoard.getAutoLevel1ToRear()) {            //7
                 mDrive.resetTractorBeam();
                 if (mTractorBeamPickupSelected) {
                     mTractorBeamPickupSelected = false;
@@ -550,42 +550,42 @@ public class Robot extends TimedRobot {
                 }
             }
 
-            if(mControlBoard.getAutoRearToFeederStation()){
+            if(mControlBoard.getAutoRearToFeederStation()){ //1
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
                     mAutoModeExecuter.setAutoMode( newLeftRocketRearToFeedStationMode );
                     mAutoModeExecuter.start();    
                 }
             }
-            else if(mControlBoard.getAutoFeederStationToRear()){
+            else if(mControlBoard.getAutoFeederStationToRear()){ //2
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
                     mAutoModeExecuter.setAutoMode( newLeftFeedStationToRocketRearMode );
                     mAutoModeExecuter.start();
                 }
             }
-            else if(mControlBoard.getAutoFrontToFeederStation()){
+            else if(mControlBoard.getAutoFrontToFeederStation()){ //3
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
                     mAutoModeExecuter.setAutoMode( newLeftRocketFrontToFeedStationMode );
                     mAutoModeExecuter.start();
                 }
             }
-            else if(mControlBoard.getAutoFeederStationToFront()){
+            else if(mControlBoard.getAutoFeederStationToFront()){ //4
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
                     mAutoModeExecuter.setAutoMode( newLeftFeedStationToRocketFrontMode );
                     mAutoModeExecuter.start();
                 }
             }
-            else if(mControlBoard.getAutoLevel1ToCargoL1()){
+            else if(mControlBoard.getAutoLevel1ToCargoL1()){ //5
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
                     mAutoModeExecuter.setAutoMode( newLeftLevel1ToCargoL1Mode );
                     mAutoModeExecuter.start();
                 }
             }          
-             else if(mControlBoard.getAutoCargoL1ToFeederStation()){
+             else if(mControlBoard.getAutoCargoL1ToFeederStation()){ //6
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
                     mAutoModeExecuter.setAutoMode( newLeftCargoL1ToFeederStationMode );
@@ -593,7 +593,7 @@ public class Robot extends TimedRobot {
                 }
             }
 
-            else if(mControlBoard.getAutoLevel1ToRear()){
+            else if(mControlBoard.getAutoLevel1ToRear()){  //7
                 if(mAutoModeExecuter == null){
                     mAutoModeExecuter = new AutoModeExecuter();
                     mAutoModeExecuter.setAutoMode( newLeftLevel1ToRocketRearMode );

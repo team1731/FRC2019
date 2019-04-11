@@ -110,7 +110,7 @@ public class Constants extends ConstantsBase {
 
     public static double kTBMaxSpeed = 90;
     public static double kTBGain = 3.0;
-    public static double kTBWallDistance = 1500;  //This is what the IR sensor reads when you hit the wall
+    public static double kTBWallDistance = 2000;  //This is what the IR sensor reads when you hit the wall
 
     // Turn to heading gains
     public static double kDriveTurnKp = 3.0;

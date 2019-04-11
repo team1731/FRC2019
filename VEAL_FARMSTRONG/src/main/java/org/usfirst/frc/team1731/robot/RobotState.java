@@ -157,7 +157,7 @@ public class RobotState {
                     Rotation2d angle = new Rotation2d(xr, yr, true);
                     SmartDashboard.putString("RobotState_distance/angle", "Distance: "+distance+" angle: "+angle);
     //                System.out.println("RobotState_distance/angle Distance: "+distance+" angle: "+angle);
-                   angle =  angle.rotateBy(Rotation2d.fromDegrees(2));
+                   angle =  angle.rotateBy(Rotation2d.fromDegrees(-1.5));
                     field_to_goals.add(field_to_camera
                             .transformBy(RigidTransform2d
                                     .fromTranslation(new Translation2d(distance * angle.cos(), distance * angle.sin())))

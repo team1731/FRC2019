@@ -163,7 +163,7 @@ public class Elevator extends Subsystem {
                 mWantedPosition = 0;
                 mCurrentStateStartTime = timestamp;
                 if(!isReset){
-                    mTalon.setSelectedSensorPosition(0, 0, 10);                
+                    mTalon.setSelectedSensorPosition(1000, 0, 10);                
                     isReset = true;
                 }
               //  DriverStation.reportError("Elevator SystemState: " + mSystemState, false);

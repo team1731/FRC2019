@@ -45,7 +45,7 @@ public class LeftLevel1ToRocketRearMode extends MirrorableMode {
         runAction(new DrivePathAction(Path));
         runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(getAngle(150.0))));
         runAction(new TractorBeamEjectHatchAction());
-        runAction(new WaitAction(0.2));
+        runAction(new WaitAction(0.5));
         Path = new LeftRocketRearToFeedStationPath1();
         runAction(new ResetPoseFromPathAction(Path));
         runAction(new DrivePathAction(Path));
@@ -59,7 +59,7 @@ public class LeftLevel1ToRocketRearMode extends MirrorableMode {
        // runAction(new DrivePathAction(Path));
       //  runAction(new TractorBeamPickupHatchAction());
 
-        runAction(new WaitAction(0.2));
+        runAction(new WaitAction(0.5));
         Path = new LeftFeedStationToRocketFrontPath1();
         runAction(new ResetPoseFromPathAction(Path));
         runAction(new DrivePathAction(Path));

@@ -188,7 +188,7 @@ public class Superstructure extends Subsystem {
                     newState = handleSpittingOutTop();
                     break;
                 case ELEVATOR_TRACKING:
-                    newState = handleElevatorTracking();
+                    newState = handleElevatorTracking(timestamp);
                     break;
                 case RETURNING_HOME:
                     newState = handleReturningHome();
@@ -423,15 +423,17 @@ public class Superstructure extends Subsystem {
             }
         }
 
-        private SystemState handleElevatorTracking() {
+        private SystemState handleElevatorTracking(double timestamp) {
         	mElevator.setWantedPosition(mWantedElevatorPosition);
             mElevator.setWantedState(Elevator.WantedState.ELEVATORTRACKING);
             if (mIntake.getSystemState() != Intake.SystemState.HOLDING) {
                 mIntake.setWantedState(Intake.WantedState.IDLE);
             }
             mClimber.setWantedState(Climber.WantedState.IDLE);
-
-            mMustache.set(DoubleSolenoid.Value.kReverse);
+            if ((timestamp - mCurrentStateStartTime  > 1.0)) {
+                mMustache.set(DoubleSolenoid.Value.kReverse);
+            }
+            
             
             switch (mWantedState) {
             case CLIMBINGUP:

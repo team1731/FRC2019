@@ -48,7 +48,7 @@ public class LeftLevel1ToCargoL1Mode extends MirrorableMode {
         runAction(new TurnToHeadingAction(Rotation2d.fromDegrees(getAngle(-90.0))));
 
         runAction(new TractorBeamEjectHatchAction());
-        runAction(new WaitAction(0.2));
+        runAction(new WaitAction(0.5));
         Path = new LeftCargo1ToFeederStationPath1();
        // runAction(new ResetPoseFromPathAction(Path));  //location is probably pretty good given this happens once
         runAction(new DrivePathAction(Path));
@@ -62,7 +62,7 @@ public class LeftLevel1ToCargoL1Mode extends MirrorableMode {
         })));
 
       //  runAction(new TractorBeamPickupHatchAction());
-        runAction(new WaitAction(0.2));
+        runAction(new WaitAction(0.5));
 
       //  runAction(new ParallelAction(Arrays.asList(new Action[] {
       //      new TractorBeamPickupHatchAction(), 
