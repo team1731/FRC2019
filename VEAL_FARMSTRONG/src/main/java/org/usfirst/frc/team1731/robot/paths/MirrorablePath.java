@@ -11,7 +11,10 @@ public abstract class MirrorablePath implements PathContainer {
     private boolean isMirrored;
 
     public MirrorablePath(){
-        isMirrored = "R".equals(SmartDashboard.getString("AutoCode", Constants.kDefaultAutoMode));
+        String autoCode = SmartDashboard.getString("AutoCode", Constants.kDefaultAutoMode).toUpperCase().trim();
+        System.out.println("MirrorablePath: autoCode=" + autoCode);
+        isMirrored = "R".equals(autoCode);
+        System.out.println("MirrorablePath: isMirrored=" + isMirrored);
     }
 
     protected int getY(int unMirroredYValue){

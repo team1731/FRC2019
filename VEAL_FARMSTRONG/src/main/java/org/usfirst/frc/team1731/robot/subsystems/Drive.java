@@ -904,7 +904,7 @@ public class Drive extends Subsystem {
         if (mDriveControlState == DriveControlState.PATH_FOLLOWING && mPathFollower != null) {
             mPathFollower.forceFinish();
         } else {
-            System.out.println("Robot is not in path following mode");
+            //System.out.println("Robot is not in path following mode");
         }
     }
 
@@ -925,7 +925,7 @@ public class Drive extends Subsystem {
         if (mDriveControlState == DriveControlState.PATH_FOLLOWING && mPathFollower != null) {
             return mPathFollower.hasPassedMarker(marker);
         } else {
-            System.out.println("Robot is not in path following mode");
+            //System.out.println("Robot is not in path following mode");
             return false;
         }
     }

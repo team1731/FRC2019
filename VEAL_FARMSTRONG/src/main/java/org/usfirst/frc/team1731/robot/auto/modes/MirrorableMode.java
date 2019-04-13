@@ -12,7 +12,10 @@ public abstract class MirrorableMode extends AutoModeBase {
     private boolean isMirrored;
 
     public MirrorableMode(){
-        isMirrored = "R".equals(SmartDashboard.getString("AutoCode", Constants.kDefaultAutoMode));
+        String autoCode = SmartDashboard.getString("AutoCode", Constants.kDefaultAutoMode).toUpperCase().trim();
+        System.out.println("MirrorableMode: autoCode=" + autoCode);
+        isMirrored = "R".equals(autoCode);
+        System.out.println("MirrorableMode: isMirrored=" + isMirrored);
     }
 
     protected int getY(int unMirroredYValue){
