@@ -9,17 +9,18 @@ public abstract class MirrorableMode extends AutoModeBase {
 
     private static int FIELD_WIDTH_INCHES = 27 * 12;
 
-    private boolean isMirrored;
-
-    public MirrorableMode(){
+    // check the value every time instead of using a constructor because
+    // auto modes only get instantiated once when the robot code
+    // first starts and the drive team might change the value in the
+    // shuffleboard after that!
+    private boolean isMirrored(){
         String autoCode = SmartDashboard.getString("AutoCode", Constants.kDefaultAutoMode).toUpperCase().trim();
-        System.out.println("MirrorableMode: autoCode=" + autoCode);
-        isMirrored = "R".equals(autoCode);
-        System.out.println("MirrorableMode: isMirrored=" + isMirrored);
+        boolean isMirrored = "R".equals(autoCode);
+        return isMirrored;
     }
 
     protected int getY(int unMirroredYValue){
-        if(isMirrored){
+        if(isMirrored()){
             return FIELD_WIDTH_INCHES - unMirroredYValue;
         }
         else{
@@ -28,7 +29,7 @@ public abstract class MirrorableMode extends AutoModeBase {
     }
 
     protected double getAngle(double unMirroredAngle){
-        if(isMirrored){
+        if(isMirrored()){
             return -unMirroredAngle;
         }
         else{
